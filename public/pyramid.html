@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>OPTION — Ranking Pyramid</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F0ED;--card:rgba(255,255,255,.72);--text:#1A1A1A;--text2:#777;--text3:#B0B0B0;
+  --gold:#C47F17;--gold-l:#FEF5E7;--green:#1A8C5E;--green-l:#E8F8F0;
+  --blue:#2660D4;--blue-l:#EBF2FE;--red:#DC2626;--purple:#8B5CF6;--cyan:#06B6D4;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;justify-content:center;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+.device{width:100%;max-width:430px;min-height:100vh;position:relative;background:var(--bg);overflow:hidden;}
+
+/* Header */
+.hdr{display:flex;align-items:center;justify-content:center;padding:6px 16px;background:var(--bg);position:relative;z-index:60;}
+.logo{font-weight:900;font-size:14px;letter-spacing:-.5px;
+  background:linear-gradient(135deg,#C47F17,#8B5A0B);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;}
+
+/* Main scroll area */
+.main{padding-bottom:80px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+
+/* Poll */
+.poll{margin:6px 10px 8px;border-radius:14px;background:var(--card);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.6);padding:10px 12px;box-shadow:0 4px 16px rgba(0,0,0,.03);
+  position:relative;overflow:hidden;}
+.poll::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0;
+  background:linear-gradient(90deg,var(--gold),var(--blue),var(--gold));background-size:200% 100%;animation:sh 3s ease infinite;}
+@keyframes sh{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.poll-tag{font-size:8px;font-weight:700;color:var(--gold);letter-spacing:1px;}
+.poll-live{float:right;display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:100px;
+  background:var(--green-l);color:var(--green);font-size:8px;font-weight:700;}
+.poll-live::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);animation:pd 1.5s ease infinite;}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
+.poll-q{font-size:13px;font-weight:700;line-height:1.4;margin:6px 0;}
+.poll-opts{display:flex;gap:5px;}
+.p-opt{flex:1;padding:7px;border-radius:8px;background:rgba(0,0,0,.03);position:relative;overflow:hidden;text-align:center;}
+.p-bar{position:absolute;left:0;top:0;bottom:0;border-radius:8px;}
+.p-bar.a{background:rgba(38,96,212,.05);width:31%;}
+.p-bar.b{background:rgba(196,127,23,.07);width:69%;}
+.p-text{font-size:9px;font-weight:600;position:relative;z-index:1;}
+.p-pct{font-size:12px;font-weight:800;position:relative;z-index:1;color:var(--text3);}
+.p-pct.w{color:var(--gold);}
+
+/* Sort tabs */
+.sort-bar{display:flex;gap:4px;padding:4px 10px 6px;overflow-x:auto;scrollbar-width:none;}
+.sort-bar::-webkit-scrollbar{display:none;}
+.sort-btn{flex-shrink:0;padding:5px 10px;border-radius:100px;font-size:10px;font-weight:600;
+  color:var(--text3);background:rgba(255,255,255,.5);border:1px solid rgba(0,0,0,.04);
+  cursor:pointer;white-space:nowrap;transition:all .2s;}
+.sort-btn.on{color:#fff;background:#1A1A1A;border-color:#1A1A1A;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+
+.sec-t{font-size:14px;font-weight:800;letter-spacing:-.5px;padding:2px 12px 6px;}
+.sec-t span{font-size:10px;font-weight:500;color:var(--text3);}
+
+/* ========== EVENT BANNER ========== */
+.event-banner{
+  margin:0 10px 8px;border-radius:14px;overflow:hidden;
+  height:100px;position:relative;
+  background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  transition:transform .4s cubic-bezier(.4,0,.2,1), opacity .4s ease;
+  will-change:transform,opacity;
+}
+.event-banner.exit-up{
+  transform:translate3d(0,-120%,0);
+  opacity:0;
+}
+.event-banner .ev-content{
+  padding:14px 16px;color:#fff;position:relative;z-index:2;
+}
+.ev-tag{font-size:8px;font-weight:700;color:#FFD700;letter-spacing:1px;margin-bottom:4px;}
+.ev-title{font-size:15px;font-weight:800;line-height:1.3;margin-bottom:4px;}
+.ev-sub{font-size:9px;opacity:.6;}
+.event-banner .ev-glow{
+  position:absolute;top:-20px;right:-20px;width:120px;height:120px;
+  background:radial-gradient(circle,rgba(255,215,0,.15),transparent 70%);
+}
+.event-banner .ev-glow2{
+  position:absolute;bottom:-30px;left:20%;width:80px;height:80px;
+  background:radial-gradient(circle,rgba(38,96,212,.2),transparent 70%);
+}
+
+/* ========== PYRAMID AREA ========== */
+.pyramid-area{
+  position:relative;
+  padding:0 6px;
+  min-height:420px;
+  overflow:hidden;
+}
+
+/* ========== CARD STYLES ========== */
+.rank-card{
+  position:absolute;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,.06);
+  transition:all .4s cubic-bezier(.25,.46,.45,.94);
+  will-change:transform,opacity;
+  cursor:pointer;
+  backface-visibility:hidden;
+}
+.rank-card:active{transform:scale(.97) !important;}
+
+/* #1 CARD - Large */
+.rank-card.r1{
+  width:calc(65% - 12px);height:180px;
+  left:50%;top:0;
+  transform:translate3d(-50%,0,0);
+  z-index:10;
+  background:linear-gradient(145deg,#FFFDF8,#FFF8ED,#FFF4E0);
+  border:1.5px solid rgba(196,127,23,.15);
+  box-shadow:0 8px 30px rgba(196,127,23,.08);
+}
+.rank-card.r1 .card-inner{padding:12px;height:100%;display:flex;flex-direction:column;}
+.r1-head{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.r1-num{
+  min-width:28px;height:28px;padding:0 6px;border-radius:8px;
+  background:linear-gradient(135deg,#D4920F,#A06B08);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;color:white;
+  box-shadow:0 2px 6px rgba(196,127,23,.25);
+}
+.r1-name{font-size:16px;font-weight:900;letter-spacing:-.4px;}
+.r1-name.pkg-gold{color:var(--gold);}
+.r1-name.pkg-blue{color:var(--blue);}
+.r1-name.pkg-purple{color:var(--purple);}
+.r1-name.pkg-cyan{color:var(--cyan);}
+.r1-name.pkg-orange{color:#E97316;}
+.r1-bdg{display:flex;gap:3px;margin-left:auto;}
+.bdg{padding:2px 5px;border-radius:4px;font-size:7px;font-weight:700;}
+.bdg-i{background:var(--blue-l);color:var(--blue);}
+.bdg-o{background:var(--gold-l);color:var(--gold);}
+.r1-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin:auto 0;}
+.r1-cell{padding:6px 2px;border-radius:8px;background:rgba(255,255,255,.6);text-align:center;}
+.r1-cl{font-size:7px;font-weight:600;color:var(--text3);letter-spacing:.2px;}
+.r1-cv{font-size:18px;font-weight:900;margin-top:1px;letter-spacing:-.5px;}
+.r1-cv.gd{color:var(--gold);}
+.r1-bot{display:flex;align-items:center;gap:4px;margin-top:6px;}
+.r1-st{font-size:9px;letter-spacing:1.5px;filter:saturate(1.5);}
+.r1-sc{font-size:13px;font-weight:900;color:var(--gold);}
+.r1-rv{font-size:7px;color:var(--text3);margin-left:auto;}
+
+/* Tie badge */
+.tie-badge{font-size:7px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,var(--gold),#E97316);
+  padding:1px 5px;border-radius:4px;margin-left:3px;}
+
+/* Glow on r1 */
+.r1-glow{position:absolute;top:-30px;right:-30px;width:90px;height:90px;
+  background:radial-gradient(circle,rgba(196,127,23,.08),transparent 70%);}
+
+/* ROW 2 CARDS (rank 2-4) */
+.rank-card.r2{
+  width:calc(33.33% - 8px);height:130px;
+  background:var(--card);backdrop-filter:blur(20px);
+  border:1px solid rgba(0,0,0,.04);
+}
+/* Position: left, center, right */
+.rank-card.pos-2{left:2%;top:190px;z-index:5;}
+.rank-card.pos-3{left:50%;top:190px;transform:translate3d(-50%,0,0);z-index:5;}
+.rank-card.pos-4{right:2%;top:190px;z-index:5;}
+
+/* ROW 3 CARDS (rank 5-8) — smaller */
+.rank-card.r3{
+  width:calc(25% - 6px);height:100px;
+  background:var(--card);backdrop-filter:blur(20px);
+  border:1px solid rgba(0,0,0,.03);
+  opacity:.7;
+}
+.rank-card.pos-5{left:0%;top:330px;z-index:3;}
+.rank-card.pos-6{left:25%;top:330px;z-index:3;}
+.rank-card.pos-7{left:50%;top:330px;z-index:3;}
+.rank-card.pos-8{left:75%;top:330px;z-index:3;}
+
+/* Row 2/3 card inner */
+.rx-inner{padding:8px;height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.rx-tag{font-size:6px;font-weight:700;padding:2px 5px;border-radius:3px;margin-bottom:3px;letter-spacing:.3px;}
+.rx-tag.blue{background:var(--blue-l);color:var(--blue);}
+.rx-tag.purple{background:rgba(139,92,246,.08);color:var(--purple);}
+.rx-tag.gold{background:var(--gold-l);color:var(--gold);}
+.rx-tag.cyan{background:rgba(6,182,212,.08);color:var(--cyan);}
+.rx-tag.orange{background:rgba(245,158,11,.08);color:#E97316;}
+.rx-name{font-size:12px;font-weight:800;letter-spacing:-.3px;margin:2px 0;}
+.rx-name.pkg-blue{color:var(--blue);}
+.rx-name.pkg-purple{color:var(--purple);}
+.rx-name.pkg-gold{color:var(--gold);}
+.rx-name.pkg-cyan{color:var(--cyan);}
+.rx-name.pkg-orange{color:#E97316;}
+.rx-kr{font-size:8px;color:var(--text2);margin-bottom:3px;}
+.rx-stats{display:flex;gap:6px;margin-top:auto;}
+.rx-s{text-align:center;}
+.rx-s .l{font-size:6px;color:var(--text3);}
+.rx-s .v{font-size:11px;font-weight:800;}
+
+/* Row 3 smaller text */
+.r3 .rx-name{font-size:10px;}
+.r3 .rx-kr{font-size:7px;}
+.r3 .rx-stats{gap:4px;}
+.r3 .rx-s .v{font-size:9px;}
+.r3 .rx-s .l{font-size:5px;}
+.r3 .rx-tag{font-size:5px;padding:1px 3px;}
+
+/* ========== EXIT ANIMATIONS ========== */
+.rank-card.exit-left{
+  transform:translate3d(-120%,0,0) rotateY(-60deg) !important;
+  opacity:0 !important;
+  transition:all .4s cubic-bezier(.4,0,.2,1) !important;
+}
+.rank-card.enter-right{
+  transform:translate3d(120%,0,0) !important;
+  opacity:0 !important;
+  transition:none !important;
+}
+
+/* ========== SWIPE HINT ========== */
+.swipe-hint{
+  text-align:center;font-size:9px;color:var(--text3);
+  padding:10px 0;opacity:.5;
+  animation:hintPulse 2.5s ease infinite;
+}
+@keyframes hintPulse{0%,100%{opacity:.3}50%{opacity:.7}}
+
+/* ========== LIST ITEMS (below pyramid) ========== */
+.list-section{padding:0 10px;margin-top:10px;}
+.list-title{font-size:12px;font-weight:800;margin-bottom:6px;letter-spacing:-.3px;}
+.rn{border-radius:12px;padding:10px;background:var(--card);backdrop-filter:blur(20px);
+  border:1px solid rgba(0,0,0,.04);display:flex;align-items:center;gap:8px;
+  margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.02);}
+.rn-n{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:800;flex-shrink:0;background:rgba(0,0,0,.05);color:var(--text2);}
+.rn-i{flex:1;min-width:0;}
+.rn-nm{font-size:12px;font-weight:700;letter-spacing:-.2px;}
+.rn-m{display:flex;align-items:center;gap:3px;margin-top:1px;}
+.rn-st{font-size:7px;letter-spacing:1px;}
+.rn-sc{font-size:9px;font-weight:700;color:var(--text3);}
+.rn-r{text-align:right;flex-shrink:0;}
+.rn-p{font-size:14px;font-weight:800;letter-spacing:-.4px;}
+.rn-c{font-size:7px;color:var(--text3);margin-top:1px;}
+
+/* Bottom nav */
+.bot-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;height:56px;
+  display:flex;align-items:center;justify-content:space-around;
+  background:rgba(242,240,237,.95);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(0,0,0,.06);z-index:100;}
+.bot-item{font-size:18px;opacity:.3;cursor:pointer;padding:8px;}
+.bot-item.on{opacity:1;}
+</style>
+</head>
+<body>
+<div class="device">
+<div class="hdr"><div class="logo">OPTION</div></div>
+<div class="main" id="mainScroll">
+
+<!-- Poll -->
+<div class="poll">
+  <div class="poll-tag">100명에게 물어봐</div>
+  <div class="poll-live">73/100</div>
+  <div class="poll-q">친구가 슬롯 잘하면 여자도 꼬실 수 있다는데? 🤔</div>
+  <div class="poll-opts">
+    <div class="p-opt"><div class="p-bar a"></div><div class="p-text">친구 말이 맞다</div><div class="p-pct">31%</div></div>
+    <div class="p-opt"><div class="p-bar b"></div><div class="p-text">사람색기 아니네</div><div class="p-pct w">69%</div></div>
+  </div>
+</div>
+
+<!-- Sort tabs -->
+<div class="sort-bar">
+  <div class="sort-btn on">첫충 높은순</div>
+  <div class="sort-btn">매충 높은순</div>
+  <div class="sort-btn">캐시백 높은순</div>
+  <div class="sort-btn">올인 높은순</div>
+  <div class="sort-btn">가입 높은순</div>
+  <div class="sort-btn">이벤트</div>
+  <div class="sort-btn">롤링 높은순</div>
+</div>
+
+<div class="sec-t">최고 조건 추천 <span id="siteCount"></span></div>
+
+<!-- Event Banner -->
+<div class="event-banner" id="eventBanner">
+  <div class="ev-glow"></div>
+  <div class="ev-glow2"></div>
+  <div class="ev-content">
+    <div class="ev-tag">⚡ 라이트닝 룩카스핀 이벤트</div>
+    <div class="ev-title">지금 가입하면 무료 스핀 30회!</div>
+    <div class="ev-sub">라이브 카지노 · 럭키스포츠 · 가상경기</div>
+  </div>
+</div>
+
+<!-- PYRAMID AREA -->
+<div class="pyramid-area" id="pyramidArea">
+  <!-- Cards will be rendered by JS -->
+</div>
+
+<div class="swipe-hint" id="swipeHint">← 스와이프하여 랭킹 순환 →</div>
+
+<!-- List items for 9th+ -->
+<div class="list-section" id="listSection"></div>
+
+</div><!-- /main -->
+
+<!-- Bottom Nav -->
+<div class="bot-bar">
+  <div class="bot-item">☰</div>
+  <div class="bot-item on">📊</div>
+  <div class="bot-item">✏️</div>
+  <div class="bot-item">◇</div>
+  <div class="bot-item">👤</div>
+</div>
+</div>
+
+<script>
+// ===== SITE DATA =====
+var SITES = [
+  {id:1,name:'겜블시티',en:'GAM CITY',first:31,reload:15,cashback:5,rating:9.4,reviews:328,users:4520,pkg:'gold',ins:true,opt:true,tag:'Diamond Tier'},
+  {id:2,name:'벳콩',en:'BETKONG',first:31,reload:12,cashback:4,rating:9.1,reviews:245,users:3800,pkg:'blue',ins:true,opt:true,tag:'High Volume'},
+  {id:3,name:'크리스탈벳',en:'CRYSTALBET',first:27,reload:13,cashback:6,rating:8.8,reviews:190,users:2900,pkg:'purple',ins:true,opt:false,tag:'Live Cashout'},
+  {id:4,name:'다이아몬드',en:'DIAMOND',first:25,reload:14,cashback:5,rating:9.0,reviews:210,users:3100,pkg:'cyan',ins:true,opt:true,tag:'Premium Pick'},
+  {id:5,name:'로얄킹',en:'ROYAL KING',first:24,reload:11,cashback:4,rating:8.5,reviews:167,users:2400,pkg:'gold',ins:true,opt:false,tag:'Fast Withdrawal'},
+  {id:6,name:'골드러시',en:'GOLD RUSH',first:23,reload:9,cashback:3,rating:7.8,reviews:120,users:1600,pkg:'orange',ins:false,opt:true,tag:'Rising Star'},
+  {id:7,name:'에이스벳',en:'ACEBET',first:22,reload:12,cashback:5,rating:8.2,reviews:155,users:2100,pkg:'',ins:true,opt:false,tag:'Trusted'},
+  {id:8,name:'럭키스타',en:'LUCKY STAR',first:28,reload:10,cashback:3,rating:7.2,reviews:89,users:1200,pkg:'',ins:false,opt:false,tag:'New Entry'},
+  {id:9,name:'플래티넘',en:'PLATINUM',first:25,reload:10,cashback:3,rating:6.5,reviews:45,users:800,pkg:'',ins:false,opt:false,tag:'Sports'},
+  {id:10,name:'비트윈',en:'BETWEEN',first:20,reload:8,cashback:2,rating:6.0,reviews:30,users:500,pkg:'',ins:false,opt:false,tag:'ETC'},
+  {id:11,name:'스핀존',en:'SPINZONE',first:26,reload:11,cashback:4,rating:8.0,reviews:130,users:1900,pkg:'purple',ins:true,opt:false,tag:'Slot Master'},
+  {id:12,name:'잭팟시티',en:'JACKPOT CITY',first:29,reload:13,cashback:5,rating:8.7,reviews:200,users:3000,pkg:'gold',ins:true,opt:true,tag:'Mega Jackpot'},
+];
+
+var currentStart = 0;
+var isAnimating = false;
+var bannerHidden = false;
+var pyramidEl, bannerEl;
+
+function init(){
+  pyramidEl = document.getElementById('pyramidArea');
+  bannerEl = document.getElementById('eventBanner');
+  document.getElementById('siteCount').textContent = SITES.length + '개';
+  render();
+  setupSwipe();
+}
+
+function getVisible(){
+  var arr = [];
+  for(var i=0;i<8;i++){
+    arr.push(SITES[(currentStart + i) % SITES.length]);
+  }
+  return arr;
+}
+
+function getRemainder(){
+  var arr = [];
+  for(var i=8;i<Math.min(12, SITES.length);i++){
+    arr.push({site:SITES[(currentStart + i) % SITES.length], rank:i+1});
+  }
+  return arr;
+}
+
+function render(){
+  var vis = getVisible();
+  var html = '';
+
+  // RANK 1 — large center
+  var s = vis[0];
+  var pkgCls = s.pkg ? 'pkg-'+s.pkg : '';
+  var borderCls = s.pkg ? 'border-color:rgba(196,127,23,.15);' : '';
+  html += '<div class="rank-card r1" data-rank="1" style="'+borderCls+'">';
+  html += '<div class="r1-glow"></div><div class="card-inner r1">';
+  html += '<div class="r1-head">';
+  html += '<div class="r1-num">1</div>';
+  html += '<div class="r1-name '+pkgCls+'">'+s.en+'</div>';
+  html += '<div class="r1-bdg">';
+  if(s.ins) html += '<span class="bdg bdg-i">🛡️보험</span>';
+  if(s.opt) html += '<span class="bdg bdg-o">옵션</span>';
+  html += '</div></div>';
+  html += '<div class="r1-grid">';
+  html += '<div class="r1-cell"><div class="r1-cl">첫충</div><div class="r1-cv gd">'+s.first+'%</div></div>';
+  html += '<div class="r1-cell"><div class="r1-cl">매충</div><div class="r1-cv">'+s.reload+'%</div></div>';
+  html += '<div class="r1-cell"><div class="r1-cl">캐시백</div><div class="r1-cv">'+s.cashback+'%</div></div>';
+  html += '</div>';
+  html += '<div class="r1-bot">';
+  html += '<span class="r1-st">⭐⭐⭐⭐⭐</span>';
+  html += '<span class="r1-sc">'+s.rating+'</span>';
+  html += '<span class="r1-rv">'+s.reviews+'건·'+s.users+'명</span>';
+  html += '</div></div></div>';
+
+  // RANK 2,3,4 — middle row
+  for(var i=1;i<=3;i++){
+    s = vis[i];
+    pkgCls = s.pkg ? 'pkg-'+s.pkg : '';
+    var tagCls = s.pkg || 'gold';
+    html += '<div class="rank-card r2 pos-'+(i+1)+'" data-rank="'+(i+1)+'">';
+    html += '<div class="rx-inner">';
+    html += '<div class="rx-tag '+tagCls+'">'+s.tag+'</div>';
+    html += '<div class="rx-name '+pkgCls+'">'+s.en+'</div>';
+    html += '<div class="rx-kr">'+s.name+' ⭐'+s.rating+'</div>';
+    html += '<div class="rx-stats">';
+    html += '<div class="rx-s"><div class="l">첫충</div><div class="v">'+s.first+'%</div></div>';
+    html += '<div class="rx-s"><div class="l">매충</div><div class="v">'+s.reload+'%</div></div>';
+    html += '<div class="rx-s"><div class="l">캐시백</div><div class="v">'+s.cashback+'%</div></div>';
+    html += '</div></div></div>';
+  }
+
+  // RANK 5,6,7,8 — bottom row
+  for(var i=4;i<=7;i++){
+    s = vis[i];
+    pkgCls = s.pkg ? 'pkg-'+s.pkg : '';
+    var tagCls2 = s.pkg || 'gold';
+    html += '<div class="rank-card r3 pos-'+(i+1)+'" data-rank="'+(i+1)+'">';
+    html += '<div class="rx-inner">';
+    html += '<div class="rx-tag '+tagCls2+'">'+s.tag+'</div>';
+    html += '<div class="rx-name '+pkgCls+'">'+s.en+'</div>';
+    html += '<div class="rx-kr">'+s.name+'</div>';
+    html += '<div class="rx-stats">';
+    html += '<div class="rx-s"><div class="l">첫충</div><div class="v">'+s.first+'%</div></div>';
+    html += '<div class="rx-s"><div class="l">평점</div><div class="v">'+s.rating+'</div></div>';
+    html += '</div></div></div>';
+  }
+
+  pyramidEl.innerHTML = html;
+
+  // Remainder list
+  var rem = getRemainder();
+  var listHtml = '<div class="list-title">나머지 업체</div>';
+  rem.forEach(function(r){
+    listHtml += '<div class="rn">';
+    listHtml += '<div class="rn-n">'+r.rank+'</div>';
+    listHtml += '<div class="rn-i"><div class="rn-nm">'+r.site.name+'</div>';
+    listHtml += '<div class="rn-m"><span class="rn-st">⭐⭐⭐⭐⭐</span><span class="rn-sc">'+r.site.rating+'</span></div></div>';
+    listHtml += '<div class="rn-r"><div class="rn-p">'+r.site.first+'%</div>';
+    listHtml += '<div class="rn-c">회원 '+r.site.users+'명</div></div></div>';
+  });
+  document.getElementById('listSection').innerHTML = listHtml;
+}
+
+function cycleNext(){
+  if(isAnimating) return;
+  isAnimating = true;
+
+  // 1. Banner exits up (first time only)
+  if(!bannerHidden){
+    bannerEl.classList.add('exit-up');
+    bannerHidden = true;
+  }
+
+  // Get all current cards
+  var cards = pyramidEl.querySelectorAll('.rank-card');
+  var r1Card = pyramidEl.querySelector('[data-rank="1"]');
+
+  // 2. #1 card exits left with rotation
+  if(r1Card){
+    r1Card.classList.add('exit-left');
+  }
+
+  // 3. After animation, shift data and re-render
+  setTimeout(function(){
+    currentStart = (currentStart + 1) % SITES.length;
+    render();
+
+    // Flash entrance for new #1
+    var newR1 = pyramidEl.querySelector('[data-rank="1"]');
+    if(newR1){
+      newR1.style.transition = 'none';
+      newR1.style.transform = 'translate3d(-50%,-20px,0) scale(0.9)';
+      newR1.style.opacity = '0.5';
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          newR1.style.transition = 'all .4s cubic-bezier(.25,.46,.45,.94)';
+          newR1.style.transform = 'translate3d(-50%,0,0) scale(1)';
+          newR1.style.opacity = '1';
+        });
+      });
+    }
+
+    isAnimating = false;
+  }, 420);
+}
+
+function cyclePrev(){
+  if(isAnimating) return;
+  isAnimating = true;
+
+  // Banner exit up
+  if(!bannerHidden){
+    bannerEl.classList.add('exit-up');
+    bannerHidden = true;
+  }
+
+  var r1Card = pyramidEl.querySelector('[data-rank="1"]');
+  if(r1Card){
+    r1Card.style.transition = 'all .4s cubic-bezier(.4,0,.2,1)';
+    r1Card.style.transform = 'translate3d(70%,0,0) rotateY(60deg)';
+    r1Card.style.opacity = '0';
+  }
+
+  setTimeout(function(){
+    currentStart = (currentStart - 1 + SITES.length) % SITES.length;
+    render();
+
+    var newR1 = pyramidEl.querySelector('[data-rank="1"]');
+    if(newR1){
+      newR1.style.transition = 'none';
+      newR1.style.transform = 'translate3d(-50%,-20px,0) scale(0.9)';
+      newR1.style.opacity = '0.5';
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          newR1.style.transition = 'all .4s cubic-bezier(.25,.46,.45,.94)';
+          newR1.style.transform = 'translate3d(-50%,0,0) scale(1)';
+          newR1.style.opacity = '1';
+        });
+      });
+    }
+
+    isAnimating = false;
+  }, 420);
+}
+
+// ===== SWIPE DETECTION =====
+function setupSwipe(){
+  var area = document.getElementById('mainScroll');
+  var startX=0, startY=0, startTime=0;
+
+  area.addEventListener('touchstart',function(e){
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    startTime = Date.now();
+  },{passive:true});
+
+  area.addEventListener('touchend',function(e){
+    var dx = e.changedTouches[0].clientX - startX;
+    var dy = e.changedTouches[0].clientY - startY;
+    var dt = Date.now() - startTime;
+    if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)*1.5 && dt < 500){
+      if(dx < 0) cycleNext();
+      else cyclePrev();
+    }
+  },{passive:true});
+
+  // Mouse drag for desktop
+  var mouseDown = false;
+  area.addEventListener('mousedown',function(e){mouseDown=true;startX=e.clientX;startTime=Date.now();});
+  area.addEventListener('mouseup',function(e){
+    if(!mouseDown)return;mouseDown=false;
+    var dx=e.clientX-startX;
+    var dt=Date.now()-startTime;
+    if(Math.abs(dx)>50 && dt<500){
+      if(dx<0) cycleNext(); else cyclePrev();
+    }
+  });
+
+  // Keyboard
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowLeft') cyclePrev();
+    if(e.key==='ArrowRight') cycleNext();
+  });
+}
+
+// Auto-cycle
+var autoTimer = setInterval(function(){
+  if(!document.hidden) cycleNext();
+}, 5000);
+
+document.addEventListener('touchstart',function(){clearInterval(autoTimer);},{once:true});
+
+init();
+</script>
+</body>
+</html>
