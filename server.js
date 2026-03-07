@@ -6,7 +6,8 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const uploadDir = path.join(__dirname, 'public', 'uploads');
+const publicDir = path.join(__dirname, 'public');
+const uploadDir = path.join(publicDir, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const dataFile = path.join(__dirname, 'data.json');
@@ -22,7 +23,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(publicDir));
+
+// Debug: list public files
+app.get('/api/files', (req, res) => {
+  try {
+    const files = fs.readdirSync(publicDir);
+    res.json({ cwd: process.cwd(), dirname: __dirname, publicDir, files });
+  } catch(e) { res.json({ error: e.message }); }
+});
 
 app.get('/api/sites', (req, res) => {
   const data = loadData();
@@ -61,4 +70,4 @@ app.delete('/api/sites/:id', (req, res) => {
   res.json({ ok: true });
 });
 
-app.listen(PORT, () => console.log('OPTION running on port ' + PORT));
+app.listen(PORT, () => console.log('OPTION v3 running on port ' + PORT + ' | public: ' + publicDir));
