@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>OPTION — 3D Prism Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F0ED;--card:rgba(255,255,255,.72);--text:#1A1A1A;--text2:#777;--text3:#B0B0B0;
+  --gold:#C47F17;--gold-l:#FEF5E7;--green:#1A8C5E;--blue:#2660D4;--blue-l:#EBF2FE;
+  --purple:#8B5CF6;--cyan:#06B6D4;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+  -webkit-font-smoothing:antialiased;padding:20px 10px;}
+.device{width:100%;max-width:430px;position:relative;}
+.hdr{display:flex;align-items:center;justify-content:center;padding:6px 16px;background:var(--bg);}
+.logo{font-weight:800;font-size:14px;letter-spacing:-.5px;
+  background:linear-gradient(135deg,#C47F17,#8B5A0B);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;}
+
+.sec-t{font-size:14px;font-weight:800;letter-spacing:-.5px;padding:10px 12px 6px;}
+.sec-t span{font-size:10px;font-weight:500;color:var(--text3);}
+
+/* ========== 3D PRISM CARD ========== */
+.prism-wrap{
+  margin:0 10px 12px;
+  border-radius:16px;
+  overflow:hidden;
+  position:relative;
+  background:linear-gradient(145deg,#FFFDF8,#FFF8ED,#FFF4E0);
+  border:1.5px solid rgba(196,127,23,.12);
+  box-shadow:0 6px 24px rgba(196,127,23,.06);
+  height:200px;
+  display:flex;
+  perspective:800px;
+}
+.prism-wrap::before{
+  content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;
+  background:radial-gradient(circle,rgba(196,127,23,.08),transparent 70%);z-index:0;
+}
+
+/* Each half */
+.prism-half{
+  flex:1;height:100%;position:relative;
+  perspective:600px;
+  overflow:hidden;
+}
+.prism-half.left{border-right:1px solid rgba(196,127,23,.06);}
+
+/* The rotating prism (3 faces) */
+.prism-rotor{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;
+  transition:transform .9s cubic-bezier(.4,.0,.2,1);
+}
+
+/* Prism face positioning — triangular prism geometry */
+/* apothem = width/2 / tan(60°) — but since we use full width faces, */
+/* translateZ = height/2 / tan(60°) for Y-axis rotation... */
+/* Actually for Y-axis rotation with 3 faces: translateZ = faceWidth / (2*tan(π/3)) */
+/* But simpler: each face is 120° apart, translateZ ≈ face-half-width * 0.577 */
+
+.prism-face{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  backface-visibility:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:12px;
+}
+
+/* LEFT prism faces — diamond 1 visuals */
+.prism-half.left .prism-face{
+  /* For 3 faces around Y axis: */
+  /* Face 0: rotateY(0) translateZ(tz) */
+  /* Face 1: rotateY(120deg) translateZ(tz) */
+  /* Face 2: rotateY(240deg) translateZ(tz) */
+}
+.prism-half.left .face-0{ transform: rotateY(0deg) translateZ(var(--tz-left)); }
+.prism-half.left .face-1{ transform: rotateY(120deg) translateZ(var(--tz-left)); }
+.prism-half.left .face-2{ transform: rotateY(240deg) translateZ(var(--tz-left)); }
+
+/* RIGHT prism faces — stats (opposite direction) */
+.prism-half.right .face-0{ transform: rotateY(0deg) translateZ(var(--tz-right)); }
+.prism-half.right .face-1{ transform: rotateY(-120deg) translateZ(var(--tz-right)); }
+.prism-half.right .face-2{ transform: rotateY(-240deg) translateZ(var(--tz-right)); }
+
+/* Rotation states */
+.prism-half.left .prism-rotor.state-0{ transform: rotateY(0deg); }
+.prism-half.left .prism-rotor.state-1{ transform: rotateY(-120deg); }
+.prism-half.left .prism-rotor.state-2{ transform: rotateY(-240deg); }
+
+.prism-half.right .prism-rotor.state-0{ transform: rotateY(0deg); }
+.prism-half.right .prism-rotor.state-1{ transform: rotateY(120deg); }
+.prism-half.right .prism-rotor.state-2{ transform: rotateY(240deg); }
+
+/* ========== FACE CONTENT STYLES ========== */
+
+/* Diamond 1 Visual */
+.dia-rank{
+  position:relative;width:80px;height:100px;
+  display:flex;align-items:center;justify-content:center;
+}
+.dia-rank .num{
+  font-size:72px;font-weight:900;line-height:1;
+  background:linear-gradient(180deg,#FFF8E1 0%,#FFD54F 25%,#C47F17 50%,#8B6914 75%,#FFD54F 100%);
+  background-size:100% 200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 2px 4px rgba(196,127,23,.3));
+  animation:goldShimmer 3s ease infinite;
+}
+@keyframes goldShimmer{
+  0%,100%{background-position:0 0%}
+  50%{background-position:0 100%}
+}
+.dia-rank .diamonds{
+  position:absolute;inset:0;pointer-events:none;
+}
+.dia-rank .diamonds span{
+  position:absolute;font-size:8px;opacity:.6;
+  animation:sparkle 2s ease infinite;
+}
+.dia-rank .diamonds span:nth-child(1){top:5%;left:10%;animation-delay:0s;}
+.dia-rank .diamonds span:nth-child(2){top:15%;right:5%;animation-delay:.4s;}
+.dia-rank .diamonds span:nth-child(3){bottom:20%;left:5%;animation-delay:.8s;}
+.dia-rank .diamonds span:nth-child(4){top:40%;right:15%;animation-delay:1.2s;}
+.dia-rank .diamonds span:nth-child(5){bottom:5%;right:10%;animation-delay:1.6s;}
+@keyframes sparkle{
+  0%,100%{opacity:.3;transform:scale(.8)}
+  50%{opacity:1;transform:scale(1.2)}
+}
+
+.face-label{
+  margin-top:6px;padding:4px 10px;border-radius:6px;
+  background:rgba(196,127,23,.08);
+  font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.5px;
+}
+.face-val{font-size:22px;font-weight:900;color:var(--gold);margin-top:2px;}
+.face-stars{font-size:10px;letter-spacing:2px;margin-top:4px;filter:saturate(1.5);}
+
+/* Tier badge */
+.tier-badge{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:3px 8px;border-radius:6px;
+  background:linear-gradient(135deg,rgba(196,127,23,.1),rgba(196,127,23,.05));
+  font-size:8px;font-weight:700;color:var(--gold);letter-spacing:.5px;
+  margin-bottom:4px;
+}
+.tier-badge::before{content:'◆';font-size:7px;}
+
+/* Site name on face */
+.face-site-name{
+  font-size:26px;font-weight:900;letter-spacing:-1px;
+  line-height:1.1;text-align:center;
+  background:linear-gradient(135deg,#C47F17,#8B5A0B);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:2px;
+}
+.face-site-sub{font-size:9px;color:var(--text3);margin-bottom:6px;}
+
+/* Stats grid on right faces */
+.face-stats{display:flex;gap:6px;width:100%;}
+.face-stat{
+  flex:1;text-align:center;padding:8px 4px;border-radius:8px;
+  background:rgba(255,255,255,.6);
+}
+.face-stat .lbl{font-size:7px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;}
+.face-stat .val{font-size:18px;font-weight:800;margin-top:2px;letter-spacing:-.5px;}
+.face-stat .val.gd{color:var(--gold);}
+.face-stat .val.bl{color:var(--blue);}
+.face-stat .val.pu{color:var(--purple);}
+
+.face-info-row{
+  display:flex;align-items:center;gap:4px;margin-top:6px;
+}
+.face-score{font-size:16px;font-weight:900;color:var(--gold);}
+.face-reviews{font-size:8px;color:var(--text3);}
+.face-pkg{
+  display:inline-block;padding:2px 6px;border-radius:4px;
+  font-size:7px;font-weight:700;margin-left:auto;
+}
+.face-pkg.ins{background:var(--blue-l);color:var(--blue);}
+.face-pkg.opt{background:var(--gold-l);color:var(--gold);}
+
+/* Navigation dots */
+.prism-dots{
+  display:flex;justify-content:center;gap:6px;
+  padding:8px 0 4px;
+}
+.prism-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(196,127,23,.15);
+  transition:all .3s;cursor:pointer;
+}
+.prism-dot.on{
+  width:18px;border-radius:3px;
+  background:linear-gradient(135deg,#C47F17,#D4920F);
+}
+
+/* ========== BOTTOM CARDS (2nd, 3rd tier) ========== */
+.sub-cards{
+  display:flex;gap:6px;padding:0 10px;margin-bottom:10px;
+}
+.sub-card{
+  flex:1;padding:10px 8px;border-radius:12px;
+  background:var(--card);backdrop-filter:blur(20px);
+  border:1px solid rgba(0,0,0,.04);text-align:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.03);
+}
+.sub-card-tag{
+  display:inline-block;padding:2px 6px;border-radius:4px;
+  font-size:6px;font-weight:700;letter-spacing:.5px;margin-bottom:4px;
+}
+.sub-card-tag.blue{background:var(--blue-l);color:var(--blue);}
+.sub-card-tag.purple{background:rgba(139,92,246,.08);color:var(--purple);}
+.sub-card-tag.gold{background:var(--gold-l);color:var(--gold);}
+.sub-card-name{font-size:14px;font-weight:800;letter-spacing:-.3px;margin:2px 0;}
+.sub-card-name.pkg-blue{color:var(--blue);}
+.sub-card-name.pkg-purple{color:var(--purple);}
+.sub-card-kr{font-size:10px;color:var(--text2);margin-bottom:4px;}
+.sub-card-row{display:flex;justify-content:center;gap:8px;}
+.sub-card-stat .l{font-size:7px;color:var(--text3);}
+.sub-card-stat .v{font-size:13px;font-weight:800;}
+
+/* Swipe hint */
+.swipe-hint{
+  text-align:center;font-size:9px;color:var(--text3);
+  padding:4px 0 8px;opacity:.6;
+  animation:hintPulse 2s ease infinite;
+}
+@keyframes hintPulse{0%,100%{opacity:.3}50%{opacity:.7}}
+</style>
+</head>
+<body>
+<div class="device">
+<div class="hdr"><div class="logo">OPTION</div></div>
+
+<div class="sec-t">최고 조건 추천 <span>4개</span></div>
+
+<!-- ===== 3D PRISM CARD ===== -->
+<div class="prism-wrap" id="prismWrap">
+  <!-- LEFT PRISM — rotates clockwise (visual) -->
+  <div class="prism-half left">
+    <div class="prism-rotor state-0" id="leftRotor">
+      <!-- Face 0: Diamond 1 + 첫충 -->
+      <div class="prism-face face-0">
+        <div class="dia-rank">
+          <div class="num">1</div>
+          <div class="diamonds">
+            <span>💎</span><span>✦</span><span>💎</span><span>✦</span><span>💎</span>
+          </div>
+        </div>
+        <div class="face-label">첫충</div>
+        <div class="face-val">31%</div>
+        <div class="face-stars">⭐⭐⭐⭐⭐</div>
+      </div>
+
+      <!-- Face 1: Site name visual -->
+      <div class="prism-face face-1">
+        <div class="tier-badge">Diamond Tier</div>
+        <div class="face-site-name">GAM<br>CITY</div>
+        <div class="face-site-sub">겜블시티 · 카지노</div>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <div style="text-align:center">
+            <div style="font-size:7px;color:var(--text3)">첫충</div>
+            <div style="font-size:16px;font-weight:800;color:var(--gold)">31%</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:7px;color:var(--text3)">매충</div>
+            <div style="font-size:16px;font-weight:800">15%</div>
+          </div>
+        </div>
+        <div class="face-stars" style="margin-top:4px">⭐⭐⭐⭐⭐</div>
+      </div>
+
+      <!-- Face 2: Diamond 1 alt view -->
+      <div class="prism-face face-2">
+        <div class="dia-rank">
+          <div class="num" style="font-size:60px">1</div>
+          <div class="diamonds">
+            <span>✦</span><span>💎</span><span>✦</span><span>💎</span><span>✦</span>
+          </div>
+        </div>
+        <div class="face-label" style="background:rgba(38,96,212,.08);color:var(--blue)">공동1위</div>
+        <div class="face-val" style="color:var(--blue)">31%</div>
+        <div class="face-stars">⭐⭐⭐⭐⭐</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PRISM — rotates counter-clockwise (opposite) -->
+  <div class="prism-half right">
+    <div class="prism-rotor state-0" id="rightRotor">
+      <!-- Face 0: 겜블시티 stats -->
+      <div class="prism-face face-0">
+        <div class="tier-badge">Diamond Tier</div>
+        <div class="face-site-name" style="font-size:20px;margin-bottom:6px;">GAMBLE<br>CITY</div>
+        <div class="face-stats">
+          <div class="face-stat"><div class="lbl">캐시백</div><div class="val gd">5%</div></div>
+          <div class="face-stat"><div class="lbl">고객 평점</div><div class="val gd">9.4</div></div>
+        </div>
+        <div class="face-info-row">
+          <span class="face-reviews">328건 · 4520명</span>
+          <span class="face-pkg ins">🛡️보험</span>
+          <span class="face-pkg opt">옵션</span>
+        </div>
+      </div>
+
+      <!-- Face 1: 겜블시티 alt stats view -->
+      <div class="prism-face face-1">
+        <div class="face-stats" style="margin-bottom:6px;">
+          <div class="face-stat"><div class="lbl">매충</div><div class="val">15%</div></div>
+          <div class="face-stat"><div class="lbl">올인</div><div class="val">20%</div></div>
+          <div class="face-stat"><div class="lbl">롤링</div><div class="val gd">300%</div></div>
+        </div>
+        <div class="face-info-row">
+          <div class="face-score">9.4</div>
+          <div class="face-stars" style="margin:0">⭐⭐⭐⭐⭐</div>
+          <span class="face-reviews" style="margin-left:auto">이벤트 12개</span>
+        </div>
+      </div>
+
+      <!-- Face 2: 벳콩 stats -->
+      <div class="prism-face face-2">
+        <div class="tier-badge" style="background:rgba(38,96,212,.08);color:var(--blue);">Blue Tier</div>
+        <div class="face-site-name" style="font-size:22px;color:var(--blue);-webkit-text-fill-color:var(--blue);background:none;">BET<br>KONG</div>
+        <div class="face-stats">
+          <div class="face-stat"><div class="lbl">캐시백</div><div class="val bl">4%</div></div>
+          <div class="face-stat"><div class="lbl">고객 평점</div><div class="val bl">9.1</div></div>
+        </div>
+        <div class="face-info-row">
+          <span class="face-reviews">245건 · 3800명</span>
+          <span class="face-pkg ins">🛡️보험</span>
+          <span class="face-pkg opt">옵션</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navigation Dots -->
+<div class="prism-dots" id="prismDots">
+  <div class="prism-dot on" onclick="goFace(0)"></div>
+  <div class="prism-dot" onclick="goFace(1)"></div>
+  <div class="prism-dot" onclick="goFace(2)"></div>
+</div>
+<div class="swipe-hint">← 스와이프하여 더보기 →</div>
+
+<!-- Sub-tier cards (2nd row) -->
+<div class="sub-cards">
+  <div class="sub-card">
+    <div class="sub-card-tag blue">BetKong · High Volume</div>
+    <div class="sub-card-name pkg-blue">BETKONG</div>
+    <div class="sub-card-kr">벳콩 ⭐9.1</div>
+    <div class="sub-card-row">
+      <div class="sub-card-stat"><div class="l">첫충</div><div class="v">31%</div></div>
+      <div class="sub-card-stat"><div class="l">매충</div><div class="v">12%</div></div>
+      <div class="sub-card-stat"><div class="l">캐시백</div><div class="v">4%</div></div>
+    </div>
+  </div>
+  <div class="sub-card">
+    <div class="sub-card-tag purple">CrystalBet · Live Cashout</div>
+    <div class="sub-card-name pkg-purple">CRYSTALBET</div>
+    <div class="sub-card-kr">CrystalBet ⭐8.1</div>
+    <div class="sub-card-row">
+      <div class="sub-card-stat"><div class="l">첫충</div><div class="v">31%</div></div>
+      <div class="sub-card-stat"><div class="l">매충</div><div class="v">12%</div></div>
+      <div class="sub-card-stat"><div class="l">캐시백</div><div class="v">4%</div></div>
+    </div>
+  </div>
+  <div class="sub-card">
+    <div class="sub-card-tag gold">Royal King · Fast Withdrawal</div>
+    <div class="sub-card-name">ROYAL KING</div>
+    <div class="sub-card-kr">Royal King ⭐8.1</div>
+    <div class="sub-card-row">
+      <div class="sub-card-stat"><div class="l">첫충</div><div class="v">31%</div></div>
+      <div class="sub-card-stat"><div class="l">매충</div><div class="v">15%</div></div>
+      <div class="sub-card-stat"><div class="l">캐시백</div><div class="v">5%</div></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// Calculate translateZ for prism faces based on actual width
+function calcPrismZ(){
+  var leftW = document.querySelector('.prism-half.left').offsetWidth;
+  var rightW = document.querySelector('.prism-half.right').offsetWidth;
+  // For triangular prism: tz = (width/2) / tan(60°) = width / (2 * 1.7321)
+  var tzLeft = leftW / (2 * Math.tan(Math.PI / 3));
+  var tzRight = rightW / (2 * Math.tan(Math.PI / 3));
+  document.documentElement.style.setProperty('--tz-left', tzLeft + 'px');
+  document.documentElement.style.setProperty('--tz-right', tzRight + 'px');
+}
+calcPrismZ();
+window.addEventListener('resize', calcPrismZ);
+
+var currentFace = 0;
+var totalFaces = 3;
+var autoTimer = null;
+
+function goFace(idx){
+  currentFace = idx;
+  var left = document.getElementById('leftRotor');
+  var right = document.getElementById('rightRotor');
+  // Remove all state classes
+  for(var i=0;i<totalFaces;i++){
+    left.classList.remove('state-'+i);
+    right.classList.remove('state-'+i);
+  }
+  left.classList.add('state-'+idx);
+  right.classList.add('state-'+idx);
+  // Update dots
+  var dots = document.querySelectorAll('.prism-dot');
+  dots.forEach(function(d,i){ d.classList.toggle('on', i===idx); });
+  // Reset auto timer
+  clearInterval(autoTimer);
+  startAuto();
+}
+
+function nextFace(){
+  goFace((currentFace + 1) % totalFaces);
+}
+
+function prevFace(){
+  goFace((currentFace - 1 + totalFaces) % totalFaces);
+}
+
+function startAuto(){
+  autoTimer = setInterval(nextFace, 4000);
+}
+startAuto();
+
+// Swipe detection on prism
+var wrap = document.getElementById('prismWrap');
+var startX = 0, startY = 0;
+wrap.addEventListener('touchstart', function(e){
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+}, {passive:true});
+wrap.addEventListener('touchend', function(e){
+  var dx = e.changedTouches[0].clientX - startX;
+  var dy = e.changedTouches[0].clientY - startY;
+  if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){
+    if(dx < 0) nextFace(); else prevFace();
+  }
+}, {passive:true});
+// Mouse drag for desktop
+var mouseDown = false;
+wrap.addEventListener('mousedown', function(e){ mouseDown=true; startX=e.clientX; });
+wrap.addEventListener('mouseup', function(e){
+  if(!mouseDown) return; mouseDown=false;
+  var dx = e.clientX - startX;
+  if(Math.abs(dx) > 40){ if(dx < 0) nextFace(); else prevFace(); }
+});
+</script>
+</body>
+</html>
