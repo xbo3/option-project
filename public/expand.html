@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>OPTION — Tap to Expand</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F0ED;--card:rgba(255,255,255,.72);--text:#1A1A1A;--text2:#777;--text3:#B0B0B0;
+  --gold:#C47F17;--gold-l:#FEF5E7;--green:#1A8C5E;--green-l:#E8F8F0;
+  --blue:#2660D4;--blue-l:#EBF2FE;--purple:#8B5CF6;--cyan:#06B6D4;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;}
+.device{width:100%;max-width:430px;min-height:100vh;background:var(--bg);position:relative;overflow:hidden;}
+.hdr{display:flex;align-items:center;justify-content:center;padding:6px 16px;z-index:60;background:var(--bg);}
+.logo{font-weight:900;font-size:14px;letter-spacing:-.5px;
+  background:linear-gradient(135deg,#C47F17,#8B5A0B);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;}
+.main{height:calc(100vh - 30px - 56px);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:20px;}
+.main::-webkit-scrollbar{display:none;}
+
+/* Poll */
+.poll{margin:6px 10px 8px;border-radius:14px;background:var(--card);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.6);padding:10px 12px;box-shadow:0 4px 16px rgba(0,0,0,.03);
+  position:relative;overflow:hidden;
+  transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .4s,margin .4s,padding .4s,max-height .4s;
+  max-height:200px;will-change:transform,opacity;}
+.poll.shrink{transform:translate3d(0,-10px,0) scale(.92);opacity:.6;max-height:80px;margin:2px 10px 4px;padding:6px 12px;}
+.poll::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0;
+  background:linear-gradient(90deg,var(--gold),var(--blue),var(--gold));background-size:200% 100%;animation:sh 3s ease infinite;}
+@keyframes sh{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.poll-tag{font-size:8px;font-weight:700;color:var(--gold);letter-spacing:1px;}
+.poll-live{float:right;display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:100px;
+  background:var(--green-l);color:var(--green);font-size:8px;font-weight:700;}
+.poll-live::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);animation:pd 1.5s ease infinite;}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
+.poll-q{font-size:13px;font-weight:700;line-height:1.4;margin:6px 0;}
+.poll-opts{display:flex;gap:5px;}
+.p-opt{flex:1;padding:7px;border-radius:8px;background:rgba(0,0,0,.03);position:relative;overflow:hidden;text-align:center;}
+.p-bar{position:absolute;left:0;top:0;bottom:0;border-radius:8px;}
+.p-bar.a{background:rgba(38,96,212,.05);width:31%;}
+.p-bar.b{background:rgba(196,127,23,.07);width:69%;}
+.p-text{font-size:9px;font-weight:600;position:relative;z-index:1;}
+.p-pct{font-size:12px;font-weight:800;position:relative;z-index:1;color:var(--text3);}
+.p-pct.w{color:var(--gold);}
+
+/* Sort tabs */
+.sort-bar{display:flex;gap:4px;padding:4px 10px 6px;overflow-x:auto;scrollbar-width:none;}
+.sort-bar::-webkit-scrollbar{display:none;}
+.sort-btn{flex-shrink:0;padding:5px 10px;border-radius:100px;font-size:10px;font-weight:600;
+  color:var(--text3);background:rgba(255,255,255,.5);border:1px solid rgba(0,0,0,.04);white-space:nowrap;}
+.sort-btn.on{color:#fff;background:#1A1A1A;border-color:#1A1A1A;}
+
+.sec-t{font-size:14px;font-weight:800;letter-spacing:-.5px;padding:2px 12px 6px;}
+.sec-t span{font-size:10px;font-weight:500;color:var(--text3);}
+
+/* ========== TOP ROW: banner + #1 card ========== */
+.top-row{
+  display:flex;gap:6px;padding:0 10px;margin-bottom:8px;
+  transition:all .4s cubic-bezier(.4,0,.2,1);
+}
+
+/* Event Banner */
+.ev-banner{
+  width:42%;flex-shrink:0;border-radius:14px;overflow:hidden;
+  height:180px;position:relative;
+  background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  transition:all .45s cubic-bezier(.4,0,.2,1);
+  will-change:transform,opacity,width,height;
+  cursor:pointer;
+}
+.ev-banner.pushed{
+  width:100%;height:60px;
+  transform:translate3d(0,0,0);
+}
+.ev-banner .ev-inner{padding:14px 12px;color:#fff;position:relative;z-index:2;}
+.ev-tag{font-size:7px;font-weight:700;color:#FFD700;letter-spacing:1px;margin-bottom:4px;}
+.ev-title{font-size:12px;font-weight:800;line-height:1.3;margin-bottom:3px;}
+.ev-sub{font-size:8px;opacity:.5;}
+.ev-banner .glow{position:absolute;top:-20px;right:-20px;width:80px;height:80px;
+  background:radial-gradient(circle,rgba(255,215,0,.15),transparent 70%);}
+.ev-banner .glow2{position:absolute;bottom:-20px;left:10%;width:60px;height:60px;
+  background:radial-gradient(circle,rgba(38,96,212,.2),transparent 70%);}
+/* Mini icons in banner */
+.ev-icons{display:flex;gap:8px;margin-top:8px;}
+.ev-icon{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(255,255,255,.7);
+  flex-direction:column;gap:1px;font-weight:600;}
+.ev-icon span{font-size:16px;}
+
+/* #1 Card */
+.hero-card{
+  flex:1;border-radius:14px;height:180px;position:relative;overflow:hidden;
+  background:linear-gradient(145deg,#FFFDF8,#FFF8ED,#FFF4E0);
+  border:1.5px solid rgba(196,127,23,.15);
+  box-shadow:0 6px 24px rgba(196,127,23,.06);
+  transition:all .45s cubic-bezier(.4,0,.2,1);
+  will-change:transform,opacity;
+}
+.hero-card .glow{position:absolute;top:-30px;right:-30px;width:80px;height:80px;
+  background:radial-gradient(circle,rgba(196,127,23,.08),transparent 70%);}
+.hero-inner{padding:10px;height:100%;display:flex;flex-direction:column;position:relative;z-index:2;}
+
+/* Diamond 1 */
+.dia-big{
+  font-size:64px;font-weight:900;line-height:.85;text-align:right;
+  background:linear-gradient(180deg,#FFD54F,#C47F17,#8B6914);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;filter:drop-shadow(0 2px 4px rgba(196,127,23,.3));
+  position:absolute;right:8px;top:4px;
+}
+.hero-tier{font-size:7px;font-weight:700;color:var(--gold);padding:2px 6px;border-radius:4px;
+  background:rgba(196,127,23,.08);display:inline-block;margin-bottom:auto;}
+.hero-name{font-size:22px;font-weight:900;letter-spacing:-1px;line-height:1;margin-top:auto;
+  background:linear-gradient(135deg,#C47F17,#8B5A0B);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;}
+.hero-stats-row{display:flex;gap:8px;margin-top:4px;}
+.hero-stat{text-align:center;}
+.hero-stat .l{font-size:7px;color:var(--text3);}
+.hero-stat .v{font-size:16px;font-weight:900;letter-spacing:-.5px;}
+.hero-stat .v.gd{color:var(--gold);}
+.hero-bot{display:flex;align-items:center;gap:4px;margin-top:4px;}
+.hero-stars{font-size:8px;letter-spacing:1px;filter:saturate(1.5);}
+.hero-score{font-size:12px;font-weight:900;color:var(--gold);}
+.hero-meta{font-size:6px;color:var(--text3);margin-left:auto;}
+
+/* ========== SUB CARDS ROW ========== */
+.sub-row{
+  display:flex;gap:5px;padding:0 10px;margin-bottom:8px;
+  overflow-x:auto;scrollbar-width:none;
+  transition:all .4s cubic-bezier(.4,0,.2,1);
+}
+.sub-row::-webkit-scrollbar{display:none;}
+
+.sub-card{
+  min-width:calc(33.33% - 4px);flex-shrink:0;
+  padding:8px 6px;border-radius:12px;
+  background:var(--card);backdrop-filter:blur(20px);
+  border:1px solid rgba(0,0,0,.04);text-align:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.03);
+  cursor:pointer;
+  transition:all .45s cubic-bezier(.4,0,.2,1);
+  will-change:transform,opacity;
+  position:relative;
+}
+.sub-card:active{transform:scale(.95);}
+
+/* Package border tints */
+.sub-card.pkg-border-blue{border-color:rgba(38,96,212,.2);background:linear-gradient(145deg,rgba(235,242,254,.7),rgba(255,255,255,.7));}
+.sub-card.pkg-border-purple{border-color:rgba(139,92,246,.2);background:linear-gradient(145deg,rgba(245,243,255,.7),rgba(255,255,255,.7));}
+.sub-card.pkg-border-gold{border-color:rgba(196,127,23,.2);background:linear-gradient(145deg,rgba(254,245,231,.7),rgba(255,255,255,.7));}
+.sub-card.pkg-border-cyan{border-color:rgba(6,182,212,.2);}
+.sub-card.pkg-border-orange{border-color:rgba(245,158,11,.2);}
+
+.sub-tag{font-size:6px;font-weight:700;padding:2px 5px;border-radius:4px;display:inline-block;margin-bottom:3px;letter-spacing:.3px;}
+.sub-tag.blue{background:var(--blue-l);color:var(--blue);}
+.sub-tag.purple{background:rgba(139,92,246,.08);color:var(--purple);}
+.sub-tag.gold{background:var(--gold-l);color:var(--gold);}
+.sub-name{font-size:13px;font-weight:900;letter-spacing:-.3px;}
+.sub-name.pkg-blue{color:var(--blue);}
+.sub-name.pkg-purple{color:var(--purple);}
+.sub-name.pkg-gold{color:var(--gold);}
+.sub-kr{font-size:8px;color:var(--text2);margin:2px 0;}
+.sub-stats{display:flex;justify-content:center;gap:8px;margin-top:2px;}
+.sub-s{text-align:center;}
+.sub-s .l{font-size:6px;color:var(--text3);}
+.sub-s .v{font-size:12px;font-weight:800;}
+
+/* ========== EXPANDED CARD OVERLAY ========== */
+.expanded-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.3);z-index:200;
+  opacity:0;pointer-events:none;
+  transition:opacity .35s;
+}
+.expanded-overlay.on{opacity:1;pointer-events:auto;}
+
+.expanded-card{
+  position:fixed;z-index:210;
+  border-radius:16px;overflow:hidden;
+  background:#fff;
+  box-shadow:0 20px 60px rgba(0,0,0,.15);
+  transition:all .45s cubic-bezier(.4,0,.2,1);
+  will-change:transform,top,left,width,height;
+  pointer-events:none;
+  opacity:0;
+}
+.expanded-card.on{pointer-events:auto;opacity:1;}
+.expanded-card .exp-inner{padding:14px;height:100%;display:flex;flex-direction:column;}
+
+/* Expanded card top area - site hero */
+.exp-hero{
+  height:120px;border-radius:12px;margin-bottom:10px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+}
+.exp-hero .exp-glow{position:absolute;top:-20px;right:-20px;width:80px;height:80px;
+  background:radial-gradient(circle,rgba(255,215,0,.15),transparent 70%);}
+.exp-hero-inner{padding:12px;color:#fff;position:relative;z-index:2;height:100%;display:flex;flex-direction:column;}
+.exp-hero-tag{font-size:7px;font-weight:700;color:#FFD700;letter-spacing:1px;}
+.exp-hero-icons{display:flex;gap:6px;margin-top:auto;}
+.exp-hero-icon{width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;font-size:16px;}
+
+/* Expanded card body */
+.exp-tag-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.exp-pkg-tag{font-size:8px;font-weight:700;padding:3px 8px;border-radius:6px;}
+.exp-pkg-tag.blue{background:var(--blue-l);color:var(--blue);}
+.exp-pkg-tag.purple{background:rgba(139,92,246,.08);color:var(--purple);}
+.exp-pkg-tag.gold{background:var(--gold-l);color:var(--gold);}
+.exp-site-name{font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1;}
+.exp-site-name.pkg-blue{color:var(--blue);}
+.exp-site-name.pkg-purple{color:var(--purple);}
+.exp-site-name.pkg-gold{color:var(--gold);}
+.exp-kr{font-size:12px;color:var(--text2);margin:4px 0 2px;display:flex;align-items:center;gap:6px;}
+.exp-kr .stars{font-size:9px;letter-spacing:1px;filter:saturate(1.5);}
+.exp-kr .score{font-size:14px;font-weight:900;color:var(--gold);}
+
+.exp-stats{display:flex;gap:6px;margin:8px 0;}
+.exp-stat{flex:1;padding:8px 4px;border-radius:10px;background:rgba(0,0,0,.03);text-align:center;}
+.exp-stat .l{font-size:8px;font-weight:600;color:var(--text3);}
+.exp-stat .v{font-size:20px;font-weight:900;margin-top:2px;letter-spacing:-.5px;}
+.exp-stat .v.gd{color:var(--gold);}
+
+.exp-bot{display:flex;align-items:center;gap:4px;margin-top:auto;}
+.exp-bdg{padding:3px 7px;border-radius:5px;font-size:8px;font-weight:700;}
+.exp-bdg.ins{background:var(--blue-l);color:var(--blue);}
+.exp-bdg.opt{background:var(--gold-l);color:var(--gold);}
+.exp-meta{font-size:8px;color:var(--text3);margin-left:auto;}
+
+/* ========== LIST ITEMS ========== */
+.list-section{padding:0 10px;}
+.rn{border-radius:12px;padding:10px;background:var(--card);backdrop-filter:blur(20px);
+  border:1px solid rgba(0,0,0,.04);display:flex;align-items:center;gap:8px;
+  margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.02);}
+.rn-logo{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:5px;font-weight:800;color:#fff;flex-shrink:0;line-height:1.1;text-align:center;}
+.rn-i{flex:1;min-width:0;}
+.rn-nm{font-size:12px;font-weight:700;letter-spacing:-.2px;}
+.rn-m{display:flex;align-items:center;gap:3px;margin-top:1px;}
+.rn-st{font-size:7px;letter-spacing:1px;}
+.rn-sc{font-size:9px;font-weight:700;color:var(--text3);}
+.rn-r{text-align:right;flex-shrink:0;}
+.rn-p{font-size:14px;font-weight:800;}
+.rn-c{font-size:7px;color:var(--text3);margin-top:1px;}
+
+/* Live feed */
+.live-t{font-size:12px;font-weight:800;padding:8px 10px 4px;letter-spacing:-.3px;}
+.live-item{
+  border-radius:12px;padding:10px;background:var(--card);
+  border:1px solid rgba(0,0,0,.04);display:flex;align-items:center;gap:8px;
+  margin:0 10px 6px;box-shadow:0 1px 4px rgba(0,0,0,.02);}
+.live-logo{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:5px;font-weight:800;color:#fff;flex-shrink:0;line-height:1.1;text-align:center;}
+.live-i{flex:1;}
+.live-nm{font-size:11px;font-weight:700;}
+.live-desc{font-size:8px;color:var(--text3);margin-top:1px;display:flex;align-items:center;gap:3px;}
+.live-badge{background:#DC2626;color:#fff;font-size:6px;font-weight:800;padding:1px 4px;border-radius:3px;}
+.live-r{text-align:right;flex-shrink:0;}
+
+/* Bottom nav */
+.bot-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;height:56px;
+  display:flex;align-items:center;justify-content:space-around;
+  background:rgba(242,240,237,.95);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(0,0,0,.06);z-index:100;}
+.bot-item{font-size:18px;opacity:.3;padding:8px;}
+.bot-item.on{opacity:1;}
+</style>
+</head>
+<body>
+<div class="device">
+<div class="hdr"><div class="logo">OPTION</div></div>
+<div class="main" id="mainArea">
+
+<!-- Poll -->
+<div class="poll" id="pollArea">
+  <div class="poll-tag">100명에게 물어봐</div>
+  <div class="poll-live">73/100</div>
+  <div class="poll-q">친구가 슬롯 잘하면 여자도 꼬실 수 있다는데? 🤔</div>
+  <div class="poll-opts">
+    <div class="p-opt"><div class="p-bar a"></div><div class="p-text">친구 말이 맞다</div><div class="p-pct">31%</div></div>
+    <div class="p-opt"><div class="p-bar b"></div><div class="p-text">사람색기 아니네</div><div class="p-pct w">69%</div></div>
+  </div>
+</div>
+
+<!-- Sort tabs -->
+<div class="sort-bar">
+  <div class="sort-btn on">첫충 높은순</div>
+  <div class="sort-btn">매충 높은순</div>
+  <div class="sort-btn">캐시백 높은순</div>
+  <div class="sort-btn">올인 높은순</div>
+  <div class="sort-btn">가입 높은순</div>
+  <div class="sort-btn">이벤트</div>
+</div>
+
+<div class="sec-t">최고 조건 추천 <span>4개</span></div>
+
+<!-- TOP ROW: Banner + #1 Card -->
+<div class="top-row" id="topRow">
+  <!-- Event Banner -->
+  <div class="ev-banner" id="evBanner">
+    <div class="glow"></div><div class="glow2"></div>
+    <div class="ev-inner">
+      <div class="ev-tag">⚡ 라이트닝 럭카스핀 이벤트</div>
+      <div class="ev-title">지금 가입하면<br>무료 스핀 30회!</div>
+      <div class="ev-sub">라이브 카지노 · 가상경기</div>
+      <div class="ev-icons">
+        <div class="ev-icon"><span>🎰</span>슬롯</div>
+        <div class="ev-icon"><span>🃏</span>카지노</div>
+        <div class="ev-icon"><span>⚽</span>스포츠</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- #1 Hero Card -->
+  <div class="hero-card" id="heroCard">
+    <div class="glow"></div>
+    <div class="hero-inner">
+      <div class="dia-big">1</div>
+      <div class="hero-tier">◆ Diamond Tier</div>
+      <div class="hero-name">AMBLE<br>CITY</div>
+      <div class="hero-stats-row">
+        <div class="hero-stat"><div class="l">캐시백</div><div class="v gd">5%</div></div>
+        <div class="hero-stat"><div class="l">첫충</div><div class="v gd">31%</div></div>
+      </div>
+      <div class="hero-bot">
+        <span class="hero-stars">⭐⭐⭐⭐½</span>
+        <span class="hero-score">9.4</span>
+        <span class="hero-meta">328건·4520명</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUB CARDS ROW -->
+<div class="sub-row" id="subRow">
+  <div class="sub-card pkg-border-blue" data-idx="0" onclick="expandCard(this,0)">
+    <div class="sub-tag blue">BetKong: High Volume</div>
+    <div class="sub-name pkg-blue">BETKONG</div>
+    <div class="sub-kr">벳콩 ⭐9.1</div>
+    <div class="sub-stats">
+      <div class="sub-s"><div class="l">첫충</div><div class="v">31%</div></div>
+      <div class="sub-s"><div class="l">매충</div><div class="v">12%</div></div>
+      <div class="sub-s"><div class="l">캐시백</div><div class="v">4%</div></div>
+    </div>
+  </div>
+
+  <div class="sub-card pkg-border-purple" data-idx="1" onclick="expandCard(this,1)">
+    <div class="sub-tag purple">CrystalBet: Live Cashout</div>
+    <div class="sub-name pkg-purple">CRYSTALBET</div>
+    <div class="sub-kr">CrystalBet ⭐8.1</div>
+    <div class="sub-stats">
+      <div class="sub-s"><div class="l">첫충</div><div class="v">31%</div></div>
+      <div class="sub-s"><div class="l">매충</div><div class="v">12%</div></div>
+      <div class="sub-s"><div class="l">캐시백</div><div class="v">4%</div></div>
+    </div>
+  </div>
+
+  <div class="sub-card pkg-border-gold" data-idx="2" onclick="expandCard(this,2)">
+    <div class="sub-tag gold">Royal King: Fast Withdrawal</div>
+    <div class="sub-name pkg-gold">ROYAL KING</div>
+    <div class="sub-kr">Royal King ⭐8.1</div>
+    <div class="sub-stats">
+      <div class="sub-s"><div class="l">첫충</div><div class="v">31%</div></div>
+      <div class="sub-s"><div class="l">매충</div><div class="v">15%</div></div>
+      <div class="sub-s"><div class="l">캐시백</div><div class="v">5%</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- List Items -->
+<div class="list-section">
+  <div class="rn">
+    <div class="rn-logo" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">STAL<br>BET</div>
+    <div class="rn-i"><div class="rn-nm">크리스탈벳</div>
+    <div class="rn-m"><span class="rn-st">⭐⭐⭐⭐⭐</span><span class="rn-sc">8.8</span></div></div>
+    <div class="rn-r"><div class="rn-p">27%</div><div class="rn-c">회원 2900명</div></div>
+  </div>
+  <div class="rn">
+    <div class="rn-logo" style="background:linear-gradient(135deg,#C47F17,#8B5A0B);">AL<br>KING</div>
+    <div class="rn-i"><div class="rn-nm">로얄킹</div>
+    <div class="rn-m"><span class="rn-st">⭐⭐⭐</span><span class="rn-sc">8.5</span></div></div>
+    <div class="rn-r"><div class="rn-p">24%</div><div class="rn-c">회원 2400명</div></div>
+  </div>
+</div>
+
+<!-- Live Feed -->
+<div class="live-t">라이브 조건 피드</div>
+<div class="live-item">
+  <div class="live-logo" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">STAL<br>BET</div>
+  <div class="live-i">
+    <div class="live-nm">크리스탈벳</div>
+    <div class="live-desc"><span class="live-badge">LIVE</span> +패탈너수 억세한 특별 보너스</div>
+  </div>
+  <div class="live-r"><div class="rn-p">27%</div><div class="rn-c">회원 2900명</div></div>
+</div>
+<div class="live-item">
+  <div class="live-logo" style="background:linear-gradient(135deg,#C47F17,#8B5A0B);">AL<br>KING</div>
+  <div class="live-i">
+    <div class="live-nm">로얄킹</div>
+    <div class="live-desc"><span class="live-badge">LIVE</span> +신규가입 특별 이벤트</div>
+  </div>
+  <div class="live-r"><div class="rn-p">24%</div><div class="rn-c">회원 2400명</div></div>
+</div>
+
+</div><!-- /main -->
+
+<!-- Expanded Card Overlay -->
+<div class="expanded-overlay" id="expOverlay" onclick="closeExpand()"></div>
+<div class="expanded-card" id="expCard"></div>
+
+<!-- Bottom Nav -->
+<div class="bot-bar">
+  <div class="bot-item">☰</div>
+  <div class="bot-item on">📊</div>
+  <div class="bot-item">✏️</div>
+  <div class="bot-item">◇</div>
+  <div class="bot-item">👤</div>
+</div>
+</div>
+
+<script>
+var CARDS = [
+  {name:'벳콩',en:'BETKONG',tag:'BetKong: High Volume',pkg:'blue',first:31,reload:12,cashback:4,rating:9.1,reviews:245,users:3800,ins:true,opt:true},
+  {name:'크리스탈벳',en:'CRYSTALBET',tag:'CrystalBet: Live Cashout',pkg:'purple',first:31,reload:12,cashback:4,rating:8.1,reviews:190,users:2900,ins:true,opt:false},
+  {name:'로얄킹',en:'ROYAL KING',tag:'Royal King: Fast Withdrawal',pkg:'gold',first:31,reload:15,cashback:5,rating:8.1,reviews:167,users:2400,ins:true,opt:false},
+];
+
+var isExpanded = false;
+
+function expandCard(el, idx){
+  if(isExpanded) return;
+  isExpanded = true;
+
+  var data = CARDS[idx];
+  var rect = el.getBoundingClientRect();
+  var expCard = document.getElementById('expCard');
+  var overlay = document.getElementById('expOverlay');
+
+  // 1. Shrink poll
+  document.getElementById('pollArea').classList.add('shrink');
+
+  // 2. Push banner up
+  document.getElementById('evBanner').classList.add('pushed');
+
+  // 3. Calculate target position (center of screen)
+  var targetW = Math.min(340, window.innerWidth - 40);
+  var targetH = 420;
+  var targetX = (window.innerWidth - targetW) / 2;
+  var targetY = 100;
+
+  // Start from card position
+  expCard.style.top = rect.top + 'px';
+  expCard.style.left = rect.left + 'px';
+  expCard.style.width = rect.width + 'px';
+  expCard.style.height = rect.height + 'px';
+  expCard.style.borderRadius = '12px';
+  expCard.style.transition = 'none';
+  expCard.style.opacity = '1';
+
+  // Build expanded content
+  var pkgCls = data.pkg ? 'pkg-'+data.pkg : '';
+  var tagCls = data.pkg || 'gold';
+  expCard.innerHTML = '<div class="exp-inner">' +
+    '<div class="exp-hero"><div class="exp-glow"></div>' +
+    '<div class="exp-hero-inner">' +
+    '<div class="exp-hero-tag">⚡ ' + data.tag + '</div>' +
+    '<div class="exp-hero-icons">' +
+    '<div class="exp-hero-icon">🎰</div>' +
+    '<div class="exp-hero-icon">🃏</div>' +
+    '<div class="exp-hero-icon">⚽</div>' +
+    '<div class="exp-hero-icon">🎲</div>' +
+    '</div></div></div>' +
+    '<div class="exp-tag-row">' +
+    '<div class="exp-pkg-tag '+tagCls+'">' + data.tag + '</div>' +
+    '</div>' +
+    '<div class="exp-site-name '+pkgCls+'">' + data.en + '</div>' +
+    '<div class="exp-kr">' +
+    '<span>' + data.name + '</span>' +
+    '<span class="stars">⭐⭐⭐⭐⭐</span>' +
+    '<span class="score">' + data.rating + '</span>' +
+    '</div>' +
+    '<div class="exp-stats">' +
+    '<div class="exp-stat"><div class="l">첫충</div><div class="v gd">' + data.first + '%</div></div>' +
+    '<div class="exp-stat"><div class="l">매충</div><div class="v">' + data.reload + '%</div></div>' +
+    '<div class="exp-stat"><div class="l">캐시백</div><div class="v">' + data.cashback + '%</div></div>' +
+    '</div>' +
+    '<div class="exp-bot">' +
+    (data.ins ? '<span class="exp-bdg ins">🛡️ 보험</span>' : '') +
+    (data.opt ? '<span class="exp-bdg opt">옵션</span>' : '') +
+    '<span class="exp-meta">' + data.reviews + '건 · ' + data.users + '명</span>' +
+    '</div>' +
+    '</div>';
+
+  expCard.classList.add('on');
+  overlay.classList.add('on');
+
+  // Hide original card
+  el.style.opacity = '0';
+  el.style.transform = 'scale(0.8)';
+
+  // Animate to expanded position
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      expCard.style.transition = 'all .45s cubic-bezier(.4,0,.2,1)';
+      expCard.style.top = targetY + 'px';
+      expCard.style.left = targetX + 'px';
+      expCard.style.width = targetW + 'px';
+      expCard.style.height = targetH + 'px';
+      expCard.style.borderRadius = '16px';
+    });
+  });
+
+  // Store for close
+  expCard._sourceEl = el;
+  expCard._sourceRect = rect;
+}
+
+function closeExpand(){
+  if(!isExpanded) return;
+
+  var expCard = document.getElementById('expCard');
+  var overlay = document.getElementById('expOverlay');
+  var sourceEl = expCard._sourceEl;
+  var rect = expCard._sourceRect;
+
+  // Restore poll
+  document.getElementById('pollArea').classList.remove('shrink');
+
+  // Restore banner
+  document.getElementById('evBanner').classList.remove('pushed');
+
+  // Animate back
+  expCard.style.transition = 'all .4s cubic-bezier(.4,0,.2,1)';
+  expCard.style.top = rect.top + 'px';
+  expCard.style.left = rect.left + 'px';
+  expCard.style.width = rect.width + 'px';
+  expCard.style.height = rect.height + 'px';
+  expCard.style.borderRadius = '12px';
+  expCard.style.opacity = '0.5';
+
+  overlay.classList.remove('on');
+
+  setTimeout(function(){
+    expCard.classList.remove('on');
+    expCard.style.opacity = '0';
+    if(sourceEl){
+      sourceEl.style.opacity = '1';
+      sourceEl.style.transform = 'scale(1)';
+    }
+    isExpanded = false;
+  }, 420);
+}
+</script>
+</body>
+</html>
