@@ -6,326 +6,256 @@
 <title>OPTION</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F2F0ED;--card:rgba(255,255,255,.72);--text:#1A1A1A;--text2:#777;--text3:#B0B0B0;--gold:#C47F17;--gold-l:#FEF5E7;--green:#1A8C5E;--green-l:#E8F8F0;--blue:#2660D4;--blue-l:#EBF2FE;--red:#DC2626;--purple:#8B5CF6;--cyan:#06B6D4;}
+:root{--bg:#0a0a0a;--gold:#C47F17;--gold2:#8B5A0B;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overflow:hidden;}
-.device{width:100%;max-width:430px;height:100vh;position:relative;overflow:hidden;background:var(--bg);}
-.hdr{display:flex;align-items:center;justify-content:center;padding:6px 16px;position:relative;z-index:60;background:var(--bg);}
-.logo{font-weight:800;font-size:14px;letter-spacing:-.5px;background:linear-gradient(135deg,#C47F17,#8B5A0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.main-scroll{height:calc(100vh - 30px - 72px);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative;z-index:1;}
-.main-scroll::-webkit-scrollbar{display:none;}
+html,body{height:100%;overflow:hidden;font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:#fff;-webkit-font-smoothing:antialiased;}
 
-/* POLL */
-.poll{margin:6px 10px 10px;border-radius:14px;background:var(--card);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.6);padding:10px 12px;box-shadow:0 4px 16px rgba(0,0,0,.03);overflow:hidden;position:relative;}
-.poll::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0;background:linear-gradient(90deg,var(--gold),var(--blue),var(--gold));background-size:200% 100%;animation:sh 3s ease infinite;}
-@keyframes sh{0%{background-position:100% 0}100%{background-position:-100% 0}}
-.poll-row{display:flex;align-items:center;justify-content:space-between;}
-.poll-tag{font-size:8px;font-weight:700;letter-spacing:1px;color:var(--gold);text-transform:uppercase;}
-.poll-live{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:100px;background:var(--green-l);color:var(--green);font-size:8px;font-weight:700;}
-.p-dot{width:4px;height:4px;border-radius:50%;background:var(--green);animation:pd 1.5s ease infinite;}
-@keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
-.poll-q{font-size:13px;font-weight:700;line-height:1.4;letter-spacing:-.2px;margin:6px 0;}
-.poll-opts{display:flex;gap:5px;}
-.p-opt{flex:1;padding:7px;border-radius:8px;background:rgba(0,0,0,.03);position:relative;overflow:hidden;text-align:center;cursor:pointer;}
-.p-bar{position:absolute;left:0;top:0;bottom:0;border-radius:8px;}.p-bar.a{background:rgba(38,96,212,.05);width:31%;}.p-bar.b{background:rgba(196,127,23,.07);width:69%;}
-.p-text{font-size:9px;font-weight:600;position:relative;z-index:1;}
-.p-pct{font-size:12px;font-weight:800;position:relative;z-index:1;color:var(--text3);}.p-pct.w{color:var(--gold);}
+/* Container */
+.wrap{width:100%;max-width:430px;height:100%;margin:0 auto;position:relative;overflow:hidden;}
 
-/* SORT TABS */
-.sort-bar{display:flex;gap:4px;padding:6px 10px 8px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
-.sort-bar::-webkit-scrollbar{display:none;}
-.sort-btn{flex-shrink:0;padding:5px 10px;border-radius:100px;font-size:10px;font-weight:600;color:var(--text3);background:rgba(255,255,255,.5);border:1px solid rgba(0,0,0,.04);cursor:pointer;white-space:nowrap;transition:all .2s;}
-.sort-btn:active{transform:scale(.95);}
-.sort-btn.on{color:#fff;background:#1A1A1A;border-color:#1A1A1A;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+/* Header */
+.hdr{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(10,10,10,.95) 0%,transparent 100%);}
+.logo{font-weight:800;font-size:16px;letter-spacing:-1px;background:linear-gradient(135deg,#C47F17,#E8A840);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.cat-pills{display:flex;gap:6px;}
+.cat-pill{padding:4px 10px;border-radius:100px;font-size:10px;font-weight:600;color:rgba(255,255,255,.4);background:rgba(255,255,255,.08);border:none;cursor:pointer;transition:.2s;}
+.cat-pill.on{color:#fff;background:var(--gold);}
 
-.sec-t{font-size:14px;font-weight:800;letter-spacing:-.5px;padding:2px 12px 6px;}
-.sec-t span{font-size:10px;font-weight:500;color:var(--text3);}
+/* Snap Scroll Container */
+.slides{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.slides::-webkit-scrollbar{display:none;}
 
-/* RANK */
-.rk{padding:0 10px;display:flex;flex-direction:column;gap:6px;padding-bottom:16px;}
+/* Each Slide */
+.slide{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;}
 
-/* #1 CARD - also used for TIED */
-.r1{border-radius:16px;padding:12px;position:relative;overflow:hidden;background:linear-gradient(145deg,#FFFDF8,#FFF8ED,#FFF4E0);border:1.5px solid rgba(196,127,23,.12);box-shadow:0 6px 20px rgba(196,127,23,.05);}
-.r1-glow{position:absolute;top:-40px;right:-40px;width:100px;height:100px;background:radial-gradient(circle,rgba(196,127,23,.07),transparent 70%);}
-.r1-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;position:relative;z-index:2;}
-.r1-num{min-width:26px;height:26px;padding:0 6px;border-radius:8px;background:linear-gradient(135deg,#D4920F,#A06B08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;box-shadow:0 2px 6px rgba(196,127,23,.2);}
-.r1-name{font-size:15px;font-weight:800;letter-spacing:-.4px;}
-/* PACKAGE FONT COLORS */
-.r1-name.pkg-gold{color:var(--gold);text-shadow:0 1px 2px rgba(196,127,23,.15);}
-.r1-name.pkg-blue{color:var(--blue);}
-.r1-name.pkg-purple{color:var(--purple);}
-.r1-name.pkg-cyan{color:var(--cyan);}
-.r1-name.pkg-orange{color:#E97316;}
-.r1-bdg{display:flex;gap:3px;margin-left:auto;}
-.bdg{padding:2px 5px;border-radius:4px;font-size:7px;font-weight:700;}
-.bdg-i{background:var(--blue-l);color:var(--blue);}.bdg-o{background:var(--gold-l);color:var(--gold);}
-.r1-img{width:100%;height:80px;border-radius:10px;object-fit:cover;margin-bottom:8px;position:relative;z-index:2;}
-/* PACKAGE BORDER */
-.r1.pkg-border-gold{border-color:rgba(196,127,23,.3);}
-.r1.pkg-border-blue{border-color:rgba(38,96,212,.3);background:linear-gradient(145deg,#F8FBFF,#EBF2FE,#E0ECFF);}
-.r1.pkg-border-purple{border-color:rgba(139,92,246,.3);background:linear-gradient(145deg,#FAF8FF,#F0EBFE,#E8E0FF);}
-.r1.pkg-border-cyan{border-color:rgba(6,182,212,.3);background:linear-gradient(145deg,#F0FDFF,#E0F7FE,#CCEFFC);}
-.r1.pkg-border-orange{border-color:rgba(245,158,11,.3);background:linear-gradient(145deg,#FFFBF0,#FEF3E0,#FDE8C8);}
+/* Background Image */
+.slide-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .6s ease;}
+.slide-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.85) 0%,rgba(0,0,0,.2) 40%,rgba(0,0,0,.1) 60%,rgba(0,0,0,.4) 100%);}
 
-.r1-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:8px;position:relative;z-index:2;}
-.r1-cell{padding:7px 2px;border-radius:8px;background:rgba(255,255,255,.6);text-align:center;}
-.r1-cl{font-size:7px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.2px;}
-.r1-cv{font-size:17px;font-weight:800;margin-top:1px;letter-spacing:-.8px;}.r1-cv.gd{color:var(--gold);}
-.r1-cs{font-size:6.5px;color:var(--text3);margin-top:1px;}
-.r1-bot{display:flex;align-items:center;gap:5px;position:relative;z-index:2;}
-.r1-st{font-size:10px;letter-spacing:2px;filter:saturate(1.5) brightness(1.05);}
-.r1-sc{font-size:14px;font-weight:800;color:var(--gold);}
-.r1-rv{font-size:8px;color:var(--text3);margin-left:auto;}
-.r1-users{font-size:7px;color:var(--text3);margin-left:4px;}
+/* No image fallback */
+.slide-bg.no-img{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);}
 
-/* TIED BADGE */
-.tie-badge{font-size:8px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--gold),#E97316);padding:1px 6px;border-radius:4px;margin-left:4px;}
+/* Content */
+.slide-content{position:relative;z-index:2;padding:0 20px 100px;}
 
-.rn{border-radius:12px;padding:10px;background:var(--card);backdrop-filter:blur(20px);border:1px solid rgba(0,0,0,.04);display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.02);}
-.rn-n{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;}
-.rn-n.s{background:rgba(0,0,0,.05);color:var(--text2);}.rn-n.b{background:rgba(0,0,0,.03);color:var(--text3);}
-.rn-i{flex:1;min-width:0;}
-.rn-nm{font-size:12px;font-weight:700;letter-spacing:-.2px;}.rn-nm.d{color:var(--text2);}
-/* Package font for list items */
-.rn-nm.pkg-gold{color:var(--gold);}.rn-nm.pkg-blue{color:var(--blue);}.rn-nm.pkg-purple{color:var(--purple);}.rn-nm.pkg-cyan{color:var(--cyan);}.rn-nm.pkg-orange{color:#E97316;}
-.rn-m{display:flex;align-items:center;gap:3px;margin-top:1px;}
-.rn-st2{font-size:7px;letter-spacing:1px;}.rn-st2.m{opacity:.4;}.rn-st2.d{opacity:.13;}
-.rn-sc2{font-size:9px;font-weight:700;color:var(--text3);}
-.rn-r{text-align:right;flex-shrink:0;}
-.rn-p{font-size:14px;font-weight:800;letter-spacing:-.4px;}.rn-p.h{color:var(--text);}.rn-p.m{color:var(--text2);}
-.rn-c{font-size:7px;color:var(--text3);margin-top:1px;}
-.rn-img{width:36px;height:36px;border-radius:7px;object-fit:cover;flex-shrink:0;}
-.rm{border-radius:10px;padding:8px 10px;background:var(--card);border:1px solid rgba(0,0,0,.02);display:flex;align-items:center;gap:6px;opacity:.4;}
-.rm-n{font-size:10px;font-weight:700;color:var(--text3);width:14px;text-align:center;}
-.rm-nm{font-size:11px;font-weight:600;color:var(--text2);flex:1;}
-.rm-v{font-size:11px;font-weight:700;color:var(--text3);}
-.empty{text-align:center;padding:40px 20px;color:var(--text3);}
-.empty-ic{font-size:44px;margin-bottom:8px;}
-.empty-t{font-size:14px;font-weight:700;color:var(--text2);margin-bottom:4px;}
+/* Rank Badge */
+.rank{display:inline-flex;align-items:center;gap:6px;margin-bottom:12px;}
+.rank-num{font-size:48px;font-weight:800;letter-spacing:-3px;line-height:1;background:linear-gradient(135deg,#FFD700,#C47F17);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 2px 8px rgba(196,127,23,.3));}
+.rank-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:2px;}
 
-/* BOTTOM GLASS BUTTONS */
-.bot-bar{position:absolute;bottom:0;left:0;right:0;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 20px 24px;z-index:80;pointer-events:none;}
-.bot-btn{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;pointer-events:auto;transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
-.bot-btn::before{content:'';position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,.35);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1.5px solid rgba(255,255,255,.5);box-shadow:0 8px 32px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.04),inset 0 1px 1px rgba(255,255,255,.6),inset 0 -1px 1px rgba(0,0,0,.03);z-index:-1;}
-.bot-btn::after{content:'';position:absolute;top:4px;left:12px;right:12px;height:12px;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.5),transparent);z-index:0;}
-.bot-btn:active{transform:scale(.88);}
-.bot-btn span{position:relative;z-index:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.08));}
+/* Site Name */
+.site-name{font-size:28px;font-weight:800;letter-spacing:-1px;line-height:1.2;margin-bottom:8px;text-shadow:0 2px 12px rgba(0,0,0,.5);}
 
-/* PANELS */
-.panel-overlay{position:absolute;inset:0;background:rgba(0,0,0,.3);z-index:90;opacity:0;pointer-events:none;transition:opacity .3s;}
-.panel-overlay.on{opacity:1;pointer-events:auto;}
-.panel-left{position:absolute;top:0;bottom:0;left:0;width:220px;background:var(--bg);z-index:100;transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);box-shadow:4px 0 20px rgba(0,0,0,.08);overflow-y:auto;padding:16px 12px;}
-.panel-left.on{transform:translateX(0);}
-.panel-left::-webkit-scrollbar{display:none;}
-.pl-title{font-size:12px;font-weight:800;letter-spacing:-.3px;padding:0 4px 8px;}
-.pl-group{margin-bottom:4px;}
-.pl-main{width:100%;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;color:var(--text2);background:transparent;border:none;cursor:pointer;transition:all .25s;text-align:left;}
-.pl-main.open{color:var(--text);background:white;box-shadow:0 2px 8px rgba(0,0,0,.04);}
-.pl-main img{width:28px;height:28px;border-radius:8px;object-fit:contain;}
-.pl-main .pl-arrow{margin-left:auto;font-size:10px;color:var(--text3);transition:transform .3s;}.pl-main.open .pl-arrow{transform:rotate(180deg);}
-.pl-subs{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .25s;opacity:0;padding-left:38px;}
-.pl-subs.open{opacity:1;}
-.pl-sub{display:block;width:100%;padding:8px 10px;border-radius:8px;font-size:11px;font-weight:600;color:var(--text3);background:transparent;border:none;cursor:pointer;text-align:left;transition:all .2s;}
-.pl-sub.on{color:var(--gold);background:var(--gold-l);font-weight:700;}
+/* Badges */
+.badges{display:flex;gap:6px;margin-bottom:14px;}
+.badge{padding:3px 8px;border-radius:6px;font-size:9px;font-weight:700;}
+.badge-ins{background:rgba(38,96,212,.25);color:#60a5fa;border:1px solid rgba(38,96,212,.3);}
+.badge-opt{background:rgba(196,127,23,.25);color:#fbbf24;border:1px solid rgba(196,127,23,.3);}
+.badge-cat{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1);}
 
-.panel-right{position:absolute;top:0;bottom:0;right:0;width:260px;background:var(--bg);z-index:100;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);box-shadow:-4px 0 20px rgba(0,0,0,.08);overflow-y:auto;padding:16px 14px;}
-.panel-right.on{transform:translateX(0);}
-.panel-right::-webkit-scrollbar{display:none;}
-.pr-title{font-size:12px;font-weight:800;letter-spacing:-.3px;padding:0 0 10px;}
-.pr-item{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:white;margin-bottom:8px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.03);}
-.pr-item:active{transform:scale(.97);}
-.pr-item-ic{font-size:24px;}
-.pr-item-t{font-size:13px;font-weight:700;}
-.pr-item-d{font-size:10px;color:var(--text3);margin-top:1px;}
+/* Stats Grid */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.stat{background:rgba(255,255,255,.08);backdrop-filter:blur(12px);border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.06);}
+.stat-val{font-size:20px;font-weight:800;letter-spacing:-1px;color:#fff;}
+.stat-val.gold{color:var(--gold);}
+.stat-label{font-size:8px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+/* Rating */
+.rating-row{display:flex;align-items:center;gap:8px;}
+.stars{font-size:14px;letter-spacing:2px;filter:saturate(1.5);}
+.rating-score{font-size:18px;font-weight:800;color:var(--gold);}
+.rating-sub{font-size:10px;color:rgba(255,255,255,.4);}
+
+/* Link Button */
+.site-link{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:10px 20px;border-radius:100px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font-size:12px;font-weight:700;text-decoration:none;border:none;cursor:pointer;transition:.2s;}
+.site-link:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(196,127,23,.3);}
+
+/* Side Indicators */
+.indicators{position:fixed;right:8px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:6px;}
+.ind{width:4px;height:16px;border-radius:2px;background:rgba(255,255,255,.15);transition:.3s;}
+.ind.on{height:28px;background:var(--gold);}
+
+/* Scroll Arrow */
+.scroll-hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:4px;animation:bounce 2s ease infinite;opacity:.5;}
+.scroll-hint span{font-size:8px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;}
+.scroll-arrow{width:20px;height:20px;border-right:2px solid rgba(255,255,255,.4);border-bottom:2px solid rgba(255,255,255,.4);transform:rotate(45deg);}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* Empty State */
+.empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.3);}
+.empty-ic{font-size:48px;margin-bottom:12px;}
+.empty-t{font-size:14px;font-weight:600;}
+
+/* Bottom Nav */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:100;display:flex;justify-content:center;gap:24px;padding:12px 0 20px;background:linear-gradient(0deg,rgba(10,10,10,.98) 0%,transparent 100%);}
+.bnav a{color:rgba(255,255,255,.3);text-decoration:none;font-size:9px;font-weight:600;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;transition:.2s;}
+.bnav a.on{color:var(--gold);}
+.bnav a span{font-size:18px;}
 </style>
 </head>
 <body>
-<div class="device">
-<div class="hdr"><div class="logo">OPTION</div></div>
-<div class="main-scroll" id="mainScroll">
+<div class="wrap">
+  <!-- Header -->
+  <div class="hdr">
+    <div class="logo">OPTION</div>
+    <div class="cat-pills">
+      <button class="cat-pill on" onclick="filterCat('all')">ALL</button>
+      <button class="cat-pill" onclick="filterCat('casino')">Casino</button>
+      <button class="cat-pill" onclick="filterCat('slot')">Slot</button>
+      <button class="cat-pill" onclick="filterCat('sports')">Sports</button>
+      <button class="cat-pill" onclick="filterCat('etc')">ETC</button>
+    </div>
+  </div>
 
-<div id="pageRank">
-<div class="poll">
-  <div class="poll-row"><div class="poll-tag">100명에게 물어봐</div><div class="poll-live"><span class="p-dot"></span>73/100</div></div>
-  <div class="poll-q">친구가 슬롯 잘하면 여자도 꼬실 수 있다는데? 🤔</div>
-  <div class="poll-opts">
-    <div class="p-opt"><div class="p-bar a"></div><div class="p-text">친구 말이 맞다</div><div class="p-pct">31%</div></div>
-    <div class="p-opt"><div class="p-bar b"></div><div class="p-text">사람색기 아니네</div><div class="p-pct w">69%</div></div>
+  <!-- Slides -->
+  <div class="slides" id="slides"></div>
+
+  <!-- Side Indicators -->
+  <div class="indicators" id="indicators"></div>
+
+  <!-- Bottom Nav -->
+  <div class="bnav">
+    <a href="/" class="on"><span>🏆</span>순위</a>
+    <a href="/admin.html"><span>⚙️</span>관리</a>
   </div>
 </div>
 
-<!-- SORT TABS -->
-<div class="sort-bar" id="sortBar">
-  <div class="sort-btn on" onclick="sortBy('first',this)">첫충 높은순</div>
-  <div class="sort-btn" onclick="sortBy('reload',this)">매충 높은순</div>
-  <div class="sort-btn" onclick="sortBy('cashback',this)">캐시백 높은순</div>
-  <div class="sort-btn" onclick="sortBy('allin',this)">올인 높은순</div>
-  <div class="sort-btn" onclick="sortBy('join',this)">가입 높은순</div>
-  <div class="sort-btn" onclick="sortBy('events',this)">이벤트 많은순</div>
-  <div class="sort-btn" onclick="sortBy('rolling',this)">롤링 높은순</div>
-  <div class="sort-btn" onclick="sortBy('users',this)">이용회원 많은순</div>
-  <div class="sort-btn" onclick="sortBy('rating',this)">별점 높은순</div>
-  <div class="sort-btn" onclick="sortBy('reviews',this)">후기 많은순</div>
-</div>
-
-<div class="sec-t" id="secTitle">카지노 첫충 <span id="siteCount">0개</span></div>
-<div class="rk" id="rankList"></div>
-</div>
-
-<div id="pageReg" style="display:none;"><div style="padding:10px 14px 20px;"><div style="font-size:18px;font-weight:800;margin-bottom:12px;">업체 등록 ✨</div><div style="text-align:center;padding:40px;color:var(--text3);">준비 중</div></div></div>
-<div id="pageEvent" style="display:none;"><div class="empty"><div class="empty-ic">🎁</div><div class="empty-t">이벤트</div></div></div>
-<div id="pageMy" style="display:none;"><div class="empty"><div class="empty-ic">👤</div><div class="empty-t">내 정보</div></div></div>
-
-</div>
-
-<!-- BOTTOM GLASS BUTTONS -->
-<div class="bot-bar">
-  <div class="bot-btn" onclick="toggleLeft()"><span>☰</span></div>
-  <div class="bot-btn" onclick="toggleRight()"><span>👤</span></div>
-</div>
-
-<div class="panel-overlay" id="overlay" onclick="closeAll()"></div>
-
-<!-- LEFT PANEL -->
-<div class="panel-left" id="panelLeft">
-<div class="pl-title">카테고리</div>
-<div class="pl-group"><button class="pl-main open" onclick="togglePL(this)"><img src="/img/casino.webp">카지노<span class="pl-arrow">▾</span></button><div class="pl-subs open" style="max-height:400px;">
-<button class="pl-sub on" onclick="selCat(this,'카지노 첫충','casino')">💎 첫충 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'카지노 매충','casino')">🔄 매충 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'카지노 캐시백','casino')">💰 캐시백 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'카지노 올인','casino')">🔥 올인 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'카지노 가입','casino')">👋 가입 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'카지노 이벤트','casino')">🎉 이벤트 많은순</button>
-<button class="pl-sub" onclick="selCat(this,'카지노 롤링','casino')">📊 롤링 높은순</button>
-</div></div>
-<div class="pl-group"><button class="pl-main" onclick="togglePL(this)"><img src="/img/slot.webp">슬롯<span class="pl-arrow">▾</span></button><div class="pl-subs">
-<button class="pl-sub" onclick="selCat(this,'슬롯 첫충','slot')">💎 첫충 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'슬롯 매충','slot')">🔄 매충 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'슬롯 캐시백','slot')">💰 캐시백 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'슬롯 올인','slot')">🔥 올인 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'슬롯 가입','slot')">👋 가입 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'슬롯 이벤트','slot')">🎉 이벤트 많은순</button>
-<button class="pl-sub" onclick="selCat(this,'슬롯 롤링','slot')">📊 롤링 높은순</button>
-</div></div>
-<div class="pl-group"><button class="pl-main" onclick="togglePL(this)"><img src="/img/sports.webp">스포츠<span class="pl-arrow">▾</span></button><div class="pl-subs">
-<button class="pl-sub" onclick="selCat(this,'스포츠 첫충','sports')">💎 첫충 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'스포츠 매충','sports')">🔄 매충 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'스포츠 캐시백','sports')">💰 캐시백 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'스포츠 올인','sports')">🔥 올인 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'스포츠 가입','sports')">👋 가입 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'스포츠 이벤트','sports')">🎉 이벤트 많은순</button>
-<button class="pl-sub" onclick="selCat(this,'스포츠 롤링','sports')">📊 롤링 높은순</button>
-</div></div>
-<div class="pl-group"><button class="pl-main" onclick="togglePL(this)"><img src="/img/etc.webp">ETC<span class="pl-arrow">▾</span></button><div class="pl-subs">
-<button class="pl-sub" onclick="selCat(this,'ETC 첫충','etc')">💎 첫충 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'ETC 매충','etc')">🔄 매충 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'ETC 캐시백','etc')">💰 캐시백 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'ETC 올인','etc')">🔥 올인 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'ETC 가입','etc')">👋 가입 높은순</button>
-<button class="pl-sub" onclick="selCat(this,'ETC 이벤트','etc')">🎉 이벤트 많은순</button>
-<button class="pl-sub" onclick="selCat(this,'ETC 롤링','etc')">📊 롤링 높은순</button>
-</div></div>
-</div>
-
-<!-- RIGHT PANEL -->
-<div class="panel-right" id="panelRight">
-<div class="pr-title">프로필</div>
-<div class="pr-item" onclick="goPage('pageMy')"><div class="pr-item-ic">👤</div><div><div class="pr-item-t">내 정보</div><div class="pr-item-d">등급 · 이용내역</div></div></div>
-<div class="pr-item" onclick="goPage('pageReg')"><div class="pr-item-ic">📝</div><div><div class="pr-item-t">업체 등록</div><div class="pr-item-d">사이트 이미지 업로드</div></div></div>
-<div class="pr-item" onclick="goPage('pageEvent')"><div class="pr-item-ic">🎁</div><div><div class="pr-item-t">이벤트</div><div class="pr-item-d">매일 0시 이벤트</div></div></div>
-<div class="pr-item" onclick="goPage('pageRank')"><div class="pr-item-ic">🏆</div><div><div class="pr-item-t">순위 비교</div><div class="pr-item-d">카테고리별 비교</div></div></div>
-</div>
-
-</div>
-
 <script>
+var allSites = [];
+var currentCat = 'all';
+var currentSlide = 0;
 
-var SAMPLE_SITES = [];
-var currentSort = 'first';
-var currentCat = 'casino';
-var leftOpen=false,rightOpen=false;
-
-function toggleLeft(){if(leftOpen){closeAll();}else{closeAll();leftOpen=true;document.getElementById('panelLeft').classList.add('on');document.getElementById('overlay').classList.add('on');}}
-function toggleRight(){if(rightOpen){closeAll();}else{closeAll();rightOpen=true;document.getElementById('panelRight').classList.add('on');document.getElementById('overlay').classList.add('on');}}
-function closeAll(){leftOpen=false;rightOpen=false;document.getElementById('panelLeft').classList.remove('on');document.getElementById('panelRight').classList.remove('on');document.getElementById('overlay').classList.remove('on');}
-
-function togglePL(btn){var g=btn.closest('.pl-group'),s=g.querySelector('.pl-subs'),isOpen=btn.classList.contains('open');document.querySelectorAll('.pl-main').forEach(function(b){b.classList.remove('open');});document.querySelectorAll('.pl-subs').forEach(function(s){s.style.maxHeight='0px';s.classList.remove('open');});if(!isOpen){btn.classList.add('open');s.classList.add('open');s.style.maxHeight=s.scrollHeight+'px';}}
-
-function selCat(btn,title,cat){document.querySelectorAll('.pl-sub').forEach(function(s){s.classList.remove('on');});btn.classList.add('on');currentCat=cat;document.getElementById('secTitle').innerHTML=title+' <span id="siteCount">-</span>';closeAll();render();}
-
-function sortBy(field,btn){currentSort=field;document.querySelectorAll('.sort-btn').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');render();}
-
-function goPage(id){['pageRank','pageReg','pageEvent','pageMy'].forEach(function(p){document.getElementById(p).style.display='none';});document.getElementById(id).style.display='block';closeAll();document.getElementById('mainScroll').scrollTop=0;}
-
-function getSortVal(s){
-  var m={'first':s.first,'reload':s.reload,'cashback':s.cashback,'allin':s.allin,'join':s.join,'rolling':s.rolling,'events':s.events,'users':s.users,'rating':s.rating,'reviews':s.reviews};
-  return m[currentSort]||0;
+function filterCat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-pill').forEach(function(p) {
+    p.classList.toggle('on', p.textContent.toLowerCase() === (cat === 'all' ? 'all' : cat));
+  });
+  renderSlides();
 }
 
-function getSortLabel(){
-  var m={'first':'첫충','reload':'매충','cashback':'캐시백','allin':'올인','join':'가입','rolling':'롤링','events':'이벤트','users':'회원수','rating':'별점','reviews':'후기'};
-  return m[currentSort]||'';
+function getFiltered() {
+  var filtered = currentCat === 'all' ? allSites : allSites.filter(function(s) { return s.category === currentCat; });
+  return filtered;
 }
 
-function getSortUnit(){
-  var m={'first':'%','reload':'%','cashback':'%','allin':'%','join':'만','rolling':'%','events':'개','users':'명','rating':'점','reviews':'건'};
-  return m[currentSort]||'';
+function getCatLabel(cat) {
+  var m = { casino: '카지노', slot: '슬롯', sports: '스포츠', etc: 'ETC' };
+  return m[cat] || cat;
 }
 
-function render(){
-  var filtered = SAMPLE_SITES.filter(function(s){return currentCat==='all'||s.cat===currentCat;});
-  var sorted = filtered.slice().sort(function(a,b){return getSortVal(b)-getSortVal(a);});
-  var el=document.getElementById('rankList');
-  var c=document.getElementById('siteCount');
-  if(c)c.textContent=sorted.length+'개';
-  if(!sorted.length){el.innerHTML='<div class="empty"><div class="empty-ic">📋</div><div class="empty-t">해당 카테고리에 업체가 없습니다</div></div>';return;}
+function renderSlides() {
+  var sites = getFiltered();
+  var el = document.getElementById('slides');
+  var indEl = document.getElementById('indicators');
 
-  // Find tied #1 value
-  var topVal=getSortVal(sorted[0]);
-  var tiedCount=sorted.filter(function(s){return getSortVal(s)===topVal;}).length;
+  if (!sites.length) {
+    el.innerHTML = '<div class="slide"><div class="empty"><div class="empty-ic">📋</div><div class="empty-t">등록된 업체가 없습니다</div></div></div>';
+    indEl.innerHTML = '';
+    return;
+  }
 
-  var h='';
-  sorted.forEach(function(s,i){
-    var val=getSortVal(s);
-    var isTied=(val===topVal && tiedCount>1);
-    var isTop=(val===topVal);
-    var rank=isTop?1:(i+1);
-    var imgTag=s.image?'<img class="r1-img" src="'+s.image+'">':'';
-    var ib=s.insurance?'<span class="bdg bdg-i">🛡보험</span>':'';
-    var ob=s.option?'<span class="bdg bdg-o">옵션</span>':'';
-    var pkgFont=s.pkg_font?'pkg-'+s.pkg_font:'';
-    var pkgBorder=s.pkg_border?'pkg-border-'+s.pkg_border:'';
-    var tieBdg=isTied?'<span class="tie-badge">공동1위</span>':'';
-    var label=getSortLabel();
-    var unit=getSortUnit();
-    var sortVal=val+unit;
+  var h = '';
+  sites.forEach(function(s, i) {
+    var bgClass = s.image ? '' : ' no-img';
+    var bgStyle = s.image ? 'background-image:url(' + s.image + ')' : '';
+    var rank = i + 1;
 
-    if(isTop){
-      h+='<div class="r1 '+pkgBorder+'"><div class="r1-glow"></div>'+imgTag;
-      h+='<div class="r1-head"><div class="r1-num">'+rank+tieBdg+'</div><div class="r1-name '+pkgFont+'">'+s.name+'</div><div class="r1-bdg">'+ib+ob+'</div></div>';
-      h+='<div class="r1-grid"><div class="r1-cell"><div class="r1-cl">'+label+'</div><div class="r1-cv gd">'+sortVal+'</div></div>';
-      h+='<div class="r1-cell"><div class="r1-cl">매충</div><div class="r1-cv">'+s.reload+'%</div></div>';
-      h+='<div class="r1-cell"><div class="r1-cl">캐시백</div><div class="r1-cv">'+s.cashback+'%</div></div></div>';
-      h+='<div class="r1-bot"><span class="r1-st">⭐⭐⭐⭐⭐</span><span class="r1-sc">'+s.rating+'</span><span class="r1-rv">'+s.reviews+'건·'+s.users+'명</span></div></div>';
-    } else if(i<5){
-      var cls=i<3?'s':'b';
-      var opacity=i>2?' d':'';
-      h+='<div class="rn">';
-      h+=(s.image?'<img class="rn-img" src="'+s.image+'">':'<div class="rn-n '+cls+'">'+(i+1)+'</div>');
-      h+='<div class="rn-i"><div class="rn-nm'+opacity+' '+pkgFont+'">'+s.name+'</div>';
-      h+='<div class="rn-m"><span class="rn-st2'+opacity+'">⭐⭐⭐⭐⭐</span><span class="rn-sc2">'+s.rating+'</span></div></div>';
-      h+='<div class="rn-r"><div class="rn-p'+(i>2?' m':' h')+'">'+sortVal+'</div><div class="rn-c">회원 '+s.users+'명</div></div></div>';
-    } else {
-      h+='<div class="rm"><div class="rm-n">'+(i+1)+'</div><div class="rm-nm">'+s.name+'</div><div class="rm-v">'+sortVal+'</div></div>';
+    h += '<div class="slide">';
+    h += '<div class="slide-bg' + bgClass + '" style="' + bgStyle + '"></div>';
+    h += '<div class="slide-content">';
+
+    // Rank
+    h += '<div class="rank"><div class="rank-num">' + rank + '</div>';
+    h += '<div class="rank-label">' + (rank === 1 ? 'BEST PICK' : rank <= 3 ? 'TOP ' + rank : 'RANK') + '</div></div>';
+
+    // Name
+    h += '<div class="site-name">' + s.name + '</div>';
+
+    // Badges
+    h += '<div class="badges">';
+    h += '<span class="badge badge-cat">' + getCatLabel(s.category) + '</span>';
+    if (s.insurance) h += '<span class="badge badge-ins">🛡 보험</span>';
+    if (s.option) h += '<span class="badge badge-opt">⭐ 옵션</span>';
+    h += '</div>';
+
+    // Stats
+    h += '<div class="stats">';
+    h += '<div class="stat"><div class="stat-val gold">' + s.firstBonus + '%</div><div class="stat-label">첫충</div></div>';
+    h += '<div class="stat"><div class="stat-val">' + s.reloadBonus + '%</div><div class="stat-label">매충</div></div>';
+    h += '<div class="stat"><div class="stat-val">' + s.cashback + '%</div><div class="stat-label">캐시백</div></div>';
+    h += '<div class="stat"><div class="stat-val gold">' + s.allinBonus + '%</div><div class="stat-label">올인</div></div>';
+    h += '<div class="stat"><div class="stat-val">' + (s.joinBonus || 0).toLocaleString() + '</div><div class="stat-label">가입머니</div></div>';
+    h += '<div class="stat"><div class="stat-val">' + s.rolling + '%</div><div class="stat-label">롤링</div></div>';
+    h += '</div>';
+
+    // Rating
+    h += '<div class="rating-row">';
+    h += '<div class="stars">⭐⭐⭐⭐⭐</div>';
+    h += '<div class="rating-score">' + (s.rating || 0).toFixed(1) + '</div>';
+    h += '<div class="rating-sub">' + (s.reviews || 0) + '건 리뷰</div>';
+    h += '</div>';
+
+    // Link
+    if (s.link) {
+      h += '<a class="site-link" href="' + s.link + '" target="_blank">가입하기 →</a>';
+    }
+
+    h += '</div>'; // slide-content
+
+    // Scroll hint on first slide
+    if (i === 0 && sites.length > 1) {
+      h += '<div class="scroll-hint"><span>SCROLL</span><div class="scroll-arrow"></div></div>';
+    }
+
+    h += '</div>'; // slide
+  });
+
+  el.innerHTML = h;
+
+  // Indicators
+  var indH = '';
+  sites.forEach(function(s, i) {
+    indH += '<div class="ind' + (i === 0 ? ' on' : '') + '"></div>';
+  });
+  indEl.innerHTML = indH;
+
+  currentSlide = 0;
+}
+
+// Track scroll position for indicators
+function setupScrollTracker() {
+  var el = document.getElementById('slides');
+  el.addEventListener('scroll', function() {
+    var slideH = el.clientHeight;
+    var idx = Math.round(el.scrollTop / slideH);
+    if (idx !== currentSlide) {
+      currentSlide = idx;
+      document.querySelectorAll('.ind').forEach(function(ind, i) {
+        ind.classList.toggle('on', i === idx);
+      });
+      // Hide scroll hint after first scroll
+      var hint = document.querySelector('.scroll-hint');
+      if (hint) hint.style.display = 'none';
     }
   });
-  el.innerHTML=h;
 }
 
-fetch("/api/sites").then(function(r){return r.json();}).then(function(data){
-  SAMPLE_SITES=data.map(function(s){return {name:s.name,cat:s.category,first:s.firstBonus,reload:s.reloadBonus,cashback:s.cashback,allin:s.allinBonus,join:s.joinBonus,rolling:s.rolling,events:s.eventCount,insurance:s.insurance,option:s.option,rating:s.rating||0,reviews:s.reviews||0,users:0,pkg_font:"",pkg_border:"",image:s.image};});
-  render();
-}).catch(function(e){console.log("API load failed:",e);render();});
+// Load from API
+function loadSites() {
+  fetch('/api/sites')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      allSites = data;
+      renderSlides();
+      setupScrollTracker();
+    })
+    .catch(function(e) {
+      console.log('API error:', e);
+      renderSlides();
+      setupScrollTracker();
+    });
+}
+
+loadSites();
 </script>
 </body>
 </html>
