@@ -10,34 +10,35 @@ body{font-family:-apple-system,sans-serif;background:#0f0f0f;color:#e0e0e0;min-h
 h1{text-align:center;font-size:20px;color:#C47F17;margin-bottom:20px;letter-spacing:-1px}
 .container{max-width:900px;margin:0 auto}
 
-/* 등록 폼 */
 .form-card{background:#1a1a1a;border-radius:12px;padding:24px;margin-bottom:24px;border:1px solid #333}
 .form-card h2{font-size:16px;color:#C47F17;margin-bottom:16px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-group{display:flex;flex-direction:column;gap:4px}
 .form-group.full{grid-column:1/-1}
 label{font-size:12px;color:#888}
-input,select{background:#111;border:1px solid #333;border-radius:8px;padding:10px;color:#fff;font-size:14px}
-input:focus,select:focus{outline:none;border-color:#C47F17}
+input,select,textarea{background:#111;border:1px solid #333;border-radius:8px;padding:10px;color:#fff;font-size:14px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#C47F17}
+textarea{resize:vertical;min-height:60px}
 input[type=file]{padding:8px}
 .btn{padding:12px 24px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
 .btn-gold{background:linear-gradient(135deg,#C47F17,#8B5A0B);color:#fff}
 .btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(196,127,23,.3)}
+.btn-blue{background:#2563eb;color:#fff;font-size:12px;padding:6px 12px}
+.btn-blue:hover{background:#1d4ed8}
 .btn-red{background:#dc2626;color:#fff;font-size:12px;padding:6px 12px}
 .btn-red:hover{background:#b91c1c}
 .btn-row{display:flex;justify-content:flex-end;margin-top:16px;gap:8px}
 
-/* 업체 목록 */
 .site-list{display:flex;flex-direction:column;gap:12px}
 .site-card{background:#1a1a1a;border-radius:12px;padding:16px;border:1px solid #333;display:flex;gap:16px;align-items:center}
+.site-card.inactive{opacity:.5}
 .site-card img{width:60px;height:60px;border-radius:8px;object-fit:cover;background:#222}
 .site-info{flex:1}
 .site-name{font-weight:700;font-size:15px;margin-bottom:4px}
 .site-meta{font-size:12px;color:#888;display:flex;flex-wrap:wrap;gap:8px}
 .site-meta span{background:#222;padding:2px 8px;border-radius:4px}
-.site-actions{display:flex;gap:8px}
+.site-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-/* 카테고리 탭 */
 .cat-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
 .cat-tab{padding:8px 16px;border-radius:8px;background:#222;color:#888;cursor:pointer;font-size:13px;border:1px solid transparent}
 .cat-tab.active{background:#C47F17;color:#fff;border-color:#C47F17}
@@ -45,12 +46,16 @@ input[type=file]{padding:8px}
 .msg{padding:12px;border-radius:8px;margin-bottom:12px;font-size:14px;display:none}
 .msg.ok{display:block;background:#064e3b;color:#6ee7b7;border:1px solid #065f46}
 .msg.err{display:block;background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b}
+
+.modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:none;justify-content:center;align-items:center;z-index:100}
+.modal-bg.show{display:flex}
+.modal{background:#1a1a1a;border-radius:12px;padding:24px;border:1px solid #333;width:90%;max-width:600px;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:16px;color:#C47F17;margin-bottom:16px}
 </style>
 </head>
 <body>
 <div class="container">
   <h1>OPTION 업체 관리</h1>
-
   <div id="msg" class="msg"></div>
 
   <div class="form-card">
@@ -73,9 +78,12 @@ input[type=file]{padding:8px}
         <div class="form-group"><label>가입머니 (원)</label><input name="joinBonus" type="number" value="0"></div>
         <div class="form-group"><label>롤링 (%)</label><input name="rolling" type="number" step="0.1" value="0"></div>
         <div class="form-group"><label>이벤트 수</label><input name="eventCount" type="number" value="0"></div>
+        <div class="form-group"><label>정렬순서 (높을수록 위)</label><input name="sortOrder" type="number" value="0"></div>
         <div class="form-group"><label>이미지</label><input name="image" type="file" accept="image/*"></div>
+        <div class="form-group"><label>가입 링크</label><input name="link" placeholder="https://"></div>
         <div class="form-group"><label><input type="checkbox" name="insurance"> 보험 가입</label></div>
         <div class="form-group"><label><input type="checkbox" name="option"> 옵션 패키지</label></div>
+        <div class="form-group full"><label>설명</label><textarea name="description" placeholder="업체 소개 (선택)"></textarea></div>
       </div>
       <div class="btn-row"><button type="submit" class="btn btn-gold">등록</button></div>
     </form>
@@ -90,6 +98,44 @@ input[type=file]{padding:8px}
   </div>
 
   <div id="siteList" class="site-list"></div>
+</div>
+
+<!-- 수정 모달 -->
+<div id="editModal" class="modal-bg" onclick="if(event.target===this)closeEdit()">
+  <div class="modal">
+    <h2>업체 수정</h2>
+    <form id="editForm" enctype="multipart/form-data">
+      <input type="hidden" name="id_field">
+      <div class="form-grid">
+        <div class="form-group"><label>업체명</label><input name="name" required></div>
+        <div class="form-group"><label>카테고리</label>
+          <select name="category">
+            <option value="casino">카지노</option>
+            <option value="slot">슬롯</option>
+            <option value="sports">스포츠</option>
+            <option value="etc">ETC</option>
+          </select>
+        </div>
+        <div class="form-group"><label>첫충 보너스 (%)</label><input name="firstBonus" type="number" step="0.1"></div>
+        <div class="form-group"><label>매충 보너스 (%)</label><input name="reloadBonus" type="number" step="0.1"></div>
+        <div class="form-group"><label>캐시백 (%)</label><input name="cashback" type="number" step="0.1"></div>
+        <div class="form-group"><label>올인 보너스 (%)</label><input name="allinBonus" type="number" step="0.1"></div>
+        <div class="form-group"><label>가입머니 (원)</label><input name="joinBonus" type="number"></div>
+        <div class="form-group"><label>롤링 (%)</label><input name="rolling" type="number" step="0.1"></div>
+        <div class="form-group"><label>이벤트 수</label><input name="eventCount" type="number"></div>
+        <div class="form-group"><label>정렬순서</label><input name="sortOrder" type="number"></div>
+        <div class="form-group"><label>이미지 변경</label><input name="image" type="file" accept="image/*"></div>
+        <div class="form-group"><label>가입 링크</label><input name="link" placeholder="https://"></div>
+        <div class="form-group"><label><input type="checkbox" name="insurance"> 보험 가입</label></div>
+        <div class="form-group"><label><input type="checkbox" name="option"> 옵션 패키지</label></div>
+        <div class="form-group full"><label>설명</label><textarea name="description"></textarea></div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-red" onclick="closeEdit()">취소</button>
+        <button type="submit" class="btn btn-gold">저장</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
@@ -107,21 +153,25 @@ function renderSites() {
   const el = document.getElementById('siteList');
   if (filtered.length === 0) { el.innerHTML = '<div style="text-align:center;color:#555;padding:40px">등록된 업체가 없습니다</div>'; return; }
   el.innerHTML = filtered.map(s => `
-    <div class="site-card">
+    <div class="site-card ${s.active ? '' : 'inactive'}">
       <img src="${s.image || ''}" onerror="this.style.display='none'">
       <div class="site-info">
-        <div class="site-name">${s.name} ${s.insurance ? '🛡️' : ''} ${s.option ? '⭐' : ''}</div>
+        <div class="site-name">${s.name} ${s.insurance ? '🛡' : ''} ${s.option ? '⭐' : ''} ${!s.active ? '<span style="color:#f87171">[비활성]</span>' : ''}</div>
         <div class="site-meta">
           <span>첫충 ${s.firstBonus}%</span>
           <span>매충 ${s.reloadBonus}%</span>
           <span>캐시백 ${s.cashback}%</span>
-          <span>가입 ${s.joinBonus.toLocaleString()}원</span>
+          <span>가입 ${(s.joinBonus||0).toLocaleString()}원</span>
           <span>롤링 ${s.rolling}%</span>
           <span>이벤트 ${s.eventCount}개</span>
           <span>${s.category}</span>
+          <span>순서 ${s.sortOrder||0}</span>
+          ${s.link ? '<span><a href="'+s.link+'" target="_blank" style="color:#60a5fa">링크</a></span>' : ''}
         </div>
       </div>
       <div class="site-actions">
+        <button class="btn btn-blue" onclick="toggleActive(${s.id},${s.active?0:1})">${s.active ? '비활성' : '활성'}</button>
+        <button class="btn btn-gold" style="font-size:12px;padding:6px 12px" onclick="openEdit(${s.id})">수정</button>
         <button class="btn btn-red" onclick="deleteSite(${s.id})">삭제</button>
       </div>
     </div>
@@ -141,6 +191,7 @@ function showMsg(text, ok) {
   setTimeout(() => el.className = 'msg', 3000);
 }
 
+// 등록
 document.getElementById('addForm').addEventListener('submit', async e => {
   e.preventDefault();
   const fd = new FormData(e.target);
@@ -154,12 +205,66 @@ document.getElementById('addForm').addEventListener('submit', async e => {
   } catch (err) { showMsg('오류: ' + err.message, false); }
 });
 
+// 삭제
 async function deleteSite(id) {
   if (!confirm('삭제하시겠습니까?')) return;
   await fetch('/api/sites/' + id, { method: 'DELETE' });
   showMsg('삭제 완료', true);
   loadSites();
 }
+
+// 활성/비활성 토글
+async function toggleActive(id, val) {
+  await fetch('/api/sites/' + id, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ active: val ? 'true' : 'false' })
+  });
+  loadSites();
+}
+
+// 수정 모달
+function openEdit(id) {
+  const s = allSites.find(x => x.id === id);
+  if (!s) return;
+  const f = document.getElementById('editForm');
+  f.id_field.value = s.id;
+  f.name.value = s.name;
+  f.category.value = s.category;
+  f.firstBonus.value = s.firstBonus;
+  f.reloadBonus.value = s.reloadBonus;
+  f.cashback.value = s.cashback;
+  f.allinBonus.value = s.allinBonus;
+  f.joinBonus.value = s.joinBonus;
+  f.rolling.value = s.rolling;
+  f.eventCount.value = s.eventCount;
+  f.sortOrder.value = s.sortOrder || 0;
+  f.link.value = s.link || '';
+  f.insurance.checked = s.insurance;
+  f.option.checked = s.option;
+  f.description.value = s.description || '';
+  document.getElementById('editModal').classList.add('show');
+}
+
+function closeEdit() {
+  document.getElementById('editModal').classList.remove('show');
+}
+
+document.getElementById('editForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.target;
+  const id = f.id_field.value;
+  const fd = new FormData(f);
+  fd.delete('id');
+  fd.set('insurance', f.insurance.checked ? 'true' : 'false');
+  fd.set('option', f.option.checked ? 'true' : 'false');
+  try {
+    const res = await fetch('/api/sites/' + id, { method: 'PUT', body: fd });
+    const data = await res.json();
+    if (data.ok) { showMsg('수정 완료!', true); closeEdit(); loadSites(); }
+    else showMsg('수정 실패', false);
+  } catch (err) { showMsg('오류: ' + err.message, false); }
+});
 
 loadSites();
 </script>
