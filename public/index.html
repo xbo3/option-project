@@ -244,23 +244,23 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .3s;}
 .bonus-overlay.show{opacity:1;pointer-events:auto;}
-.bonus-box{width:92%;max-width:400px;border-radius:18px;overflow:hidden;
+.bonus-box{width:92%;max-width:400px;min-height:70vh;border-radius:18px;overflow:hidden;
   background:linear-gradient(160deg,#1e1e38,#141430,#1a1a35);
   border:1px solid rgba(240,192,80,.12);
   box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 40px rgba(240,192,80,.04);
   transform:scale(.9);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
-  position:relative;}
+  position:relative;display:flex;flex-direction:column;justify-content:center;}
 .bonus-overlay.show .bonus-box{transform:scale(1);}
 .bonus-close{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;
   background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:14px;
   display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;}
-.bonus-header{padding:16px 16px 0;text-align:center;}
-.bonus-title{font-size:16px;font-weight:900;color:var(--gold);letter-spacing:-.5px;}
-.bonus-sub{font-size:10px;color:var(--text2);margin-top:4px;}
-.bonus-content{padding:16px 16px 8px;text-align:center;}
-.bonus-q{font-size:15px;font-weight:800;color:#fff;}
-.bonus-receive{display:block;width:calc(100% - 32px);margin:4px 16px 16px;padding:12px;border:none;
-  border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;color:#0D0D12;letter-spacing:.5px;
+.bonus-header{padding:24px 20px 0;text-align:center;}
+.bonus-title{font-size:22px;font-weight:900;color:var(--gold);letter-spacing:-.5px;}
+.bonus-sub{font-size:15px;color:#fff;margin-top:12px;line-height:1.5;font-weight:600;}
+.bonus-content{padding:24px 20px 12px;text-align:center;}
+.bonus-q{font-size:18px;font-weight:800;color:#fff;line-height:1.4;}
+.bonus-receive{display:block;width:calc(100% - 40px);margin:8px 20px 20px;padding:16px;border:none;
+  border-radius:14px;cursor:pointer;font-size:16px;font-weight:800;color:#0D0D12;letter-spacing:.5px;
   background:linear-gradient(135deg,#F0C050,#FFD700,#E8B830);
   box-shadow:0 4px 16px rgba(240,192,80,.25),inset 0 1px 0 rgba(255,255,255,.3);
   transition:all .2s;}
