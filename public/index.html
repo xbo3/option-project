@@ -144,10 +144,55 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .live-badge{background:#DC2626;color:#fff;font-size:6px;font-weight:800;padding:1px 4px;border-radius:3px;margin-right:2px;}
 .swipe-hint{text-align:center;font-size:9px;color:var(--text3);padding:4px 0;opacity:.5;animation:hp 2.5s ease infinite;}
 @keyframes hp{0%,100%{opacity:.3}50%{opacity:.7}}
-.bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:56px;
-  display:flex;align-items:center;justify-content:space-around;background:rgba(242,240,237,.95);
-  backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,.06);z-index:100;}
-.nav-item{font-size:18px;opacity:.3;padding:8px;}.nav-item.on{opacity:1;}
+/* ========== GLASS BOTTOM NAV ========== */
+.bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+  padding:8px 12px;z-index:100;display:flex;gap:8px;justify-content:center;}
+.glass-btn{
+  flex:1;height:44px;border-radius:14px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,rgba(160,120,255,.35),rgba(200,160,255,.2));
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 4px 16px rgba(120,80,200,.15),inset 0 1px 0 rgba(255,255,255,.35);
+  color:#fff;font-size:11px;font-weight:700;letter-spacing:-.2px;
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:all .2s;position:relative;
+  text-shadow:0 1px 2px rgba(0,0,0,.15);
+}
+.glass-btn::before{content:'';position:absolute;top:1px;left:10%;right:10%;height:40%;
+  border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.3),transparent);pointer-events:none;}
+.glass-btn:active{transform:scale(.95);box-shadow:0 2px 8px rgba(120,80,200,.2);}
+.glass-btn .g-icon{font-size:16px;}
+.glass-btn.active{background:linear-gradient(135deg,rgba(180,140,255,.5),rgba(220,180,255,.35));
+  border-color:rgba(255,255,255,.4);box-shadow:0 4px 20px rgba(140,100,240,.3),inset 0 1px 0 rgba(255,255,255,.45);}
+
+/* ========== CATEGORY POPUP ========== */
+.cat-overlay{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+  z-index:99;pointer-events:none;}
+.cat-menu{position:absolute;bottom:60px;left:12px;display:flex;flex-direction:column-reverse;gap:6px;
+  pointer-events:auto;}
+.cat-item{
+  height:40px;border-radius:12px;padding:0 16px;
+  background:linear-gradient(135deg,rgba(140,100,240,.45),rgba(180,140,255,.3));
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 4px 12px rgba(100,60,200,.2),inset 0 1px 0 rgba(255,255,255,.3);
+  color:#fff;font-size:12px;font-weight:700;
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+  transform:translateY(20px);opacity:0;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s;
+  text-shadow:0 1px 2px rgba(0,0,0,.15);white-space:nowrap;
+}
+.cat-item::before{content:'';position:absolute;top:1px;left:8%;right:8%;height:35%;
+  border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,.25),transparent);pointer-events:none;position:relative;display:none;}
+.cat-item.show{transform:translateY(0);opacity:1;}
+.cat-item:active{transform:scale(.95);}
+.cat-item .ci-icon{font-size:14px;}
+.cat-item.sub{
+  background:linear-gradient(135deg,rgba(100,180,255,.4),rgba(140,200,255,.25));
+  border-color:rgba(255,255,255,.25);
+  box-shadow:0 4px 12px rgba(60,120,200,.2),inset 0 1px 0 rgba(255,255,255,.3);
+  font-size:11px;height:36px;
+}
 </style>
 </head>
 <body>
@@ -173,9 +218,17 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 <div class="list-sec" id="listSec"></div>
 
 </div>
+<!-- 카테고리 팝업 -->
+<div class="cat-overlay" id="catOverlay">
+  <div class="cat-menu" id="catMenu"></div>
+</div>
+
+<!-- 글라스 버튼 4개 -->
 <div class="bot-nav">
-  <div class="nav-item">☰</div><div class="nav-item on">📊</div>
-  <div class="nav-item">✏️</div><div class="nav-item">◇</div><div class="nav-item">👤</div>
+  <button class="glass-btn" id="btnCat" onclick="toggleCategory()"><span class="g-icon">☰</span>분류</button>
+  <button class="glass-btn" onclick="location.href='/register.html'"><span class="g-icon">✏️</span>등록</button>
+  <button class="glass-btn"><span class="g-icon">📊</span>비교</button>
+  <button class="glass-btn"><span class="g-icon">👤</span>내정보</button>
 </div>
 </div>
 
@@ -383,6 +436,121 @@ document.addEventListener('touchstart',function(){clearInterval(at);},{once:true
 buildDrums();
 fillFronts(ci);
 fillList(ci);
+
+// ========== CATEGORY POPUP ==========
+var catState = 0; // 0=closed, 1=main open, 2=sub open
+var selectedCat = '';
+
+var categories = [
+  {id:'sports', name:'스포츠', icon:'⚽'},
+  {id:'casino', name:'카지노', icon:'🃏'},
+  {id:'slot',   name:'슬롯',   icon:'🎰'},
+  {id:'virtual',name:'버츄얼', icon:'🎮'}
+];
+
+var subCategories = {
+  sports: [
+    {name:'첫충보너스 높은순', sort:'firstBonus'},
+    {name:'매충보너스 높은순', sort:'reloadBonus'},
+    {name:'롤링요율 낮은순', sort:'rollingSports'},
+    {name:'캐시백 높은순', sort:'cashback'},
+    {name:'별점 높은순', sort:'rating'}
+  ],
+  casino: [
+    {name:'첫충보너스 높은순', sort:'firstBonus'},
+    {name:'매충보너스 높은순', sort:'reloadBonus'},
+    {name:'롤링요율 낮은순', sort:'rollingCasino'},
+    {name:'캐시백 높은순', sort:'cashback'},
+    {name:'별점 높은순', sort:'rating'}
+  ],
+  slot: [
+    {name:'첫충보너스 높은순', sort:'firstBonus'},
+    {name:'매충보너스 높은순', sort:'reloadBonus'},
+    {name:'롤링요율 낮은순', sort:'rollingSlot'},
+    {name:'캐시백 높은순', sort:'cashback'},
+    {name:'별점 높은순', sort:'rating'}
+  ],
+  virtual: [
+    {name:'첫충보너스 높은순', sort:'firstBonus'},
+    {name:'올인보너스 높은순', sort:'allinBonus'},
+    {name:'캐시백 높은순', sort:'cashback'},
+    {name:'별점 높은순', sort:'rating'}
+  ]
+};
+
+function toggleCategory(){
+  if(catState > 0){ closeAll(); return; }
+  openMain();
+}
+
+function openMain(){
+  var menu = $('catMenu');
+  menu.innerHTML = '';
+  // 순서: 버츄얼(아래) → 슬롯 → 카지노 → 스포츠(위) — column-reverse이므로 배열순대로
+  var order = ['sports','casino','slot','virtual'];
+  order.forEach(function(id, idx){
+    var c = categories.find(function(x){return x.id===id;});
+    var el = document.createElement('div');
+    el.className = 'cat-item';
+    el.innerHTML = '<span class="ci-icon">'+c.icon+'</span>'+c.name;
+    el.onclick = function(){ openSub(id); };
+    menu.appendChild(el);
+    setTimeout(function(){ el.classList.add('show'); }, idx * 60);
+  });
+  catState = 1;
+  $('btnCat').classList.add('active');
+}
+
+function openSub(catId){
+  selectedCat = catId;
+  var menu = $('catMenu');
+  // 기존 대분류 접기
+  var items = menu.querySelectorAll('.cat-item');
+  items.forEach(function(el){ el.classList.remove('show'); });
+
+  setTimeout(function(){
+    menu.innerHTML = '';
+    var subs = subCategories[catId] || [];
+    subs.forEach(function(s, idx){
+      var el = document.createElement('div');
+      el.className = 'cat-item sub';
+      el.innerHTML = s.name;
+      el.onclick = function(){ selectSub(catId, s.sort); };
+      menu.appendChild(el);
+      setTimeout(function(){ el.classList.add('show'); }, idx * 50);
+    });
+    catState = 2;
+  }, 200);
+}
+
+function selectSub(catId, sortKey){
+  // 선택 후 전부 접기
+  closeAll();
+  // TODO: 여기서 sortKey 기준으로 목록 정렬/필터링
+  console.log('선택:', catId, sortKey);
+}
+
+function closeAll(){
+  var menu = $('catMenu');
+  var items = menu.querySelectorAll('.cat-item');
+  var arr = Array.prototype.slice.call(items);
+  arr.reverse().forEach(function(el, idx){
+    setTimeout(function(){ el.classList.remove('show'); }, idx * 40);
+  });
+  setTimeout(function(){
+    menu.innerHTML = '';
+    catState = 0;
+    selectedCat = '';
+    $('btnCat').classList.remove('active');
+  }, arr.length * 40 + 200);
+}
+
+// 팝업 바깥 클릭 시 닫기
+document.addEventListener('click', function(e){
+  if(catState > 0 && !e.target.closest('.cat-menu') && !e.target.closest('#btnCat')){
+    closeAll();
+  }
+});
 </script>
 </body>
 </html>
