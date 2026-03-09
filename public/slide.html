@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>OPTION — Ranking Slide v2</title>
+<title>OPTION — Slide v3</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F2F0ED;--card:rgba(255,255,255,.72);--text:#1A1A1A;--text2:#777;--text3:#B0B0B0;
   --gold:#C47F17;--gold-l:#FEF5E7;--green:#1A8C5E;--green-l:#E8F8F0;
   --blue:#2660D4;--blue-l:#EBF2FE;--purple:#8B5CF6;--cyan:#06B6D4;
-  --dur:.5s;--ease:cubic-bezier(.4,0,.2,1);
+  --dur:.48s;--ease:cubic-bezier(.4,0,.2,1);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(--text);
@@ -41,11 +41,9 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .poll-opts{display:flex;gap:5px;}
 .p-opt{flex:1;padding:6px;border-radius:8px;background:rgba(0,0,0,.03);position:relative;overflow:hidden;text-align:center;}
 .p-bar{position:absolute;left:0;top:0;bottom:0;border-radius:8px;}
-.p-bar.a{background:rgba(38,96,212,.05);width:31%;}
-.p-bar.b{background:rgba(196,127,23,.07);width:69%;}
+.p-bar.a{background:rgba(38,96,212,.05);width:31%;}.p-bar.b{background:rgba(196,127,23,.07);width:69%;}
 .p-text{font-size:8px;font-weight:600;position:relative;z-index:1;}
-.p-pct{font-size:11px;font-weight:800;position:relative;z-index:1;color:var(--text3);}
-.p-pct.w{color:var(--gold);}
+.p-pct{font-size:11px;font-weight:800;position:relative;z-index:1;color:var(--text3);}.p-pct.w{color:var(--gold);}
 
 .sort-bar{display:flex;gap:4px;padding:4px 10px;overflow-x:auto;scrollbar-width:none;}
 .sort-bar::-webkit-scrollbar{display:none;}
@@ -56,98 +54,105 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .sec-t{font-size:13px;font-weight:800;letter-spacing:-.5px;padding:4px 12px 6px;}
 .sec-t span{font-size:10px;font-weight:500;color:var(--text3);}
 
-/* ========== RANKING AREA ========== */
-.rank-area{
-  position:relative;padding:0 10px;
-  overflow:hidden;
+/* ========================================
+   ROW 1: HERO — mobile + info
+   ======================================== */
+.row-hero{
+  display:flex;gap:5px;padding:0 10px;margin-bottom:6px;
 }
 
-/* All rank items are absolutely positioned and animated via transform */
-.rank-area .slot{
-  transition:transform var(--dur) var(--ease),opacity var(--dur) var(--ease);
-  will-change:transform,opacity;
-  position:absolute;
-  backface-visibility:hidden;
-}
-
-/* ===== HERO ROW (slot 0 = mobile, slot 1 = info) ===== */
-.slot-mobile{
-  width:calc(33.33% - 4px);height:190px;
-  border-radius:14px;overflow:hidden;
+/* Mobile slot (same width as sub cards) */
+.frame-mobile{
+  width:calc(33.33% - 3px);flex-shrink:0;
+  height:190px;border-radius:14px;overflow:hidden;
   background:#1a1a2e;
   box-shadow:0 4px 16px rgba(0,0,0,.12);
-  left:0;top:0;
+  transition:transform var(--dur) var(--ease),opacity var(--dur) var(--ease);
+  will-change:transform,opacity;
 }
-.slot-info{
-  width:calc(66.66% - 2px);height:190px;
-  border-radius:14px;overflow:hidden;
+
+/* Info slot */
+.frame-info{
+  flex:1;height:190px;border-radius:14px;overflow:hidden;
   background:linear-gradient(145deg,#FFFDF8,#FFF8ED,#FFF4E0);
   border:1.5px solid rgba(196,127,23,.15);
   box-shadow:0 6px 24px rgba(196,127,23,.06);
-  left:calc(33.33% + 1px);top:0;
+  position:relative;
+  transition:transform var(--dur) var(--ease),opacity var(--dur) var(--ease);
+  will-change:transform,opacity;
 }
 
-/* ===== SUB ROW (slots 2,3,4) ===== */
-.slot-sub{
-  width:calc(33.33% - 4px);height:120px;
-  border-radius:12px;
+/* ========================================
+   ROW 2: SUB — 3 cards
+   ======================================== */
+.row-sub{
+  display:flex;gap:5px;padding:0 10px;margin-bottom:6px;
+}
+.frame-sub{
+  flex:1;min-width:0;
+  height:120px;border-radius:12px;
   background:var(--card);backdrop-filter:blur(20px);
   border:1px solid rgba(0,0,0,.04);
   box-shadow:0 2px 8px rgba(0,0,0,.03);
+  overflow:hidden;
+  transition:transform var(--dur) var(--ease),opacity var(--dur) var(--ease);
+  will-change:transform,opacity;
 }
-.slot-sub-0{left:0;top:198px;}
-.slot-sub-1{left:calc(33.33% + 1px);top:198px;}
-.slot-sub-2{left:calc(66.66% + 2px);top:198px;}
 
-/* ===== BOT ROW (slots 5,6,7,8) ===== */
-.slot-bot{
-  width:calc(25% - 4px);height:80px;
-  border-radius:10px;
-  background:var(--card);border:1px solid rgba(0,0,0,.03);
+/* ========================================
+   ROW 3: BOT — 4 cards
+   ======================================== */
+.row-bot{
+  display:flex;gap:4px;padding:0 10px;margin-bottom:6px;
+}
+.frame-bot{
+  flex:1;min-width:0;
+  height:76px;border-radius:10px;
+  background:var(--card);
+  border:1px solid rgba(0,0,0,.03);
   opacity:.65;
+  overflow:hidden;
+  transition:transform var(--dur) var(--ease),opacity var(--dur) var(--ease);
+  will-change:transform,opacity;
 }
-.slot-bot-0{left:0;top:326px;}
-.slot-bot-1{left:calc(25% + 0px);top:326px;}
-.slot-bot-2{left:calc(50% + 0px);top:326px;}
-.slot-bot-3{left:calc(75% + 0px);top:326px;}
 
-/* ========== CONTENT STYLES ========== */
+/* ========================================
+   CONTENT STYLES (inside frames)
+   ======================================== */
 
-/* Mobile preview */
-.mob-inner{height:100%;padding:6px;color:#fff;display:flex;flex-direction:column;position:relative;overflow:hidden;}
-.mob-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-.mob-logo{font-size:6px;font-weight:800;opacity:.5;}
-.mob-banner{border-radius:8px;padding:6px;margin-bottom:4px;
-  background:linear-gradient(135deg,rgba(196,127,23,.2),rgba(139,92,246,.15));position:relative;overflow:hidden;}
-.mob-btag{font-size:5px;font-weight:700;color:#FFD700;letter-spacing:.5px;}
-.mob-btitle{font-size:8px;font-weight:800;margin-top:1px;line-height:1.2;}
-.mob-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-top:auto;}
-.mob-gi{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:14px;}
-.mob-label{font-size:5px;opacity:.5;text-align:center;padding:2px;}
+/* Mobile preview inner */
+.mob-in{height:100%;padding:6px;color:#fff;display:flex;flex-direction:column;overflow:hidden;}
+.mob-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.mob-lo{font-size:6px;font-weight:800;opacity:.5;}
+.mob-bn{border-radius:8px;padding:5px;margin-bottom:3px;
+  background:linear-gradient(135deg,rgba(196,127,23,.2),rgba(139,92,246,.15));}
+.mob-bt{font-size:5px;font-weight:700;color:#FFD700;letter-spacing:.5px;}
+.mob-btt{font-size:7px;font-weight:800;margin-top:1px;line-height:1.2;}
+.mob-gr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-top:auto;}
+.mob-gi{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.mob-lb{font-size:5px;opacity:.4;text-align:center;padding:2px;}
 
-/* Info panel */
-.info-inner{padding:10px;height:100%;display:flex;flex-direction:column;position:relative;}
-.info-glow{position:absolute;top:-30px;right:-30px;width:80px;height:80px;
+/* Info panel inner */
+.inf-in{padding:10px;height:100%;display:flex;flex-direction:column;position:relative;}
+.inf-glow{position:absolute;top:-30px;right:-30px;width:80px;height:80px;
   background:radial-gradient(circle,rgba(196,127,23,.08),transparent 70%);}
-.info-dia{position:absolute;right:6px;top:4px;font-size:52px;font-weight:900;line-height:.85;
+.inf-dia{position:absolute;right:6px;top:4px;font-size:50px;font-weight:900;line-height:.85;
   background:linear-gradient(180deg,#FFD54F,#C47F17,#8B6914);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   filter:drop-shadow(0 2px 3px rgba(196,127,23,.2));opacity:.25;}
-.info-tier{font-size:7px;font-weight:700;color:var(--gold);padding:2px 6px;border-radius:4px;
+.inf-tier{font-size:7px;font-weight:700;color:var(--gold);padding:2px 6px;border-radius:4px;
   background:rgba(196,127,23,.08);display:inline-block;width:fit-content;position:relative;z-index:2;}
-.info-name{font-size:20px;font-weight:900;letter-spacing:-1px;line-height:1.1;margin-top:auto;position:relative;z-index:2;}
-.info-stats{display:flex;gap:6px;margin-top:5px;position:relative;z-index:2;}
-.info-st{text-align:center;}
-.info-st .l{font-size:7px;color:var(--text3);}
-.info-st .v{font-size:15px;font-weight:900;letter-spacing:-.5px;}
-.info-st .v.gd{color:var(--gold);}
-.info-bot{display:flex;align-items:center;gap:4px;margin-top:5px;position:relative;z-index:2;}
-.info-stars{font-size:8px;letter-spacing:1px;filter:saturate(1.5);}
-.info-score{font-size:12px;font-weight:900;color:var(--gold);}
-.info-meta{font-size:6px;color:var(--text3);margin-left:auto;}
+.inf-name{font-size:20px;font-weight:900;letter-spacing:-1px;line-height:1.1;margin-top:auto;position:relative;z-index:2;}
+.inf-sts{display:flex;gap:6px;margin-top:5px;position:relative;z-index:2;}
+.inf-st{text-align:center;}.inf-st .l{font-size:7px;color:var(--text3);}
+.inf-st .v{font-size:15px;font-weight:900;letter-spacing:-.5px;}.inf-st .v.gd{color:var(--gold);}
+.inf-bot{display:flex;align-items:center;gap:4px;margin-top:5px;position:relative;z-index:2;}
+.inf-stars{font-size:8px;letter-spacing:1px;filter:saturate(1.5);}
+.inf-score{font-size:12px;font-weight:900;color:var(--gold);}
+.inf-meta{font-size:6px;color:var(--text3);margin-left:auto;}
 
-/* Sub card */
-.sub-inner{padding:7px 5px;height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;}
+/* Sub card inner */
+.sub-in{padding:7px 5px;height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;}
 .sub-tag{font-size:6px;font-weight:700;padding:2px 5px;border-radius:4px;display:inline-block;margin-bottom:2px;}
 .sub-tag.blue{background:var(--blue-l);color:var(--blue);}
 .sub-tag.purple{background:rgba(139,92,246,.08);color:var(--purple);}
@@ -160,62 +165,38 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .sub-sts .l{font-size:5px;color:var(--text3);}
 .sub-sts .v{font-size:11px;font-weight:800;}
 
-/* Bot card */
-.bot-inner{padding:5px 3px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+/* Bot card inner */
+.bot-in{padding:5px 3px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
 .bot-nm{font-size:9px;font-weight:800;letter-spacing:-.2px;}
 .bot-kr{font-size:6px;color:var(--text3);}
 .bot-v{font-size:10px;font-weight:800;margin-top:2px;}
 
-/* pkg colors */
+/* Pkg colors */
 .c-gold{color:var(--gold);}.c-blue{color:var(--blue);}.c-purple{color:var(--purple);}.c-cyan{color:var(--cyan);}.c-orange{color:#E97316;}
 
-/* ===== TRANSITION STATES ===== */
-/* exit: mobile goes UP */
-.slot-mobile.anim-exit{transform:translate3d(0,-110%,0) !important;opacity:0 !important;}
-/* exit: info goes RIGHT */
-.slot-info.anim-exit{transform:translate3d(110%,0,0) !important;opacity:0 !important;}
-/* sub[0] rises up+left to mobile pos */
-.slot-sub.anim-rise-mob{
-  transform:translate3d(0,-198px,0) !important;
-  height:190px !important;
-  opacity:0.6 !important;
-}
-/* sub[1] rises up+grows to info pos */
-.slot-sub.anim-rise-info{
-  transform:translate3d(0,-198px,0) scale(1.02) !important;
-  opacity:0.6 !important;
-}
-/* sub[2] shifts left */
-.slot-sub.anim-shift-l{transform:translate3d(calc(-33.33% - 1px),0,0) !important;}
-/* bot rises to sub row */
-.slot-bot.anim-rise{transform:translate3d(0,-128px,0) !important;opacity:.8 !important;}
-/* bot shifts left */
-.slot-bot.anim-shift-l{transform:translate3d(-25%,0,0) !important;}
-/* enter from right */
-.slot-bot.anim-enter{transform:translate3d(120%,0,0) !important;opacity:0 !important;transition:none !important;}
+/* ========================================
+   ANIMATION CLASSES
+   ======================================== */
+.anim-up{transform:translate3d(0,-110%,0) !important;opacity:0 !important;}
+.anim-right{transform:translate3d(110%,0,0) !important;opacity:0 !important;}
+.anim-down{transform:translate3d(0,110%,0) !important;opacity:0 !important;}
+.anim-left{transform:translate3d(-110%,0,0) !important;opacity:0 !important;}
+.anim-shrink{transform:scale(.85) !important;opacity:.3 !important;}
+.no-anim{transition:none !important;}
 
-/* ===== NO TRANSITION (for reset) ===== */
-.no-trans{transition:none !important;}
-
-/* ===== SWIPE HINT ===== */
-.swipe-hint{text-align:center;font-size:9px;color:var(--text3);padding:6px 0;opacity:.5;
-  animation:hp 2.5s ease infinite;}
-@keyframes hp{0%,100%{opacity:.3}50%{opacity:.7}}
-
-/* ===== LIST ===== */
-.list-section{padding:0 10px;margin-top:6px;}
+/* ========================================
+   LIST + LIVE
+   ======================================== */
+.list-sec{padding:0 10px;margin-top:4px;}
 .rn{border-radius:12px;padding:10px;background:var(--card);backdrop-filter:blur(20px);
   border:1px solid rgba(0,0,0,.04);display:flex;align-items:center;gap:8px;
   margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.02);}
 .rn-logo{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;
   font-size:5px;font-weight:800;color:#fff;flex-shrink:0;text-align:center;line-height:1.1;}
-.rn-i{flex:1;}
-.rn-nm{font-size:11px;font-weight:700;}
+.rn-i{flex:1;}.rn-nm{font-size:11px;font-weight:700;}
 .rn-m{display:flex;align-items:center;gap:3px;margin-top:1px;}
-.rn-st{font-size:7px;letter-spacing:1px;}
-.rn-sc{font-size:9px;font-weight:700;color:var(--text3);}
-.rn-r{text-align:right;flex-shrink:0;}
-.rn-p{font-size:14px;font-weight:800;}
+.rn-st{font-size:7px;letter-spacing:1px;}.rn-sc{font-size:9px;font-weight:700;color:var(--text3);}
+.rn-r{text-align:right;flex-shrink:0;}.rn-p{font-size:14px;font-weight:800;}
 .rn-c{font-size:7px;color:var(--text3);}
 
 .live-t{font-size:11px;font-weight:800;padding:6px 10px 3px;}
@@ -223,14 +204,17 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   display:flex;align-items:center;gap:8px;margin:0 10px 6px;}
 .live-badge{background:#DC2626;color:#fff;font-size:6px;font-weight:800;padding:1px 4px;border-radius:3px;margin-right:2px;}
 
+.swipe-hint{text-align:center;font-size:9px;color:var(--text3);padding:4px 0;opacity:.5;
+  animation:hp 2.5s ease infinite;}
+@keyframes hp{0%,100%{opacity:.3}50%{opacity:.7}}
+
 /* Bottom nav */
 .bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
   width:100%;max-width:430px;height:56px;
   display:flex;align-items:center;justify-content:space-around;
   background:rgba(242,240,237,.95);backdrop-filter:blur(20px);
   border-top:1px solid rgba(0,0,0,.06);z-index:100;}
-.nav-item{font-size:18px;opacity:.3;padding:8px;}
-.nav-item.on{opacity:1;}
+.nav-item{font-size:18px;opacity:.3;padding:8px;}.nav-item.on{opacity:1;}
 </style>
 </head>
 <body>
@@ -253,28 +237,37 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   <div class="sort-btn">가입 높은순</div><div class="sort-btn">이벤트</div>
 </div>
 
-<div class="sec-t">최고 조건 추천 <span id="cnt"></span></div>
+<div class="sec-t">최고 조건 추천 <span id="cnt">10개</span></div>
 
-<!-- ========== RANKING AREA (fixed height) ========== -->
-<div class="rank-area" id="rankArea" style="height:416px;">
-  <!-- slot 0: mobile preview -->
-  <div class="slot slot-mobile" id="s0"></div>
-  <!-- slot 1: info banner -->
-  <div class="slot slot-info" id="s1"></div>
-  <!-- slot 2,3,4: sub cards -->
-  <div class="slot slot-sub slot-sub-0" id="s2"></div>
-  <div class="slot slot-sub slot-sub-1" id="s3"></div>
-  <div class="slot slot-sub slot-sub-2" id="s4"></div>
-  <!-- slot 5,6,7,8: bot cards -->
-  <div class="slot slot-bot slot-bot-0" id="s5"></div>
-  <div class="slot slot-bot slot-bot-1" id="s6"></div>
-  <div class="slot slot-bot slot-bot-2" id="s7"></div>
-  <div class="slot slot-bot slot-bot-3" id="s8"></div>
+<!-- ===== PRE-LAID-OUT FRAMES ===== -->
+
+<!-- ROW 1: Hero -->
+<div class="row-hero">
+  <div class="frame-mobile" id="f0"></div>
+  <div class="frame-info" id="f1"></div>
+</div>
+
+<!-- ROW 2: Sub (3 cards) -->
+<div class="row-sub">
+  <div class="frame-sub" id="f2"></div>
+  <div class="frame-sub" id="f3"></div>
+  <div class="frame-sub" id="f4"></div>
+</div>
+
+<!-- ROW 3: Bot (4 cards) -->
+<div class="row-bot">
+  <div class="frame-bot" id="f5"></div>
+  <div class="frame-bot" id="f6"></div>
+  <div class="frame-bot" id="f7"></div>
+  <div class="frame-bot" id="f8"></div>
 </div>
 
 <div class="swipe-hint">← 스와이프하여 랭킹 순환 →</div>
 
-<div class="list-section" id="listSec"></div>
+<!-- LIST -->
+<div class="list-sec" id="listSec"></div>
+
+<!-- LIVE -->
 <div class="live-t">라이브 조건 피드</div>
 <div id="liveFeed"></div>
 
@@ -287,215 +280,173 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 
 <script>
 var D=[
-  {n:'겜블시티',en:'AMBLE\nCITY',ef:'AMBLE CITY',f:31,r:15,c:5,rt:9.4,rv:328,u:4520,p:'gold',tag:'Diamond Tier',ic:['🎰','🃏','⚽','🎲','🎯','🏆']},
-  {n:'벳콩',en:'BET\nKONG',ef:'BETKONG',f:31,r:12,c:4,rt:9.1,rv:245,u:3800,p:'blue',tag:'High Volume',ic:['🎰','🃏','⚽','🏀','🎲','💎']},
-  {n:'크리스탈벳',en:'CRYSTAL\nBET',ef:'CRYSTALBET',f:27,r:13,c:6,rt:8.8,rv:190,u:2900,p:'purple',tag:'Live Cashout',ic:['🃏','🎰','♠️','♦️','🎲','💎']},
-  {n:'다이아몬드',en:'DIA\nMOND',ef:'DIAMOND',f:25,r:14,c:5,rt:9.0,rv:210,u:3100,p:'cyan',tag:'Premium Pick',ic:['💎','🎰','⚽','🃏','🏆','🎯']},
-  {n:'로얄킹',en:'ROYAL\nKING',ef:'ROYAL KING',f:24,r:11,c:4,rt:8.5,rv:167,u:2400,p:'gold',tag:'Fast Withdrawal',ic:['👑','🎰','🃏','⚽','🎲','💰']},
-  {n:'골드러시',en:'GOLD\nRUSH',ef:'GOLD RUSH',f:23,r:9,c:3,rt:7.8,rv:120,u:1600,p:'orange',tag:'Rising Star',ic:['🌟','🎰','⚽','🃏','🎲','🏆']},
-  {n:'에이스벳',en:'ACE\nBET',ef:'ACEBET',f:22,r:12,c:5,rt:8.2,rv:155,u:2100,p:'',tag:'Trusted',ic:['♠️','🎰','🃏','⚽','💎','🎲']},
-  {n:'럭키스타',en:'LUCKY\nSTAR',ef:'LUCKY STAR',f:28,r:10,c:3,rt:7.2,rv:89,u:1200,p:'',tag:'New Entry',ic:['⭐','🎰','🃏','🎲','⚽','🏀']},
-  {n:'잭팟시티',en:'JACK\nPOT',ef:'JACKPOT',f:29,r:13,c:5,rt:8.7,rv:200,u:3000,p:'gold',tag:'Mega Jackpot',ic:['🎰','💰','🃏','⚽','🏆','💎']},
-  {n:'스핀존',en:'SPIN\nZONE',ef:'SPINZONE',f:26,r:11,c:4,rt:8.0,rv:130,u:1900,p:'purple',tag:'Slot Master',ic:['🎰','🌀','🃏','💎','⚽','🎲']},
+  {n:'겜블시티',ef:'AMBLE CITY',en:'AMBLE\nCITY',f:31,r:15,c:5,rt:9.4,rv:328,u:4520,p:'gold',tag:'Diamond Tier',ic:['🎰','🃏','⚽','🎲','🎯','🏆']},
+  {n:'벳콩',ef:'BETKONG',en:'BET\nKONG',f:31,r:12,c:4,rt:9.1,rv:245,u:3800,p:'blue',tag:'High Volume',ic:['🎰','🃏','⚽','🏀','🎲','💎']},
+  {n:'크리스탈벳',ef:'CRYSTALBET',en:'CRYSTAL\nBET',f:27,r:13,c:6,rt:8.8,rv:190,u:2900,p:'purple',tag:'Live Cashout',ic:['🃏','🎰','♠️','♦️','🎲','💎']},
+  {n:'다이아몬드',ef:'DIAMOND',en:'DIA\nMOND',f:25,r:14,c:5,rt:9.0,rv:210,u:3100,p:'cyan',tag:'Premium Pick',ic:['💎','🎰','⚽','🃏','🏆','🎯']},
+  {n:'로얄킹',ef:'ROYAL KING',en:'ROYAL\nKING',f:24,r:11,c:4,rt:8.5,rv:167,u:2400,p:'gold',tag:'Fast Withdrawal',ic:['👑','🎰','🃏','⚽','🎲','💰']},
+  {n:'골드러시',ef:'GOLD RUSH',en:'GOLD\nRUSH',f:23,r:9,c:3,rt:7.8,rv:120,u:1600,p:'orange',tag:'Rising Star',ic:['🌟','🎰','⚽','🃏','🎲','🏆']},
+  {n:'에이스벳',ef:'ACEBET',en:'ACE\nBET',f:22,r:12,c:5,rt:8.2,rv:155,u:2100,p:'',tag:'Trusted',ic:['♠️','🎰','🃏','⚽','💎','🎲']},
+  {n:'럭키스타',ef:'LUCKY STAR',en:'LUCKY\nSTAR',f:28,r:10,c:3,rt:7.2,rv:89,u:1200,p:'',tag:'New Entry',ic:['⭐','🎰','🃏','🎲','⚽','🏀']},
+  {n:'잭팟시티',ef:'JACKPOT',en:'JACK\nPOT',f:29,r:13,c:5,rt:8.7,rv:200,u:3000,p:'gold',tag:'Mega Jackpot',ic:['🎰','💰','🃏','⚽','🏆','💎']},
+  {n:'스핀존',ef:'SPINZONE',en:'SPIN\nZONE',f:26,r:11,c:4,rt:8.0,rv:130,u:1900,p:'purple',tag:'Slot Master',ic:['🎰','🌀','🃏','💎','⚽','🎲']},
 ];
 var N=D.length,ci=0,busy=false;
 var bgs=['linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)','linear-gradient(135deg,#0f172a,#1e3a5f,#1a1a2e)',
   'linear-gradient(135deg,#2d1b4e,#1a1a2e,#0f3460)','linear-gradient(135deg,#1a2e1a,#162e3e,#0f3460)',
   'linear-gradient(135deg,#2e1a1a,#3e1616,#460f2f)'];
-var gColors=['#FFD700 #C47F17','#DC2626 #991B1B','#2660D4 #1E40AF','#1A8C5E #166534','#8B5CF6 #6D28D9','#E97316 #C2410C'];
+var gC=[['#FFD700','#C47F17'],['#DC2626','#991B1B'],['#2660D4','#1E40AF'],['#1A8C5E','#166534'],['#8B5CF6','#6D28D9'],['#E97316','#C2410C']];
 
 function S(off){return D[(ci+off)%N];}
 function cc(p){return p?'c-'+p:'';}
+function $(id){return document.getElementById(id);}
 
-function mobHTML(s,i){
+function mobH(s,i){
   var bg=bgs[i%bgs.length];
-  var h='<div class="mob-inner" style="background:'+bg+'">';
-  h+='<div class="mob-hdr"><div class="mob-logo">'+s.ef+'</div></div>';
-  h+='<div class="mob-banner"><div class="mob-btag">⚡ '+s.tag+'</div>';
-  h+='<div class="mob-btitle">'+s.n+' 특별 이벤트</div></div>';
-  h+='<div class="mob-grid">';
-  s.ic.forEach(function(ic,j){
-    var gc=gColors[j%gColors.length].split(' ');
-    h+='<div class="mob-gi" style="background:linear-gradient(135deg,'+gc[0]+','+gc[1]+')">'+ic+'</div>';
-  });
-  h+='</div><div class="mob-label">'+s.n+' · 라이브</div></div>';
-  return h;
+  return '<div class="mob-in" style="background:'+bg+'">'+
+    '<div class="mob-hd"><div class="mob-lo">'+s.ef+'</div></div>'+
+    '<div class="mob-bn"><div class="mob-bt">⚡ '+s.tag+'</div>'+
+    '<div class="mob-btt">'+s.n+' 특별 이벤트</div></div>'+
+    '<div class="mob-gr">'+s.ic.map(function(ic,j){
+      return '<div class="mob-gi" style="background:linear-gradient(135deg,'+gC[j][0]+','+gC[j][1]+')">'+ic+'</div>';
+    }).join('')+'</div>'+
+    '<div class="mob-lb">'+s.n+' · 라이브</div></div>';
 }
 
-function infoHTML(s){
-  var h='<div class="info-inner"><div class="info-glow"></div>';
-  h+='<div class="info-dia">1</div>';
-  h+='<div class="info-tier">◆ '+s.tag+'</div>';
-  h+='<div class="info-name '+cc(s.p)+'">'+s.en.replace('\n','<br>')+'</div>';
-  h+='<div class="info-stats">';
-  h+='<div class="info-st"><div class="l">캐시백</div><div class="v gd">'+s.c+'%</div></div>';
-  h+='<div class="info-st"><div class="l">첫충</div><div class="v gd">'+s.f+'%</div></div>';
-  h+='</div>';
-  h+='<div class="info-bot"><span class="info-stars">⭐⭐⭐⭐⭐</span>';
-  h+='<span class="info-score">'+s.rt+'</span>';
-  h+='<span class="info-meta">'+s.rv+'건·'+s.u+'명</span></div></div>';
-  return h;
+function infH(s){
+  return '<div class="inf-in"><div class="inf-glow"></div><div class="inf-dia">1</div>'+
+    '<div class="inf-tier">◆ '+s.tag+'</div>'+
+    '<div class="inf-name '+cc(s.p)+'">'+s.en.replace('\n','<br>')+'</div>'+
+    '<div class="inf-sts">'+
+    '<div class="inf-st"><div class="l">캐시백</div><div class="v gd">'+s.c+'%</div></div>'+
+    '<div class="inf-st"><div class="l">첫충</div><div class="v gd">'+s.f+'%</div></div>'+
+    '</div>'+
+    '<div class="inf-bot"><span class="inf-stars">⭐⭐⭐⭐⭐</span>'+
+    '<span class="inf-score">'+s.rt+'</span>'+
+    '<span class="inf-meta">'+s.rv+'건·'+s.u+'명</span></div></div>';
 }
 
-function subHTML(s){
+function subH(s){
   var tc=s.p||'gold';
-  var h='<div class="sub-inner">';
-  h+='<div class="sub-tag '+tc+'">'+s.tag+'</div>';
-  h+='<div class="sub-nm '+cc(s.p)+'">'+s.ef+'</div>';
-  h+='<div class="sub-kr">'+s.n+' ⭐'+s.rt+'</div>';
-  h+='<div class="sub-sts">';
-  h+='<div><div class="l">첫충</div><div class="v">'+s.f+'%</div></div>';
-  h+='<div><div class="l">매충</div><div class="v">'+s.r+'%</div></div>';
-  h+='<div><div class="l">캐시백</div><div class="v">'+s.c+'%</div></div>';
-  h+='</div></div>';
-  return h;
+  return '<div class="sub-in">'+
+    '<div class="sub-tag '+tc+'">'+s.tag+'</div>'+
+    '<div class="sub-nm '+cc(s.p)+'">'+s.ef+'</div>'+
+    '<div class="sub-kr">'+s.n+' ⭐'+s.rt+'</div>'+
+    '<div class="sub-sts">'+
+    '<div><div class="l">첫충</div><div class="v">'+s.f+'%</div></div>'+
+    '<div><div class="l">매충</div><div class="v">'+s.r+'%</div></div>'+
+    '<div><div class="l">캐시백</div><div class="v">'+s.c+'%</div></div>'+
+    '</div></div>';
 }
 
-function botHTML(s){
-  var h='<div class="bot-inner">';
-  h+='<div class="bot-nm '+cc(s.p)+'">'+s.ef+'</div>';
-  h+='<div class="bot-kr">'+s.n+'</div>';
-  h+='<div class="bot-v">'+s.f+'%</div></div>';
-  return h;
+function botH(s){
+  return '<div class="bot-in">'+
+    '<div class="bot-nm '+cc(s.p)+'">'+s.ef+'</div>'+
+    '<div class="bot-kr">'+s.n+'</div>'+
+    '<div class="bot-v">'+s.f+'%</div></div>';
 }
 
 function fill(){
-  var el=function(id){return document.getElementById(id);};
-  el('s0').innerHTML=mobHTML(S(0),ci);
-  el('s0').style.background=bgs[ci%bgs.length];
-  el('s1').innerHTML=infoHTML(S(0));
-  el('s2').innerHTML=subHTML(S(1));
-  el('s3').innerHTML=subHTML(S(2));
-  el('s4').innerHTML=subHTML(S(3));
-  el('s5').innerHTML=botHTML(S(4));
-  el('s6').innerHTML=botHTML(S(5));
-  el('s7').innerHTML=botHTML(S(6));
-  el('s8').innerHTML=botHTML(S(7));
-
-  document.getElementById('cnt').textContent=N+'개';
+  $('f0').innerHTML=mobH(S(0),ci);
+  $('f0').style.background=bgs[ci%bgs.length];
+  $('f1').innerHTML=infH(S(0));
+  for(var i=1;i<=3;i++) $('f'+(i+1)).innerHTML=subH(S(i));
+  for(var i=4;i<=7;i++) $('f'+(i+1)).innerHTML=botH(S(i));
 
   // List
   var lh='';
-  for(var i=8;i<Math.min(10,N);i++){
-    var s=S(i);
-    var bg2=s.p==='purple'?'#8B5CF6':s.p==='gold'?'#C47F17':s.p==='blue'?'#2660D4':'#777';
-    lh+='<div class="rn"><div class="rn-logo" style="background:'+bg2+'">'+s.ef.substring(0,4)+'</div>';
-    lh+='<div class="rn-i"><div class="rn-nm">'+s.n+'</div>';
-    lh+='<div class="rn-m"><span class="rn-st">⭐⭐⭐⭐⭐</span><span class="rn-sc">'+s.rt+'</span></div></div>';
-    lh+='<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
+  for(var i=8;i<N;i++){
+    var s=S(i),bg=s.p==='purple'?'#8B5CF6':s.p==='gold'?'#C47F17':s.p==='blue'?'#2660D4':s.p==='orange'?'#E97316':'#777';
+    lh+='<div class="rn"><div class="rn-logo" style="background:'+bg+'">'+s.ef.substring(0,4)+'</div>'+
+      '<div class="rn-i"><div class="rn-nm">'+s.n+'</div>'+
+      '<div class="rn-m"><span class="rn-st">⭐⭐⭐⭐⭐</span><span class="rn-sc">'+s.rt+'</span></div></div>'+
+      '<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
   }
-  document.getElementById('listSec').innerHTML=lh;
+  $('listSec').innerHTML=lh;
 
+  // Live
   var fh='';
   for(var i=0;i<2;i++){
-    var s=S(i+1);var bg3=s.p==='purple'?'#8B5CF6':s.p==='blue'?'#2660D4':'#C47F17';
-    fh+='<div class="live-item"><div class="rn-logo" style="background:'+bg3+';width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:5px;font-weight:800;color:#fff;flex-shrink:0">'+s.ef.substring(0,4)+'</div>';
-    fh+='<div style="flex:1"><div style="font-size:11px;font-weight:700">'+s.n+'</div>';
-    fh+='<div style="font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:1px"><span class="live-badge">LIVE</span>특별 보너스 이벤트</div></div>';
-    fh+='<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
+    var s=S(i+1),bg2=s.p==='purple'?'#8B5CF6':s.p==='blue'?'#2660D4':s.p==='gold'?'#C47F17':'#777';
+    fh+='<div class="live-item"><div class="rn-logo" style="background:'+bg2+';width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:5px;font-weight:800;color:#fff;flex-shrink:0">'+s.ef.substring(0,4)+'</div>'+
+      '<div style="flex:1"><div style="font-size:11px;font-weight:700">'+s.n+'</div>'+
+      '<div style="font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:1px"><span class="live-badge">LIVE</span>특별 보너스 이벤트</div></div>'+
+      '<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
   }
-  document.getElementById('liveFeed').innerHTML=fh;
+  $('liveFeed').innerHTML=fh;
 }
 
-function resetTransforms(){
-  for(var i=0;i<=8;i++){
-    var el=document.getElementById('s'+i);
-    el.classList.add('no-trans');
-    el.style.transform='';el.style.opacity='';el.style.height='';
-    el.className=el.className.replace(/\banim-\S+/g,'').replace(/\bno-trans\b/g,'').trim();
+// ========== ANIMATION ==========
+function animAll(dir){
+  // dir: 'next' or 'prev'
+  var fs=[];for(var i=0;i<=8;i++)fs[i]=$('f'+i);
+
+  // Apply directional exit classes simultaneously
+  if(dir==='next'){
+    fs[0].classList.add('anim-up');      // mobile ↑
+    fs[1].classList.add('anim-right');    // info →
+    fs[2].classList.add('anim-up');       // sub0 ↑
+    fs[3].classList.add('anim-left');     // sub1 ←
+    fs[4].classList.add('anim-left');     // sub2 ←
+    fs[5].classList.add('anim-up');       // bot0 ↑
+    fs[6].classList.add('anim-left');     // bot1 ←
+    fs[7].classList.add('anim-up');       // bot2 ↑
+    fs[8].classList.add('anim-left');     // bot3 ←
+  } else {
+    fs[0].classList.add('anim-down');     // mobile ↓
+    fs[1].classList.add('anim-left');     // info ←
+    fs[2].classList.add('anim-down');     // sub0 ↓
+    fs[3].classList.add('anim-right');    // sub1 →
+    fs[4].classList.add('anim-right');    // sub2 →
+    fs[5].classList.add('anim-down');     // bot0 ↓
+    fs[6].classList.add('anim-right');    // bot1 →
+    fs[7].classList.add('anim-down');     // bot2 ↓
+    fs[8].classList.add('anim-right');    // bot3 →
   }
+}
+
+function clearAnim(){
+  for(var i=0;i<=8;i++){
+    var el=$('f'+i);
+    el.classList.add('no-anim');
+    el.classList.remove('anim-up','anim-down','anim-left','anim-right','anim-shrink');
+    el.style.transform='';el.style.opacity='';
+  }
+}
+
+function restoreAnim(){
+  requestAnimationFrame(function(){
+    for(var i=0;i<=8;i++) $('f'+i).classList.remove('no-anim');
+  });
 }
 
 function cycleNext(){
   if(busy)return;busy=true;
-  var els=[];for(var i=0;i<=8;i++)els[i]=document.getElementById('s'+i);
-
-  // Re-enable transitions
-  els.forEach(function(e){e.classList.remove('no-trans');});
-
-  // ZIGZAG SIMULTANEOUS ANIMATION:
-  // s0 (mobile): ↑ exit up
-  els[0].style.transform='translate3d(0,-110%,0)';
-  els[0].style.opacity='0';
-
-  // s1 (info): → exit right
-  els[1].style.transform='translate3d(110%,0,0)';
-  els[1].style.opacity='0';
-
-  // s2 (sub0): ↑ rise to hero area
-  els[2].style.transform='translate3d(0,-198px,0)';
-  els[2].style.opacity='0.5';
-
-  // s3 (sub1): ← shift left to sub0
-  els[3].style.transform='translate3d(calc(-33.33% - 5px),0,0)';
-
-  // s4 (sub2): ← shift left to sub1
-  els[4].style.transform='translate3d(calc(-33.33% - 5px),0,0)';
-
-  // s5 (bot0): ↑ rise to sub row
-  els[5].style.transform='translate3d(0,-128px,0)';
-  els[5].style.opacity='.85';
-
-  // s6 (bot1): ← shift left to bot0
-  els[6].style.transform='translate3d(-25%,0,0)';
-
-  // s7 (bot2): ← shift left to bot1
-  els[7].style.transform='translate3d(-25%,0,0)';
-
-  // s8 (bot3): ← shift left to bot2
-  els[8].style.transform='translate3d(-25%,0,0)';
-
+  animAll('next');
   setTimeout(function(){
     ci=(ci+1)%N;
-    resetTransforms();
-    // Use rAF to ensure no-trans is applied before fill
-    requestAnimationFrame(function(){
-      fill();
-      requestAnimationFrame(function(){
-        // Remove no-trans to re-enable for next cycle
-        for(var i=0;i<=8;i++){
-          document.getElementById('s'+i).classList.remove('no-trans');
-        }
-        busy=false;
-      });
-    });
-  },520);
+    clearAnim();
+    fill();
+    restoreAnim();
+    busy=false;
+  },500);
 }
 
 function cyclePrev(){
   if(busy)return;busy=true;
-  var els=[];for(var i=0;i<=8;i++)els[i]=document.getElementById('s'+i);
-  els.forEach(function(e){e.classList.remove('no-trans');});
-
-  // Reverse: mobile goes DOWN, info goes LEFT
-  els[0].style.transform='translate3d(0,110%,0)';els[0].style.opacity='0';
-  els[1].style.transform='translate3d(-110%,0,0)';els[1].style.opacity='0';
-  // Subs shift right
-  els[2].style.transform='translate3d(calc(33.33% + 5px),0,0)';
-  els[3].style.transform='translate3d(calc(33.33% + 5px),0,0)';
-  els[4].style.transform='translate3d(calc(33.33% + 5px),128px,0)';els[4].style.opacity='.5';
-  // Bots shift right
-  els[5].style.transform='translate3d(25%,0,0)';
-  els[6].style.transform='translate3d(25%,0,0)';
-  els[7].style.transform='translate3d(25%,0,0)';
-  els[8].style.transform='translate3d(25%,80px,0)';els[8].style.opacity='0';
-
+  animAll('prev');
   setTimeout(function(){
     ci=(ci-1+N)%N;
-    resetTransforms();
-    requestAnimationFrame(function(){
-      fill();
-      requestAnimationFrame(function(){
-        for(var i=0;i<=8;i++)document.getElementById('s'+i).classList.remove('no-trans');
-        busy=false;
-      });
-    });
-  },520);
+    clearAnim();
+    fill();
+    restoreAnim();
+    busy=false;
+  },500);
 }
 
 // Swipe
 (function(){
-  var a=document.getElementById('mainArea'),sx=0,sy=0,st=0;
+  var a=$('mainArea'),sx=0,sy=0,st=0;
   a.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();},{passive:true});
   a.addEventListener('touchend',function(e){
     var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy,dt=Date.now()-st;
@@ -505,8 +456,8 @@ function cyclePrev(){
   },{passive:true});
   var md=false;
   a.addEventListener('mousedown',function(e){md=true;sx=e.clientX;st=Date.now();});
-  a.addEventListener('mouseup',function(e){if(!md)return;md=false;var dx=e.clientX-sx;
-    if(Math.abs(dx)>45&&Date.now()-st<500){if(dx<0)cycleNext();else cyclePrev();}});
+  a.addEventListener('mouseup',function(e){if(!md)return;md=false;
+    if(Math.abs(e.clientX-sx)>45&&Date.now()-st<500){if(e.clientX-sx<0)cycleNext();else cyclePrev();}});
   document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')cyclePrev();if(e.key==='ArrowRight')cycleNext();});
 })();
 
