@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>OPTION — Physics Cascade</title>
+<title>OPTION — Drum Rotate</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -23,7 +23,6 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   -webkit-overflow-scrolling:touch;padding-bottom:20px;}
 .main::-webkit-scrollbar{display:none;}
 
-/* Poll */
 .poll{margin:4px 4px;border-radius:12px;background:var(--card);backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,.6);padding:8px 12px;box-shadow:0 4px 16px rgba(0,0,0,.03);
   position:relative;overflow:hidden;}
@@ -58,35 +57,45 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .row-sub{display:flex;gap:3px;padding:0 4px;margin-bottom:4px;}
 .row-bot{display:flex;gap:3px;padding:0 4px;margin-bottom:4px;}
 
-/* ========== FRAMES — each is a 3D stage ========== */
-.frame{
+/* ========== DRUM FRAME ========== */
+.drum{
   overflow:hidden;position:relative;
-  perspective:600px;
+  perspective:800px;
 }
-/* The rotating content panel inside each frame */
-.frame .panel{
+/* The rotor — holds front + back faces */
+.drum .rotor{
   width:100%;height:100%;
-  transform-style:preserve-3d;
-  backface-visibility:hidden;
   position:relative;
+  transform-style:preserve-3d;
+  /* NO transition by default — JS controls it */
+}
+/* Each face */
+.drum .face{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  backface-visibility:hidden;
+  overflow:hidden;
+}
+/* Back face is rotated 180° around X (drum flip) */
+.drum .face-back{
+  transform:rotateX(180deg);
 }
 
 /* Frame sizes */
-.f-mobile{
+.d-mobile{
   width:calc(33.33% - 2px);flex-shrink:0;height:210px;border-radius:12px;
   background:#1a1a2e;box-shadow:0 4px 16px rgba(0,0,0,.12);
 }
-.f-info{
+.d-info{
   flex:1;height:210px;border-radius:12px;
   background:linear-gradient(145deg,#FFFDF8,#FFF8ED,#FFF4E0);
   border:1.5px solid rgba(196,127,23,.15);box-shadow:0 6px 24px rgba(196,127,23,.06);
 }
-.f-sub{
+.d-sub{
   flex:1;min-width:0;height:155px;border-radius:10px;
   background:var(--card);backdrop-filter:blur(20px);
   border:1px solid rgba(0,0,0,.04);box-shadow:0 2px 8px rgba(0,0,0,.03);
 }
-.f-bot{
+.d-bot{
   flex:1;min-width:0;height:110px;border-radius:10px;
   background:var(--card);border:1px solid rgba(0,0,0,.03);
 }
@@ -103,7 +112,8 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .mob-gi{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;}
 .mob-lb{font-size:5px;opacity:.4;text-align:center;padding:2px;}
 
-.inf-in{padding:10px;height:100%;display:flex;flex-direction:column;position:relative;}
+.inf-in{padding:10px;height:100%;display:flex;flex-direction:column;position:relative;
+  background:linear-gradient(145deg,#FFFDF8,#FFF8ED,#FFF4E0);}
 .inf-glow{position:absolute;top:-30px;right:-30px;width:80px;height:80px;
   background:radial-gradient(circle,rgba(196,127,23,.08),transparent 70%);}
 .inf-dia{position:absolute;right:6px;top:4px;font-size:50px;font-weight:900;line-height:.85;
@@ -121,7 +131,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .inf-score{font-size:12px;font-weight:900;color:var(--gold);}
 .inf-meta{font-size:6px;color:var(--text3);margin-left:auto;}
 
-.sub-in{height:100%;display:flex;flex-direction:column;overflow:hidden;}
+.sub-in{height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--card);}
 .sub-img{height:65px;position:relative;overflow:hidden;}
 .sub-img .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;padding:4px;width:100%;height:100%;}
 .sub-img .sgi{border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;}
@@ -141,7 +151,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .sub-sts .l{font-size:5px;color:var(--text3);}
 .sub-sts .v{font-size:11px;font-weight:800;}
 
-.bot-in{height:100%;display:flex;flex-direction:column;overflow:hidden;}
+.bot-in{height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--card);}
 .bot-img{height:55px;position:relative;overflow:hidden;}
 .bot-img .bg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;padding:3px;width:100%;height:100%;}
 .bot-img .bgi{border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;}
@@ -152,7 +162,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 
 .c-gold{color:var(--gold);}.c-blue{color:var(--blue);}.c-purple{color:var(--purple);}.c-cyan{color:var(--cyan);}.c-orange{color:#E97316;}
 
-/* ========== LIST + LIVE ========== */
+/* LIST + LIVE */
 .list-sec{padding:0 4px;margin-top:4px;}
 .rn{border-radius:12px;padding:10px;background:var(--card);backdrop-filter:blur(20px);
   border:1px solid rgba(0,0,0,.04);display:flex;align-items:center;gap:8px;
@@ -162,20 +172,16 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .rn-i{flex:1;}.rn-nm{font-size:11px;font-weight:700;}
 .rn-m{display:flex;align-items:center;gap:3px;margin-top:1px;}
 .rn-st{font-size:7px;letter-spacing:1px;}.rn-sc{font-size:9px;font-weight:700;color:var(--text3);}
-.rn-r{text-align:right;flex-shrink:0;}.rn-p{font-size:14px;font-weight:800;}
-.rn-c{font-size:7px;color:var(--text3);}
+.rn-r{text-align:right;flex-shrink:0;}.rn-p{font-size:14px;font-weight:800;}.rn-c{font-size:7px;color:var(--text3);}
 .live-t{font-size:11px;font-weight:800;padding:6px 6px 3px;}
 .live-item{border-radius:12px;padding:10px;background:var(--card);border:1px solid rgba(0,0,0,.04);
   display:flex;align-items:center;gap:8px;margin:0 4px 6px;}
 .live-badge{background:#DC2626;color:#fff;font-size:6px;font-weight:800;padding:1px 4px;border-radius:3px;margin-right:2px;}
-
-.swipe-hint{text-align:center;font-size:9px;color:var(--text3);padding:4px 0;opacity:.5;
-  animation:hp 2.5s ease infinite;}
+.swipe-hint{text-align:center;font-size:9px;color:var(--text3);padding:4px 0;opacity:.5;animation:hp 2.5s ease infinite;}
 @keyframes hp{0%,100%{opacity:.3}50%{opacity:.7}}
 
 .bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:430px;height:56px;
-  display:flex;align-items:center;justify-content:space-around;
+  width:100%;max-width:430px;height:56px;display:flex;align-items:center;justify-content:space-around;
   background:rgba(242,240,237,.95);backdrop-filter:blur(20px);
   border-top:1px solid rgba(0,0,0,.06);z-index:100;}
 .nav-item{font-size:18px;opacity:.3;padding:8px;}.nav-item.on{opacity:1;}
@@ -194,41 +200,42 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
     <div class="p-opt"><div class="p-bar b"></div><div class="p-text">사람색기 아니네</div><div class="p-pct w">69%</div></div>
   </div>
 </div>
-
 <div class="sort-bar">
   <div class="sort-btn on">첫충 높은순</div><div class="sort-btn">매충 높은순</div>
   <div class="sort-btn">캐시백 높은순</div><div class="sort-btn">올인 높은순</div>
   <div class="sort-btn">가입 높은순</div><div class="sort-btn">이벤트</div>
 </div>
-
 <div class="sec-t">최고 조건 추천 <span id="cnt">10개</span></div>
 
-<!-- ROW 1: Hero -->
+<!-- ROW 1 -->
 <div class="row-hero">
-  <div class="frame f-mobile" id="f0"><div class="panel" id="p0"></div></div>
-  <div class="frame f-info" id="f1"><div class="panel" id="p1"></div></div>
+  <div class="drum d-mobile" id="d0"><div class="rotor" id="r0">
+    <div class="face face-front" id="ff0"></div>
+    <div class="face face-back" id="fb0"></div>
+  </div></div>
+  <div class="drum d-info" id="d1"><div class="rotor" id="r1">
+    <div class="face face-front" id="ff1"></div>
+    <div class="face face-back" id="fb1"></div>
+  </div></div>
 </div>
-
-<!-- ROW 2: Sub -->
+<!-- ROW 2 -->
 <div class="row-sub">
-  <div class="frame f-sub" id="f2"><div class="panel" id="p2"></div></div>
-  <div class="frame f-sub" id="f3"><div class="panel" id="p3"></div></div>
-  <div class="frame f-sub" id="f4"><div class="panel" id="p4"></div></div>
+  <div class="drum d-sub" id="d2"><div class="rotor" id="r2"><div class="face face-front" id="ff2"></div><div class="face face-back" id="fb2"></div></div></div>
+  <div class="drum d-sub" id="d3"><div class="rotor" id="r3"><div class="face face-front" id="ff3"></div><div class="face face-back" id="fb3"></div></div></div>
+  <div class="drum d-sub" id="d4"><div class="rotor" id="r4"><div class="face face-front" id="ff4"></div><div class="face face-back" id="fb4"></div></div></div>
 </div>
-
-<!-- ROW 3: Bot -->
+<!-- ROW 3 -->
 <div class="row-bot">
-  <div class="frame f-bot" id="f5"><div class="panel" id="p5"></div></div>
-  <div class="frame f-bot" id="f6"><div class="panel" id="p6"></div></div>
-  <div class="frame f-bot" id="f7"><div class="panel" id="p7"></div></div>
-  <div class="frame f-bot" id="f8"><div class="panel" id="p8"></div></div>
+  <div class="drum d-bot" id="d5"><div class="rotor" id="r5"><div class="face face-front" id="ff5"></div><div class="face face-back" id="fb5"></div></div></div>
+  <div class="drum d-bot" id="d6"><div class="rotor" id="r6"><div class="face face-front" id="ff6"></div><div class="face face-back" id="fb6"></div></div></div>
+  <div class="drum d-bot" id="d7"><div class="rotor" id="r7"><div class="face face-front" id="ff7"></div><div class="face face-back" id="fb7"></div></div></div>
+  <div class="drum d-bot" id="d8"><div class="rotor" id="r8"><div class="face face-front" id="ff8"></div><div class="face face-back" id="fb8"></div></div></div>
 </div>
 
-<div class="swipe-hint">← 스와이프하여 랭킹 순환 →</div>
+<div class="swipe-hint">↑↓ 스와이프하여 랭킹 순환</div>
 <div class="list-sec" id="listSec"></div>
 <div class="live-t">라이브 조건 피드</div>
 <div id="liveFeed"></div>
-
 </div>
 <div class="bot-nav">
   <div class="nav-item">☰</div><div class="nav-item on">📊</div>
@@ -255,92 +262,93 @@ var bgs=['linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)','linear-gradient(135d
   'linear-gradient(135deg,#2e1a1a,#3e1616,#460f2f)'];
 var gC=[['#FFD700','#C47F17'],['#DC2626','#991B1B'],['#2660D4','#1E40AF'],['#1A8C5E','#166534'],['#8B5CF6','#6D28D9'],['#E97316','#C2410C']];
 
-function S(off){return D[(ci+off)%N];}
+function S(off,base){return D[((base!=null?base:ci)+off)%N];}
 function cc(p){return p?'c-'+p:'';}
 function $(id){return document.getElementById(id);}
 
-function iconGrid(icons,colors){
-  return icons.map(function(ic,j){
-    return '<div style="background:linear-gradient(135deg,'+colors[j%colors.length][0]+','+colors[j%colors.length][1]+')">'+ic+'</div>';
-  }).join('');
-}
-
+// ========== HTML BUILDERS ==========
 function mobH(s,i){
   var bg=bgs[i%bgs.length];
   return '<div class="mob-in" style="background:'+bg+'">'+
     '<div class="mob-hd"><div class="mob-lo">'+s.ef+'</div></div>'+
-    '<div class="mob-bn"><div class="mob-bt">⚡ '+s.tag+'</div>'+
-    '<div class="mob-btt">'+s.n+' 특별 이벤트</div></div>'+
-    '<div class="mob-gr">'+s.ic.map(function(ic,j){
-      return '<div class="mob-gi" style="background:linear-gradient(135deg,'+gC[j][0]+','+gC[j][1]+')">'+ic+'</div>';
-    }).join('')+'</div>'+
+    '<div class="mob-bn"><div class="mob-bt">⚡ '+s.tag+'</div><div class="mob-btt">'+s.n+' 특별 이벤트</div></div>'+
+    '<div class="mob-gr">'+s.ic.map(function(ic,j){return '<div class="mob-gi" style="background:linear-gradient(135deg,'+gC[j][0]+','+gC[j][1]+')">'+ic+'</div>';}).join('')+'</div>'+
     '<div class="mob-lb">'+s.n+' · 라이브</div></div>';
 }
-
 function infH(s){
   return '<div class="inf-in"><div class="inf-glow"></div><div class="inf-dia">1</div>'+
     '<div class="inf-tier">◆ '+s.tag+'</div>'+
     '<div class="inf-name '+cc(s.p)+'">'+s.en.replace('\n','<br>')+'</div>'+
-    '<div class="inf-sts">'+
-    '<div class="inf-st"><div class="l">캐시백</div><div class="v gd">'+s.c+'%</div></div>'+
+    '<div class="inf-sts"><div class="inf-st"><div class="l">캐시백</div><div class="v gd">'+s.c+'%</div></div>'+
     '<div class="inf-st"><div class="l">첫충</div><div class="v gd">'+s.f+'%</div></div></div>'+
-    '<div class="inf-bot"><span class="inf-stars">⭐⭐⭐⭐⭐</span>'+
-    '<span class="inf-score">'+s.rt+'</span>'+
+    '<div class="inf-bot"><span class="inf-stars">⭐⭐⭐⭐⭐</span><span class="inf-score">'+s.rt+'</span>'+
     '<span class="inf-meta">'+s.rv+'건·'+s.u+'명</span></div></div>';
 }
-
 function subH(s,i){
-  var tc=s.p||'gold';var bg=bgs[(ci+i)%bgs.length];
-  return '<div class="sub-in">'+
-    '<div class="sub-img" style="background:'+bg+'">'+
-    '<div class="sg">'+s.ic.slice(0,6).map(function(ic,j){
-      return '<div class="sgi" style="background:linear-gradient(135deg,'+gC[j][0]+','+gC[j][1]+')">'+ic+'</div>';
-    }).join('')+'</div>'+
+  var tc=s.p||'gold';var bg=bgs[i%bgs.length];
+  return '<div class="sub-in"><div class="sub-img" style="background:'+bg+'">'+
+    '<div class="sg">'+s.ic.slice(0,6).map(function(ic,j){return '<div class="sgi" style="background:linear-gradient(135deg,'+gC[j][0]+','+gC[j][1]+')">'+ic+'</div>';}).join('')+'</div>'+
     '<div class="sov"><span>'+s.ef+'</span></div></div>'+
     '<div class="sub-body"><div class="sub-tag '+tc+'">'+s.tag+'</div>'+
-    '<div class="sub-nm '+cc(s.p)+'">'+s.ef+'</div>'+
-    '<div class="sub-kr">'+s.n+' ⭐'+s.rt+'</div>'+
-    '<div class="sub-sts">'+
-    '<div><div class="l">첫충</div><div class="v">'+s.f+'%</div></div>'+
+    '<div class="sub-nm '+cc(s.p)+'">'+s.ef+'</div><div class="sub-kr">'+s.n+' ⭐'+s.rt+'</div>'+
+    '<div class="sub-sts"><div><div class="l">첫충</div><div class="v">'+s.f+'%</div></div>'+
     '<div><div class="l">매충</div><div class="v">'+s.r+'%</div></div>'+
-    '<div><div class="l">캐시백</div><div class="v">'+s.c+'%</div></div>'+
-    '</div></div></div>';
+    '<div><div class="l">캐시백</div><div class="v">'+s.c+'%</div></div></div></div></div>';
 }
-
 function botH(s,i){
-  var bg=bgs[(ci+i)%bgs.length];
-  return '<div class="bot-in">'+
-    '<div class="bot-img" style="background:'+bg+'">'+
-    '<div class="bg">'+s.ic.slice(0,6).map(function(ic,j){
-      return '<div class="bgi" style="background:linear-gradient(135deg,'+gC[j][0]+','+gC[j][1]+')">'+ic+'</div>';
-    }).join('')+'</div></div>'+
-    '<div class="bot-body"><div class="bot-nm '+cc(s.p)+'">'+s.ef+'</div>'+
-    '<div class="bot-kr">'+s.n+'</div>'+
+  var bg=bgs[i%bgs.length];
+  return '<div class="bot-in"><div class="bot-img" style="background:'+bg+'">'+
+    '<div class="bg">'+s.ic.slice(0,6).map(function(ic,j){return '<div class="bgi" style="background:linear-gradient(135deg,'+gC[j][0]+','+gC[j][1]+')">'+ic+'</div>';}).join('')+'</div></div>'+
+    '<div class="bot-body"><div class="bot-nm '+cc(s.p)+'">'+s.ef+'</div><div class="bot-kr">'+s.n+'</div>'+
     '<div class="bot-v">'+s.f+'%</div></div></div>';
 }
 
-function fillPanel(idx,html){$('p'+idx).innerHTML=html;}
+function getSlotHTML(slotIdx, base){
+  var b = base!=null?base:ci;
+  if(slotIdx===0) return mobH(S(0,b),b);
+  if(slotIdx===1) return infH(S(0,b));
+  if(slotIdx>=2&&slotIdx<=4) return subH(S(slotIdx-1,b),b+slotIdx);
+  return botH(S(slotIdx-1,b),b+slotIdx);
+}
 
-function fillAll(){
-  fillPanel(0,mobH(S(0),ci));
-  $('f0').style.background=bgs[ci%bgs.length];
-  fillPanel(1,infH(S(0)));
-  for(var i=1;i<=3;i++) fillPanel(i+1,subH(S(i),i));
-  for(var i=4;i<=7;i++) fillPanel(i+1,botH(S(i),i));
+// ========== SETUP DRUM GEOMETRY ==========
+// For each drum, calculate translateZ based on frame height
+// Front face: translateZ(+h/2), Back face: rotateX(180deg) translateZ(+h/2)
+var drumHeights = [210,210, 155,155,155, 110,110,110,110];
 
+function setupDrums(){
+  for(var i=0;i<=8;i++){
+    var h = drumHeights[i];
+    var tz = h/2;
+    var ff = $('ff'+i);
+    var fb = $('fb'+i);
+    ff.style.transform = 'rotateX(0deg) translateZ('+tz+'px)';
+    fb.style.transform = 'rotateX(180deg) translateZ('+tz+'px)';
+  }
+}
+
+// ========== FILL FRONT FACES ==========
+function fillFronts(base){
+  for(var i=0;i<=8;i++){
+    $('ff'+i).innerHTML = getSlotHTML(i,base);
+    if(i===0) $('d0').style.background = bgs[(base!=null?base:ci)%bgs.length];
+  }
+}
+
+function fillList(base){
+  var b=base!=null?base:ci;
   var lh='';
   for(var i=8;i<N;i++){
-    var s=S(i),bg=s.p==='purple'?'#8B5CF6':s.p==='gold'?'#C47F17':s.p==='blue'?'#2660D4':s.p==='orange'?'#E97316':'#777';
+    var s=S(i,b),bg=s.p==='purple'?'#8B5CF6':s.p==='gold'?'#C47F17':s.p==='blue'?'#2660D4':s.p==='orange'?'#E97316':'#777';
     lh+='<div class="rn"><div class="rn-logo" style="background:'+bg+'">'+s.ef.substring(0,4)+'</div>'+
       '<div class="rn-i"><div class="rn-nm">'+s.n+'</div>'+
       '<div class="rn-m"><span class="rn-st">⭐⭐⭐⭐⭐</span><span class="rn-sc">'+s.rt+'</span></div></div>'+
       '<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
   }
   $('listSec').innerHTML=lh;
-
   var fh='';
   for(var i=0;i<2;i++){
-    var s=S(i+1),bg2=s.p==='purple'?'#8B5CF6':s.p==='blue'?'#2660D4':s.p==='gold'?'#C47F17':'#777';
+    var s=S(i+1,b),bg2=s.p==='purple'?'#8B5CF6':s.p==='blue'?'#2660D4':s.p==='gold'?'#C47F17':'#777';
     fh+='<div class="live-item"><div class="rn-logo" style="background:'+bg2+';width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:5px;font-weight:800;color:#fff;flex-shrink:0">'+s.ef.substring(0,4)+'</div>'+
       '<div style="flex:1"><div style="font-size:11px;font-weight:700">'+s.n+'</div>'+
       '<div style="font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:1px"><span class="live-badge">LIVE</span>특별 보너스 이벤트</div></div>'+
@@ -349,175 +357,109 @@ function fillAll(){
   $('liveFeed').innerHTML=fh;
 }
 
-/* ========== PHYSICS CASCADE ANIMATION ========== */
-
-// Each slot's exit rotation direction
-// 0=mobile(↑rotateX), 1=info(→rotateY), 2=sub0(←rotateY), 3=sub1(→rotateY), 4=sub2(←rotateY)
-// 5=bot0(→rotateY), 6=bot1(←rotateY), 7=bot2(→rotateY), 8=bot3(←rotateY)
-var exitNext = [
-  'rotateX(-90deg)',   // 0: mobile ↑
-  'rotateY(90deg)',    // 1: info →
-  'rotateY(-90deg)',   // 2: sub0 ←
-  'rotateY(90deg)',    // 3: sub1 →
-  'rotateY(-90deg)',   // 4: sub2 ←
-  'rotateY(90deg)',    // 5: bot0 →
-  'rotateY(-90deg)',   // 6: bot1 ←
-  'rotateY(90deg)',    // 7: bot2 →
-  'rotateY(-90deg)'    // 8: bot3 ←
-];
-
-var exitPrev = [
-  'rotateX(90deg)',    // 0: mobile ↓
-  'rotateY(-90deg)',   // 1: info ←
-  'rotateY(90deg)',    // 2: sub0 →
-  'rotateY(-90deg)',   // 3: sub1 ←
-  'rotateY(90deg)',    // 4: sub2 →
-  'rotateY(-90deg)',   // 5: bot0 ←
-  'rotateY(90deg)',    // 6: bot1 →
-  'rotateY(-90deg)',   // 7: bot2 ←
-  'rotateY(90deg)'     // 8: bot3 →
-];
-
-// Physics: force diminishes per slot
-// delay increases, duration increases, angle decreases
-function getPhysics(slotIdx){
-  // Force factor: 1.0 at slot 0, diminishes to ~0.45 at slot 8
-  var force = 1.0 - (slotIdx * 0.065);
-  // Delay: cascading 0ms → ~1000ms
-  var delay = slotIdx * 120;
-  // Duration: faster at source, slower at end (force has less energy)
-  var duration = 450 + slotIdx * 70;
-  // Rotation angle: full 90° at source, less at end
-  var angle = 90 * force;
-  return {delay:delay, duration:duration, angle:angle, force:force};
-}
-
-function animateSlot(slotIdx, dir, newContent, resolve){
-  var ph = getPhysics(slotIdx);
-  var panel = $('p'+slotIdx);
-  var frame = $('f'+slotIdx);
-  var exitRot = dir==='next' ? exitNext[slotIdx] : exitPrev[slotIdx];
-
-  // Scale the rotation angle by force
-  exitRot = exitRot.replace(/90deg/, Math.round(ph.angle)+'deg');
-
-  // Ease: more dramatic at source, gentler at end
-  var easeOut = 'cubic-bezier(.36,.07,.19,.97)';
-  var easeIn = 'cubic-bezier(.36,.07,.19,.97)';
-
-  setTimeout(function(){
-    // Phase 1: Rotate out
-    panel.style.transition = 'transform '+ph.duration+'ms '+easeOut+', opacity '+(ph.duration*0.6)+'ms ease';
-    panel.style.transform = exitRot;
-    panel.style.opacity = '0';
-
-    // Phase 2: After exit, swap content, rotate in from opposite
-    setTimeout(function(){
-      panel.style.transition = 'none';
-      // Entry from opposite direction
-      var entryRot = exitRot.replace(/-/g,'PLUS').replace(/(\d+deg)/,'-$1').replace(/PLUS/g,'');
-      // Clean up double negatives
-      entryRot = entryRot.replace(/--/g,'');
-      panel.style.transform = entryRot;
-      panel.style.opacity = '0.3';
-
-      // Update content
-      panel.innerHTML = newContent;
-      if(slotIdx===0) frame.style.background = bgs[(dir==='next'?ci+1:ci-1+N)%N%bgs.length];
-
-      // Force reflow
-      panel.offsetHeight;
-
-      // Phase 3: Rotate in to neutral
-      var entryDur = ph.duration * 0.8;
-      panel.style.transition = 'transform '+entryDur+'ms '+easeIn+', opacity '+(entryDur*0.5)+'ms ease';
-      panel.style.transform = 'rotateX(0) rotateY(0)';
-      panel.style.opacity = '1';
-
-      setTimeout(function(){
-        panel.style.transition = '';
-        panel.style.transform = '';
-        panel.style.opacity = '';
-        if(resolve) resolve();
-      }, entryDur + 20);
-
-    }, ph.duration * 0.65);
-
-  }, ph.delay);
-}
-
-function cascade(dir){
+// ========== DRUM CASCADE ==========
+function drumCascade(dir){
   if(busy) return;
   busy = true;
 
   var nextCi = dir==='next' ? (ci+1)%N : (ci-1+N)%N;
+  var rotAngle = dir==='next' ? -180 : 180; // next=drum flips forward(up), prev=backward(down)
 
-  // Prepare new content for each slot
-  var newContents = [];
-  var tempCi = ci;
-  ci = nextCi; // temporarily set to get new content
-  newContents[0] = mobH(S(0),ci);
-  newContents[1] = infH(S(0));
-  for(var i=1;i<=3;i++) newContents[i+1] = subH(S(i),i);
-  for(var i=4;i<=7;i++) newContents[i+1] = botH(S(i),i);
-  ci = tempCi; // restore
-
-  // Find the last slot's total time for busy lock
-  var lastPh = getPhysics(8);
-  var totalTime = lastPh.delay + lastPh.duration * 1.5 + 100;
-
-  // Kick off cascade for all 9 slots
+  // 1. Fill back faces with NEXT content
   for(var i=0;i<=8;i++){
-    animateSlot(i, dir, newContents[i], null);
+    $('fb'+i).innerHTML = getSlotHTML(i, nextCi);
+    if(i===0) ; // bg handled after
   }
 
-  // After everything done, update state
+  // 2. Cascade: each drum rotates with staggered delay + diminishing speed
+  var totalSlots = 9;
+  for(var i=0;i<totalSlots;i++){
+    (function(idx){
+      var delay = idx * 110; // 0ms, 110ms, 220ms, ... 880ms
+      var force = 1.0 - idx * 0.05; // 1.0 → 0.6
+      var duration = 600 + idx * 55; // 600ms → 1040ms (slower at end)
+      var ease = 'cubic-bezier(.4,.0,.15,1)';
+
+      setTimeout(function(){
+        var rotor = $('r'+idx);
+        var tz = drumHeights[idx]/2;
+        rotor.style.transition = 'transform '+duration+'ms '+ease;
+        rotor.style.transform = 'rotateX('+rotAngle+'deg)';
+      }, delay);
+    })(i);
+  }
+
+  // 3. After last drum finishes, reset all
+  var lastDelay = (totalSlots-1) * 110;
+  var lastDuration = 600 + (totalSlots-1) * 55;
+  var totalTime = lastDelay + lastDuration + 50;
+
   setTimeout(function(){
     ci = nextCi;
-    // Update list + live (they don't animate)
-    var lh='';
-    for(var i=8;i<N;i++){
-      var s=S(i),bg=s.p==='purple'?'#8B5CF6':s.p==='gold'?'#C47F17':s.p==='blue'?'#2660D4':s.p==='orange'?'#E97316':'#777';
-      lh+='<div class="rn"><div class="rn-logo" style="background:'+bg+'">'+s.ef.substring(0,4)+'</div>'+
-        '<div class="rn-i"><div class="rn-nm">'+s.n+'</div>'+
-        '<div class="rn-m"><span class="rn-st">⭐⭐⭐⭐⭐</span><span class="rn-sc">'+s.rt+'</span></div></div>'+
-        '<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
+
+    // Reset rotors instantly
+    for(var i=0;i<=8;i++){
+      var rotor = $('r'+i);
+      rotor.style.transition = 'none';
+      rotor.style.transform = 'rotateX(0deg)';
+      // Swap: front gets what back had
+      $('ff'+i).innerHTML = $('fb'+i).innerHTML;
+      $('fb'+i).innerHTML = '';
     }
-    $('listSec').innerHTML=lh;
-    var fh='';
-    for(var i=0;i<2;i++){
-      var s=S(i+1),bg2=s.p==='purple'?'#8B5CF6':s.p==='blue'?'#2660D4':s.p==='gold'?'#C47F17':'#777';
-      fh+='<div class="live-item"><div class="rn-logo" style="background:'+bg2+';width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:5px;font-weight:800;color:#fff;flex-shrink:0">'+s.ef.substring(0,4)+'</div>'+
-        '<div style="flex:1"><div style="font-size:11px;font-weight:700">'+s.n+'</div>'+
-        '<div style="font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:1px"><span class="live-badge">LIVE</span>특별 보너스 이벤트</div></div>'+
-        '<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
-    }
-    $('liveFeed').innerHTML=fh;
+    if(true) $('d0').style.background = bgs[ci%bgs.length];
+
+    fillList(ci);
     busy = false;
   }, totalTime);
 }
 
-// Swipe
+// ========== TOUCH: vertical swipe ==========
 (function(){
   var a=$('mainArea'),sx=0,sy=0,st=0;
-  a.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();},{passive:true});
+  a.addEventListener('touchstart',function(e){
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();
+  },{passive:true});
   a.addEventListener('touchend',function(e){
-    var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy,dt=Date.now()-st;
-    if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.2&&dt<500){
-      if(dx<0)cascade('next');else cascade('prev');
+    var dx=e.changedTouches[0].clientX-sx;
+    var dy=e.changedTouches[0].clientY-sy;
+    var dt=Date.now()-st;
+    // Vertical swipe: up=next, down=prev
+    if(Math.abs(dy)>45 && Math.abs(dy)>Math.abs(dx)*0.8 && dt<600){
+      if(dy<0) drumCascade('next'); // swipe UP = forward
+      else drumCascade('prev'); // swipe DOWN = backward
+    }
+    // Also support horizontal
+    if(Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)*1.2 && dt<600){
+      if(dx<0) drumCascade('next');
+      else drumCascade('prev');
     }
   },{passive:true});
+  // Mouse
   var md=false;
-  a.addEventListener('mousedown',function(e){md=true;sx=e.clientX;st=Date.now();});
-  a.addEventListener('mouseup',function(e){if(!md)return;md=false;
-    if(Math.abs(e.clientX-sx)>45&&Date.now()-st<500){if(e.clientX-sx<0)cascade('next');else cascade('prev');}});
-  document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')cascade('prev');if(e.key==='ArrowRight')cascade('next');});
+  a.addEventListener('mousedown',function(e){md=true;sx=e.clientX;sy=e.clientY;st=Date.now();});
+  a.addEventListener('mouseup',function(e){
+    if(!md)return;md=false;
+    var dx=e.clientX-sx,dy=e.clientY-sy,dt=Date.now()-st;
+    if(Math.abs(dy)>45&&Math.abs(dy)>Math.abs(dx)*0.8&&dt<600){
+      if(dy<0)drumCascade('next');else drumCascade('prev');
+    }
+    if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.2&&dt<600){
+      if(dx<0)drumCascade('next');else drumCascade('prev');
+    }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowUp'||e.key==='ArrowRight')drumCascade('next');
+    if(e.key==='ArrowDown'||e.key==='ArrowLeft')drumCascade('prev');
+  });
 })();
 
-var at=setInterval(function(){if(!document.hidden)cascade('next');},6000);
+var at=setInterval(function(){if(!document.hidden)drumCascade('next');},6000);
 document.addEventListener('touchstart',function(){clearInterval(at);},{once:true});
 
-fillAll();
+// INIT
+setupDrums();
+fillFronts(ci);
+fillList(ci);
 </script>
 </body>
 </html>
