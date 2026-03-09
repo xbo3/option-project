@@ -262,7 +262,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   z-index:99;pointer-events:none;}
 .cat-menu{position:absolute;bottom:64px;left:12px;display:flex;flex-direction:column-reverse;gap:6px;pointer-events:auto;}
 .cat-item{
-  height:40px;border-radius:12px;padding:0 16px;
+  height:56px;border-radius:14px;padding:0 16px;
   background:linear-gradient(135deg,rgba(30,30,50,.9),rgba(20,20,35,.95));
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border:1px solid rgba(255,255,255,.08);
@@ -276,7 +276,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .cat-item.show{transform:translateY(0);opacity:1;}
 .cat-item:active{transform:scale(.95);}
 .cat-item .ci-icon{font-size:14px;}
-.cat-item .ci-img{width:24px;height:24px;object-fit:contain;border-radius:4px;flex-shrink:0;}
+.cat-item .ci-img{width:48px;height:48px;object-fit:contain;border-radius:6px;flex-shrink:0;}
 .cat-item.sub{
   background:linear-gradient(135deg,rgba(40,40,60,.9),rgba(25,25,42,.95));
   font-size:11px;height:36px;
@@ -643,7 +643,7 @@ var categories=[
   {id:'sports',name:'스포츠',img:'/img/sports_480x480.webp'},
   {id:'casino',name:'카지노',img:'/img/casino_480x480.webp'},
   {id:'slot',name:'슬롯',img:'/img/slot_480x480.webp'},
-  {id:'virtual',name:'버츄얼',img:'/img/virtual_game_480x480.webp'}
+  {id:'virtual',name:'ETC',img:'/img/virtual_game_480x480.webp'}
 ];
 var subCategories={
   sports:[{name:'첫충 높은순',sort:'firstBonus'},{name:'매충 높은순',sort:'reloadBonus'},{name:'롤링 낮은순',sort:'rolling'},{name:'캐시백 높은순',sort:'cashback'},{name:'별점 높은순',sort:'rating'}],
