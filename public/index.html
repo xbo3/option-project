@@ -230,9 +230,12 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   box-shadow:0 4px 16px rgba(240,192,80,.25),inset 0 1px 0 rgba(255,255,255,.3);
   transition:all .2s;}
 .bonus-receive:active{transform:scale(.97);}
-.bonus-video{width:100%;display:none;background:transparent;}
+.bonus-video{width:100%;display:none;background:#000;}
 .bonus-video.show{display:block;}
-.bonus-video video{width:100%;display:block;border-radius:0 0 16px 16px;background:transparent;}
+.bonus-video video{width:100%;display:block;border-radius:0 0 16px 16px;background:#000;max-height:80vh;object-fit:contain;}
+/* 영상 재생시 팝업 풀스크린화 */
+.bonus-box.playing{width:96%;max-width:430px;border-radius:18px;border-color:transparent;}
+.bonus-box.playing .bonus-video video{border-radius:0 0 16px 16px;}
 
 /* ===== BLACK PEARL BOTTOM NAV ===== */
 .bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
@@ -618,6 +621,7 @@ function openBonus(){
   $('bonusContent').style.display='';
   $('bonusReceiveBtn').style.display='';
   document.querySelector('.bonus-header').style.display='';
+  document.querySelector('.bonus-box').classList.remove('playing');
   var v=$('bonusVid'); v.pause(); v.currentTime=0;
 }
 function closeBonus(){
@@ -628,6 +632,7 @@ function playBonusVideo(){
   $('bonusContent').style.display='none';
   $('bonusReceiveBtn').style.display='none';
   document.querySelector('.bonus-header').style.display='none';
+  document.querySelector('.bonus-box').classList.add('playing');
   $('bonusVideo').classList.add('show');
   var v=$('bonusVid'); v.play();
 }
