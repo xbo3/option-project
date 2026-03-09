@@ -213,21 +213,17 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .bonus-header{padding:16px 16px 0;text-align:center;}
 .bonus-title{font-size:16px;font-weight:900;color:var(--gold);letter-spacing:-.5px;}
 .bonus-sub{font-size:10px;color:var(--text2);margin-top:4px;}
-.bonus-content{padding:12px 16px;}
-.bonus-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;
-  border-bottom:1px solid rgba(255,255,255,.04);}
-.bonus-item:last-child{border:none;}
-.bonus-item .bl{font-size:10px;color:var(--text2);}
-.bonus-item .bv{font-size:12px;font-weight:800;color:var(--gold);}
+.bonus-content{padding:16px 16px 8px;text-align:center;}
+.bonus-q{font-size:15px;font-weight:800;color:#fff;}
 .bonus-receive{display:block;width:calc(100% - 32px);margin:4px 16px 16px;padding:12px;border:none;
   border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;color:#0D0D12;letter-spacing:.5px;
   background:linear-gradient(135deg,#F0C050,#FFD700,#E8B830);
   box-shadow:0 4px 16px rgba(240,192,80,.25),inset 0 1px 0 rgba(255,255,255,.3);
   transition:all .2s;}
 .bonus-receive:active{transform:scale(.97);}
-.bonus-video{width:100%;border-radius:0 0 18px 18px;background:#000;display:none;}
-.bonus-video.show{display:block;}
-.bonus-video video{width:100%;display:block;border-radius:0 0 16px 16px;}
+.bonus-video{width:100%;display:none;padding:10px 0 16px;background:transparent;}
+.bonus-video.show{display:flex;align-items:center;justify-content:center;}
+.bonus-video video{width:70%;border-radius:12px;display:block;background:#000;}
 
 /* ===== BLACK PEARL BOTTOM NAV ===== */
 .bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
@@ -355,18 +351,14 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
     <div class="bonus-close" onclick="closeBonus()">✕</div>
     <div class="bonus-header">
       <div class="bonus-title">BONUS</div>
-      <div class="bonus-sub">지금 받을 수 있는 보너스 안내</div>
+      <div class="bonus-sub">이용을 좀 더 해서 혜택을<br>푸짐하게 받으시겠어요?</div>
     </div>
     <div class="bonus-content" id="bonusContent">
-      <div class="bonus-item"><span class="bl">첫충전 보너스</span><span class="bv">최대 15%</span></div>
-      <div class="bonus-item"><span class="bl">매충전 보너스</span><span class="bv">최대 10%</span></div>
-      <div class="bonus-item"><span class="bl">캐시백</span><span class="bv">최대 6%</span></div>
-      <div class="bonus-item"><span class="bl">올인 보너스</span><span class="bv">최대 9%</span></div>
-      <div class="bonus-item"><span class="bl">가입머니</span><span class="bv">5,000원</span></div>
+      <div class="bonus-q">지금 바로 받으시겠어요?</div>
     </div>
-    <button class="bonus-receive" id="bonusReceiveBtn" onclick="playBonusVideo()">받기</button>
+    <button class="bonus-receive" id="bonusReceiveBtn" onclick="playBonusVideo()">지금 바로 받기</button>
     <div class="bonus-video" id="bonusVideo">
-      <video id="bonusVid" playsinline webkit-playsinline controls>
+      <video id="bonusVid" playsinline webkit-playsinline muted>
         <source src="/img/bonus_video.mp4" type="video/mp4">
       </video>
     </div>
