@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>OPTION — Drum Rotate</title>
+<title>OPTION — Gear Drums</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -42,70 +42,42 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .p-bar.a{background:rgba(38,96,212,.05);width:31%;}.p-bar.b{background:rgba(196,127,23,.07);width:69%;}
 .p-text{font-size:8px;font-weight:600;position:relative;z-index:1;}
 .p-pct{font-size:11px;font-weight:800;position:relative;z-index:1;color:var(--text3);}.p-pct.w{color:var(--gold);}
-
 .sort-bar{display:flex;gap:4px;padding:4px 4px;overflow-x:auto;scrollbar-width:none;}
 .sort-bar::-webkit-scrollbar{display:none;}
 .sort-btn{flex-shrink:0;padding:5px 10px;border-radius:100px;font-size:10px;font-weight:600;
   color:var(--text3);background:rgba(255,255,255,.5);border:1px solid rgba(0,0,0,.04);white-space:nowrap;}
 .sort-btn.on{color:#fff;background:#1A1A1A;border-color:#1A1A1A;}
-
 .sec-t{font-size:13px;font-weight:800;letter-spacing:-.5px;padding:2px 6px 4px;}
 .sec-t span{font-size:10px;font-weight:500;color:var(--text3);}
 
-/* ========== ROWS ========== */
 .row-hero{display:flex;gap:3px;padding:0 4px;margin-bottom:4px;}
 .row-sub{display:flex;gap:3px;padding:0 4px;margin-bottom:4px;}
 .row-bot{display:flex;gap:3px;padding:0 4px;margin-bottom:4px;}
 
-/* ========== DRUM FRAME ========== */
-.drum{
-  overflow:hidden;position:relative;
-  perspective:800px;
-}
-/* The rotor — holds front + back faces */
+/* ========== DRUM ========== */
+.drum{overflow:hidden;position:relative;perspective:800px;}
 .drum .rotor{
-  width:100%;height:100%;
-  position:relative;
+  width:100%;height:100%;position:relative;
   transform-style:preserve-3d;
-  /* NO transition by default — JS controls it */
 }
-/* Each face */
 .drum .face{
   position:absolute;top:0;left:0;width:100%;height:100%;
-  backface-visibility:hidden;
-  overflow:hidden;
-}
-/* Back face is rotated 180° around X (drum flip) */
-.drum .face-back{
-  transform:rotateX(180deg);
+  backface-visibility:hidden;overflow:hidden;
 }
 
-/* Frame sizes */
-.d-mobile{
-  width:calc(33.33% - 2px);flex-shrink:0;height:210px;border-radius:12px;
-  background:#1a1a2e;box-shadow:0 4px 16px rgba(0,0,0,.12);
-}
-.d-info{
-  flex:1;height:210px;border-radius:12px;
-  background:linear-gradient(145deg,#FFFDF8,#FFF8ED,#FFF4E0);
-  border:1.5px solid rgba(196,127,23,.15);box-shadow:0 6px 24px rgba(196,127,23,.06);
-}
-.d-sub{
-  flex:1;min-width:0;height:155px;border-radius:10px;
-  background:var(--card);backdrop-filter:blur(20px);
-  border:1px solid rgba(0,0,0,.04);box-shadow:0 2px 8px rgba(0,0,0,.03);
-}
-.d-bot{
-  flex:1;min-width:0;height:110px;border-radius:10px;
-  background:var(--card);border:1px solid rgba(0,0,0,.03);
-}
+/* sizes */
+.d-mob{width:calc(33.33% - 2px);flex-shrink:0;height:210px;border-radius:12px;background:#1a1a2e;box-shadow:0 4px 16px rgba(0,0,0,.12);}
+.d-inf{flex:1;height:210px;border-radius:12px;background:linear-gradient(145deg,#FFFDF8,#FFF8ED,#FFF4E0);
+  border:1.5px solid rgba(196,127,23,.15);box-shadow:0 6px 24px rgba(196,127,23,.06);}
+.d-sub{flex:1;min-width:0;height:155px;border-radius:10px;background:var(--card);
+  border:1px solid rgba(0,0,0,.04);box-shadow:0 2px 8px rgba(0,0,0,.03);}
+.d-bot{flex:1;min-width:0;height:110px;border-radius:10px;background:var(--card);border:1px solid rgba(0,0,0,.03);}
 
-/* ========== CONTENT STYLES ========== */
+/* ========== CONTENT ========== */
 .mob-in{height:100%;padding:6px;color:#fff;display:flex;flex-direction:column;overflow:hidden;}
 .mob-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
 .mob-lo{font-size:6px;font-weight:800;opacity:.5;}
-.mob-bn{border-radius:8px;padding:5px;margin-bottom:3px;
-  background:linear-gradient(135deg,rgba(196,127,23,.2),rgba(139,92,246,.15));}
+.mob-bn{border-radius:8px;padding:5px;margin-bottom:3px;background:linear-gradient(135deg,rgba(196,127,23,.2),rgba(139,92,246,.15));}
 .mob-bt{font-size:5px;font-weight:700;color:#FFD700;letter-spacing:.5px;}
 .mob-btt{font-size:7px;font-weight:800;margin-top:1px;line-height:1.2;}
 .mob-gr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-top:auto;}
@@ -118,8 +90,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   background:radial-gradient(circle,rgba(196,127,23,.08),transparent 70%);}
 .inf-dia{position:absolute;right:6px;top:4px;font-size:50px;font-weight:900;line-height:.85;
   background:linear-gradient(180deg,#FFD54F,#C47F17,#8B6914);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 2px 3px rgba(196,127,23,.2));opacity:.25;}
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:.25;}
 .inf-tier{font-size:7px;font-weight:700;color:var(--gold);padding:2px 6px;border-radius:4px;
   background:rgba(196,127,23,.08);display:inline-block;width:fit-content;position:relative;z-index:2;}
 .inf-name{font-size:20px;font-weight:900;letter-spacing:-1px;line-height:1.1;margin-top:auto;position:relative;z-index:2;}
@@ -148,25 +119,19 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .sub-nm{font-size:12px;font-weight:900;letter-spacing:-.3px;}
 .sub-kr{font-size:7px;color:var(--text2);margin-bottom:1px;}
 .sub-sts{display:flex;gap:6px;margin-top:auto;}
-.sub-sts .l{font-size:5px;color:var(--text3);}
-.sub-sts .v{font-size:11px;font-weight:800;}
+.sub-sts .l{font-size:5px;color:var(--text3);}.sub-sts .v{font-size:11px;font-weight:800;}
 
 .bot-in{height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--card);}
 .bot-img{height:55px;position:relative;overflow:hidden;}
 .bot-img .bg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;padding:3px;width:100%;height:100%;}
 .bot-img .bgi{border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;}
 .bot-body{padding:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex:1;}
-.bot-nm{font-size:9px;font-weight:800;letter-spacing:-.2px;}
-.bot-kr{font-size:6px;color:var(--text3);}
-.bot-v{font-size:10px;font-weight:800;margin-top:1px;}
-
+.bot-nm{font-size:9px;font-weight:800;}.bot-kr{font-size:6px;color:var(--text3);}.bot-v{font-size:10px;font-weight:800;margin-top:1px;}
 .c-gold{color:var(--gold);}.c-blue{color:var(--blue);}.c-purple{color:var(--purple);}.c-cyan{color:var(--cyan);}.c-orange{color:#E97316;}
 
-/* LIST + LIVE */
 .list-sec{padding:0 4px;margin-top:4px;}
-.rn{border-radius:12px;padding:10px;background:var(--card);backdrop-filter:blur(20px);
-  border:1px solid rgba(0,0,0,.04);display:flex;align-items:center;gap:8px;
-  margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.02);}
+.rn{border-radius:12px;padding:10px;background:var(--card);border:1px solid rgba(0,0,0,.04);
+  display:flex;align-items:center;gap:8px;margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.02);}
 .rn-logo{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;
   font-size:5px;font-weight:800;color:#fff;flex-shrink:0;text-align:center;line-height:1.1;}
 .rn-i{flex:1;}.rn-nm{font-size:11px;font-weight:700;}
@@ -179,11 +144,9 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .live-badge{background:#DC2626;color:#fff;font-size:6px;font-weight:800;padding:1px 4px;border-radius:3px;margin-right:2px;}
 .swipe-hint{text-align:center;font-size:9px;color:var(--text3);padding:4px 0;opacity:.5;animation:hp 2.5s ease infinite;}
 @keyframes hp{0%,100%{opacity:.3}50%{opacity:.7}}
-
-.bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:430px;height:56px;display:flex;align-items:center;justify-content:space-around;
-  background:rgba(242,240,237,.95);backdrop-filter:blur(20px);
-  border-top:1px solid rgba(0,0,0,.06);z-index:100;}
+.bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:56px;
+  display:flex;align-items:center;justify-content:space-around;background:rgba(242,240,237,.95);
+  backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,.06);z-index:100;}
 .nav-item{font-size:18px;opacity:.3;padding:8px;}.nav-item.on{opacity:1;}
 </style>
 </head>
@@ -191,7 +154,6 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 <div class="device">
 <div class="hdr"><div class="logo">OPTION</div></div>
 <div class="main" id="mainArea">
-
 <div class="poll">
   <div class="poll-row"><div class="poll-tag">100명에게 물어봐</div><div class="poll-live">73/100</div></div>
   <div class="poll-q">친구가 슬롯 잘하면 여자도 꼬실 수 있다는데? 🤔</div>
@@ -207,32 +169,11 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 </div>
 <div class="sec-t">최고 조건 추천 <span id="cnt">10개</span></div>
 
-<!-- ROW 1 -->
-<div class="row-hero">
-  <div class="drum d-mobile" id="d0"><div class="rotor" id="r0">
-    <div class="face face-front" id="ff0"></div>
-    <div class="face face-back" id="fb0"></div>
-  </div></div>
-  <div class="drum d-info" id="d1"><div class="rotor" id="r1">
-    <div class="face face-front" id="ff1"></div>
-    <div class="face face-back" id="fb1"></div>
-  </div></div>
-</div>
-<!-- ROW 2 -->
-<div class="row-sub">
-  <div class="drum d-sub" id="d2"><div class="rotor" id="r2"><div class="face face-front" id="ff2"></div><div class="face face-back" id="fb2"></div></div></div>
-  <div class="drum d-sub" id="d3"><div class="rotor" id="r3"><div class="face face-front" id="ff3"></div><div class="face face-back" id="fb3"></div></div></div>
-  <div class="drum d-sub" id="d4"><div class="rotor" id="r4"><div class="face face-front" id="ff4"></div><div class="face face-back" id="fb4"></div></div></div>
-</div>
-<!-- ROW 3 -->
-<div class="row-bot">
-  <div class="drum d-bot" id="d5"><div class="rotor" id="r5"><div class="face face-front" id="ff5"></div><div class="face face-back" id="fb5"></div></div></div>
-  <div class="drum d-bot" id="d6"><div class="rotor" id="r6"><div class="face face-front" id="ff6"></div><div class="face face-back" id="fb6"></div></div></div>
-  <div class="drum d-bot" id="d7"><div class="rotor" id="r7"><div class="face face-front" id="ff7"></div><div class="face face-back" id="fb7"></div></div></div>
-  <div class="drum d-bot" id="d8"><div class="rotor" id="r8"><div class="face face-front" id="ff8"></div><div class="face face-back" id="fb8"></div></div></div>
-</div>
+<div class="row-hero" id="rowH"></div>
+<div class="row-sub" id="rowS"></div>
+<div class="row-bot" id="rowB"></div>
 
-<div class="swipe-hint">↑↓ 스와이프하여 랭킹 순환</div>
+<div class="swipe-hint">↑ 올리면 다음 · ↓ 내리면 이전</div>
 <div class="list-sec" id="listSec"></div>
 <div class="live-t">라이브 조건 피드</div>
 <div id="liveFeed"></div>
@@ -262,23 +203,64 @@ var bgs=['linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)','linear-gradient(135d
   'linear-gradient(135deg,#2e1a1a,#3e1616,#460f2f)'];
 var gC=[['#FFD700','#C47F17'],['#DC2626','#991B1B'],['#2660D4','#1E40AF'],['#1A8C5E','#166534'],['#8B5CF6','#6D28D9'],['#E97316','#C2410C']];
 
-function S(off,base){return D[((base!=null?base:ci)+off)%N];}
+function S(off,b){return D[((b!=null?b:ci)+off)%N];}
 function cc(p){return p?'c-'+p:'';}
 function $(id){return document.getElementById(id);}
 
-// ========== HTML BUILDERS ==========
+/*
+ GEAR DIRECTION MAP — each opposite to its reference:
+ slot 0 (1위mob): base direction
+ slot 1 (1위inf): opposite of 0
+ slot 2 (2위):    opposite of 1 → same as 0
+ slot 3 (3위):    opposite of 2 → same as 1
+ slot 4 (4위):    opposite of 3 → same as 0
+ slot 5 (5위):    opposite of 2 → same as 1
+ slot 6 (6위):    opposite of 5 → same as 0
+ slot 7 (7위):    opposite of 6 → same as 1
+ slot 8 (8위):    opposite of 7 → same as 0
+*/
+// 1 = same as base, -1 = opposite
+var gearDir = [1, -1, 1, -1, 1, -1, 1, -1, 1];
+
+// Heights & delays
+var hts = [210,210, 155,155,155, 110,110,110,110];
+var delays = [0, 80, 180, 300, 430, 260, 400, 540, 680];
+
+// Drum types & CSS classes
+var drumTypes = ['d-mob','d-inf','d-sub','d-sub','d-sub','d-bot','d-bot','d-bot','d-bot'];
+
+// Build DOM
+function buildDrums(){
+  var rows = [
+    {el:$('rowH'), slots:[0,1]},
+    {el:$('rowS'), slots:[2,3,4]},
+    {el:$('rowB'), slots:[5,6,7,8]}
+  ];
+  rows.forEach(function(row){
+    var html='';
+    row.slots.forEach(function(i){
+      var tz = hts[i]/2;
+      html+='<div class="drum '+drumTypes[i]+'" id="d'+i+'">'+
+        '<div class="rotor" id="r'+i+'">'+
+        '<div class="face" id="ff'+i+'" style="transform:rotateX(0deg) translateZ('+tz+'px)"></div>'+
+        '<div class="face" id="fb'+i+'" style="transform:rotateX(180deg) translateZ('+tz+'px)"></div>'+
+        '</div></div>';
+    });
+    row.el.innerHTML=html;
+  });
+}
+
+// HTML builders
 function mobH(s,i){
   var bg=bgs[i%bgs.length];
-  return '<div class="mob-in" style="background:'+bg+'">'+
-    '<div class="mob-hd"><div class="mob-lo">'+s.ef+'</div></div>'+
+  return '<div class="mob-in" style="background:'+bg+'"><div class="mob-hd"><div class="mob-lo">'+s.ef+'</div></div>'+
     '<div class="mob-bn"><div class="mob-bt">⚡ '+s.tag+'</div><div class="mob-btt">'+s.n+' 특별 이벤트</div></div>'+
     '<div class="mob-gr">'+s.ic.map(function(ic,j){return '<div class="mob-gi" style="background:linear-gradient(135deg,'+gC[j][0]+','+gC[j][1]+')">'+ic+'</div>';}).join('')+'</div>'+
     '<div class="mob-lb">'+s.n+' · 라이브</div></div>';
 }
 function infH(s){
   return '<div class="inf-in"><div class="inf-glow"></div><div class="inf-dia">1</div>'+
-    '<div class="inf-tier">◆ '+s.tag+'</div>'+
-    '<div class="inf-name '+cc(s.p)+'">'+s.en.replace('\n','<br>')+'</div>'+
+    '<div class="inf-tier">◆ '+s.tag+'</div><div class="inf-name '+cc(s.p)+'">'+s.en.replace('\n','<br>')+'</div>'+
     '<div class="inf-sts"><div class="inf-st"><div class="l">캐시백</div><div class="v gd">'+s.c+'%</div></div>'+
     '<div class="inf-st"><div class="l">첫충</div><div class="v gd">'+s.f+'%</div></div></div>'+
     '<div class="inf-bot"><span class="inf-stars">⭐⭐⭐⭐⭐</span><span class="inf-score">'+s.rt+'</span>'+
@@ -289,8 +271,8 @@ function subH(s,i){
   return '<div class="sub-in"><div class="sub-img" style="background:'+bg+'">'+
     '<div class="sg">'+s.ic.slice(0,6).map(function(ic,j){return '<div class="sgi" style="background:linear-gradient(135deg,'+gC[j][0]+','+gC[j][1]+')">'+ic+'</div>';}).join('')+'</div>'+
     '<div class="sov"><span>'+s.ef+'</span></div></div>'+
-    '<div class="sub-body"><div class="sub-tag '+tc+'">'+s.tag+'</div>'+
-    '<div class="sub-nm '+cc(s.p)+'">'+s.ef+'</div><div class="sub-kr">'+s.n+' ⭐'+s.rt+'</div>'+
+    '<div class="sub-body"><div class="sub-tag '+tc+'">'+s.tag+'</div><div class="sub-nm '+cc(s.p)+'">'+s.ef+'</div>'+
+    '<div class="sub-kr">'+s.n+' ⭐'+s.rt+'</div>'+
     '<div class="sub-sts"><div><div class="l">첫충</div><div class="v">'+s.f+'%</div></div>'+
     '<div><div class="l">매충</div><div class="v">'+s.r+'%</div></div>'+
     '<div><div class="l">캐시백</div><div class="v">'+s.c+'%</div></div></div></div></div>';
@@ -302,47 +284,22 @@ function botH(s,i){
     '<div class="bot-body"><div class="bot-nm '+cc(s.p)+'">'+s.ef+'</div><div class="bot-kr">'+s.n+'</div>'+
     '<div class="bot-v">'+s.f+'%</div></div></div>';
 }
-
-function getSlotHTML(slotIdx, base){
-  var b = base!=null?base:ci;
-  if(slotIdx===0) return mobH(S(0,b),b);
-  if(slotIdx===1) return infH(S(0,b));
-  if(slotIdx>=2&&slotIdx<=4) return subH(S(slotIdx-1,b),b+slotIdx);
-  return botH(S(slotIdx-1,b),b+slotIdx);
+function slotHTML(i,b){
+  if(i===0) return mobH(S(0,b),b);
+  if(i===1) return infH(S(0,b));
+  if(i<=4) return subH(S(i-1,b),b+i);
+  return botH(S(i-1,b),b+i);
 }
 
-// ========== SETUP DRUM GEOMETRY ==========
-// For each drum, calculate translateZ based on frame height
-// Front face: translateZ(+h/2), Back face: rotateX(180deg) translateZ(+h/2)
-var drumHeights = [210,210, 155,155,155, 110,110,110,110];
-
-function setupDrums(){
-  for(var i=0;i<=8;i++){
-    var h = drumHeights[i];
-    var tz = h/2;
-    var ff = $('ff'+i);
-    var fb = $('fb'+i);
-    ff.style.transform = 'rotateX(0deg) translateZ('+tz+'px)';
-    fb.style.transform = 'rotateX(180deg) translateZ('+tz+'px)';
-  }
+function fillFronts(b){
+  for(var i=0;i<=8;i++) $('ff'+i).innerHTML=slotHTML(i,b);
 }
-
-// ========== FILL FRONT FACES ==========
-function fillFronts(base){
-  for(var i=0;i<=8;i++){
-    $('ff'+i).innerHTML = getSlotHTML(i,base);
-    if(i===0) $('d0').style.background = bgs[(base!=null?base:ci)%bgs.length];
-  }
-}
-
-function fillList(base){
-  var b=base!=null?base:ci;
+function fillList(b){
   var lh='';
   for(var i=8;i<N;i++){
     var s=S(i,b),bg=s.p==='purple'?'#8B5CF6':s.p==='gold'?'#C47F17':s.p==='blue'?'#2660D4':s.p==='orange'?'#E97316':'#777';
     lh+='<div class="rn"><div class="rn-logo" style="background:'+bg+'">'+s.ef.substring(0,4)+'</div>'+
-      '<div class="rn-i"><div class="rn-nm">'+s.n+'</div>'+
-      '<div class="rn-m"><span class="rn-st">⭐⭐⭐⭐⭐</span><span class="rn-sc">'+s.rt+'</span></div></div>'+
+      '<div class="rn-i"><div class="rn-nm">'+s.n+'</div><div class="rn-m"><span class="rn-st">⭐⭐⭐⭐⭐</span><span class="rn-sc">'+s.rt+'</span></div></div>'+
       '<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
   }
   $('listSec').innerHTML=lh;
@@ -351,113 +308,91 @@ function fillList(base){
     var s=S(i+1,b),bg2=s.p==='purple'?'#8B5CF6':s.p==='blue'?'#2660D4':s.p==='gold'?'#C47F17':'#777';
     fh+='<div class="live-item"><div class="rn-logo" style="background:'+bg2+';width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:5px;font-weight:800;color:#fff;flex-shrink:0">'+s.ef.substring(0,4)+'</div>'+
       '<div style="flex:1"><div style="font-size:11px;font-weight:700">'+s.n+'</div>'+
-      '<div style="font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:1px"><span class="live-badge">LIVE</span>특별 보너스 이벤트</div></div>'+
+      '<div style="font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:1px"><span class="live-badge">LIVE</span>특별 보너스</div></div>'+
       '<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
   }
   $('liveFeed').innerHTML=fh;
 }
 
-// ========== DRUM CASCADE ==========
-function drumCascade(dir){
+// ========== INTERLOCKING GEAR CASCADE ==========
+function gearCascade(dir){
   if(busy) return;
-  busy = true;
+  busy=true;
 
   var nextCi = dir==='next' ? (ci+1)%N : (ci-1+N)%N;
-  var rotAngle = dir==='next' ? -180 : 180; // next=drum flips forward(up), prev=backward(down)
+  // base rotation: swipe up → drum flips "forward" = rotateX(-180)
+  var baseAngle = dir==='next' ? -180 : 180;
 
-  // 1. Fill back faces with NEXT content
+  // Fill back faces with next content
+  for(var i=0;i<=8;i++) $('fb'+i).innerHTML=slotHTML(i,nextCi);
+
+  // Animate each drum with gear direction + cascade delay
+  var maxEndTime = 0;
   for(var i=0;i<=8;i++){
-    $('fb'+i).innerHTML = getSlotHTML(i, nextCi);
-    if(i===0) ; // bg handled after
-  }
-
-  // 2. Cascade: each drum rotates with staggered delay + diminishing speed
-  var totalSlots = 9;
-  for(var i=0;i<totalSlots;i++){
     (function(idx){
-      var delay = idx * 110; // 0ms, 110ms, 220ms, ... 880ms
-      var force = 1.0 - idx * 0.05; // 1.0 → 0.6
-      var duration = 600 + idx * 55; // 600ms → 1040ms (slower at end)
-      var ease = 'cubic-bezier(.4,.0,.15,1)';
+      var angle = baseAngle * gearDir[idx]; // flip direction per gear map
+      var delay = delays[idx];
+      var force = 1.0 - idx*0.04;
+      var duration = 650 + idx*50;
+      var ease = 'cubic-bezier(.25,.1,.25,1)';
+
+      var endTime = delay + duration;
+      if(endTime > maxEndTime) maxEndTime = endTime;
 
       setTimeout(function(){
         var rotor = $('r'+idx);
-        var tz = drumHeights[idx]/2;
         rotor.style.transition = 'transform '+duration+'ms '+ease;
-        rotor.style.transform = 'rotateX('+rotAngle+'deg)';
+        rotor.style.transform = 'rotateX('+angle+'deg)';
       }, delay);
     })(i);
   }
 
-  // 3. After last drum finishes, reset all
-  var lastDelay = (totalSlots-1) * 110;
-  var lastDuration = 600 + (totalSlots-1) * 55;
-  var totalTime = lastDelay + lastDuration + 50;
-
+  // After all done, reset
   setTimeout(function(){
     ci = nextCi;
-
-    // Reset rotors instantly
     for(var i=0;i<=8;i++){
       var rotor = $('r'+i);
       rotor.style.transition = 'none';
-      rotor.style.transform = 'rotateX(0deg)';
-      // Swap: front gets what back had
+      rotor.style.transform = '';
       $('ff'+i).innerHTML = $('fb'+i).innerHTML;
       $('fb'+i).innerHTML = '';
     }
-    if(true) $('d0').style.background = bgs[ci%bgs.length];
-
     fillList(ci);
-    busy = false;
-  }, totalTime);
+    busy=false;
+  }, maxEndTime + 60);
 }
 
-// ========== TOUCH: vertical swipe ==========
+// ========== TOUCH ==========
 (function(){
   var a=$('mainArea'),sx=0,sy=0,st=0;
-  a.addEventListener('touchstart',function(e){
-    sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();
-  },{passive:true});
+  a.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();},{passive:true});
   a.addEventListener('touchend',function(e){
-    var dx=e.changedTouches[0].clientX-sx;
-    var dy=e.changedTouches[0].clientY-sy;
-    var dt=Date.now()-st;
-    // Vertical swipe: up=next, down=prev
-    if(Math.abs(dy)>45 && Math.abs(dy)>Math.abs(dx)*0.8 && dt<600){
-      if(dy<0) drumCascade('next'); // swipe UP = forward
-      else drumCascade('prev'); // swipe DOWN = backward
-    }
-    // Also support horizontal
-    if(Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)*1.2 && dt<600){
-      if(dx<0) drumCascade('next');
-      else drumCascade('prev');
+    var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy,dt=Date.now()-st;
+    if(dt>600) return;
+    if(Math.abs(dy)>40 && Math.abs(dy)>Math.abs(dx)*0.7){
+      if(dy<0) gearCascade('next'); else gearCascade('prev');
+    } else if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.0){
+      if(dx<0) gearCascade('next'); else gearCascade('prev');
     }
   },{passive:true});
-  // Mouse
   var md=false;
   a.addEventListener('mousedown',function(e){md=true;sx=e.clientX;sy=e.clientY;st=Date.now();});
   a.addEventListener('mouseup',function(e){
-    if(!md)return;md=false;
-    var dx=e.clientX-sx,dy=e.clientY-sy,dt=Date.now()-st;
-    if(Math.abs(dy)>45&&Math.abs(dy)>Math.abs(dx)*0.8&&dt<600){
-      if(dy<0)drumCascade('next');else drumCascade('prev');
-    }
-    if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.2&&dt<600){
-      if(dx<0)drumCascade('next');else drumCascade('prev');
-    }
+    if(!md)return;md=false;var dx=e.clientX-sx,dy=e.clientY-sy,dt=Date.now()-st;
+    if(dt>600)return;
+    if(Math.abs(dy)>40&&Math.abs(dy)>Math.abs(dx)*0.7){if(dy<0)gearCascade('next');else gearCascade('prev');}
+    else if(Math.abs(dx)>40){if(dx<0)gearCascade('next');else gearCascade('prev');}
   });
   document.addEventListener('keydown',function(e){
-    if(e.key==='ArrowUp'||e.key==='ArrowRight')drumCascade('next');
-    if(e.key==='ArrowDown'||e.key==='ArrowLeft')drumCascade('prev');
+    if(e.key==='ArrowUp'||e.key==='ArrowRight')gearCascade('next');
+    if(e.key==='ArrowDown'||e.key==='ArrowLeft')gearCascade('prev');
   });
 })();
 
-var at=setInterval(function(){if(!document.hidden)drumCascade('next');},6000);
+var at=setInterval(function(){if(!document.hidden)gearCascade('next');},6000);
 document.addEventListener('touchstart',function(){clearInterval(at);},{once:true});
 
-// INIT
-setupDrums();
+buildDrums();
 fillFronts(ci);
 fillList(ci);
 </script>
