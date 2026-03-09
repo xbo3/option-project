@@ -258,12 +258,12 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   z-index:99;pointer-events:none;}
 .cat-menu{position:absolute;bottom:64px;left:12px;display:flex;flex-direction:column-reverse;gap:6px;pointer-events:auto;}
 .cat-item{
-  height:56px;border-radius:14px;padding:0 16px;
-  background:linear-gradient(135deg,rgba(30,30,50,.9),rgba(20,20,35,.95));
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 4px 12px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);
-  color:var(--text);font-size:12px;font-weight:700;
+  height:48px;border-radius:14px;padding:0 16px;
+  background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.03),rgba(255,255,255,.06));
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 4px 16px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(255,255,255,.05);
+  color:#fff;font-size:12px;font-weight:700;
   display:flex;align-items:center;gap:6px;cursor:pointer;
   transform:translateY(20px);opacity:0;
   transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s;
@@ -272,10 +272,12 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .cat-item.show{transform:translateY(0);opacity:1;}
 .cat-item:active{transform:scale(.95);}
 .cat-item .ci-icon{font-size:14px;}
-.cat-item .ci-img{width:48px;height:48px;object-fit:contain;border-radius:6px;flex-shrink:0;}
+.cat-item .ci-img{width:36px;height:36px;object-fit:contain;border-radius:5px;flex-shrink:0;}
 .cat-item.sub{
-  background:linear-gradient(135deg,rgba(40,40,60,.9),rgba(25,25,42,.95));
-  font-size:11px;height:36px;
+  background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02),rgba(255,255,255,.04));
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow:0 3px 12px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(255,255,255,.03);
+  font-size:11px;height:38px;
 }
 
 /* ===== MY INFO PANEL ===== */
