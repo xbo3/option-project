@@ -222,6 +222,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .cat-item.show{transform:translateY(0);opacity:1;}
 .cat-item:active{transform:scale(.95);}
 .cat-item .ci-icon{font-size:14px;}
+.cat-item .ci-img{width:24px;height:24px;object-fit:contain;border-radius:4px;flex-shrink:0;}
 .cat-item.sub{
   background:linear-gradient(135deg,rgba(40,40,60,.9),rgba(25,25,42,.95));
   font-size:11px;height:36px;
@@ -523,8 +524,10 @@ function closeDetail(){ $('detailOverlay').classList.remove('show'); }
 // ===== CATEGORY POPUP =====
 var catState=0,selectedCat='';
 var categories=[
-  {id:'sports',name:'스포츠',icon:'⚽'},{id:'casino',name:'카지노',icon:'🃏'},
-  {id:'slot',name:'슬롯',icon:'🎰'},{id:'virtual',name:'버츄얼',icon:'🎮'}
+  {id:'sports',name:'스포츠',img:'/img/sports_480x480.webp'},
+  {id:'casino',name:'카지노',img:'/img/casino_480x480.webp'},
+  {id:'slot',name:'슬롯',img:'/img/slot_480x480.webp'},
+  {id:'virtual',name:'버츄얼',img:'/img/virtual_game_480x480.webp'}
 ];
 var subCategories={
   sports:[{name:'첫충 높은순',sort:'firstBonus'},{name:'매충 높은순',sort:'reloadBonus'},{name:'롤링 낮은순',sort:'rolling'},{name:'캐시백 높은순',sort:'cashback'},{name:'별점 높은순',sort:'rating'}],
@@ -538,7 +541,7 @@ function openMain(){
   ['virtual','slot','casino','sports'].forEach(function(id,idx){
     var c=categories.find(function(x){return x.id===id;});
     var el=document.createElement('div');el.className='cat-item';
-    el.innerHTML='<span class="ci-icon">'+c.icon+'</span>'+c.name;
+    el.innerHTML='<img class="ci-img" src="'+c.img+'" alt="'+c.name+'">'+c.name;
     el.onclick=function(){openSub(id);};
     menu.appendChild(el);
     setTimeout(function(){el.classList.add('show');},idx*60);
