@@ -106,11 +106,25 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   background:linear-gradient(180deg,#FFE680 0%,#F0C050 30%,#FFD700 50%,#C49530 70%,#F0C050 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
-/* 순위 표시 (우측 상단) */
-.inf-rank{position:absolute;top:6px;right:8px;z-index:3;
-  font-size:28px;font-weight:900;color:rgba(240,192,80,.35);
-  line-height:1;letter-spacing:-1px;}
-.inf-rank span{font-size:11px;font-weight:700;color:rgba(240,192,80,.5);vertical-align:super;}
+/* 순위 표시 (우측 대각선 아래) */
+.inf-rank{position:absolute;top:22px;right:6px;z-index:3;
+  font-size:32px;font-weight:900;line-height:1;letter-spacing:-1px;
+  background:linear-gradient(135deg,#FFE680,#F0C050,#FFD700,#C49530,#FFE680);
+  background-size:200% 200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:trophySpin 2.5s linear infinite;
+  filter:drop-shadow(0 0 6px rgba(255,215,0,.4));}
+.inf-rank span{font-size:11px;font-weight:700;
+  background:linear-gradient(135deg,#FFE680,#C49530,#FFD700);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  vertical-align:super;}
+@keyframes trophySpin{
+  0%{background-position:0% 50%;filter:drop-shadow(0 0 4px rgba(255,215,0,.3));}
+  25%{background-position:100% 50%;filter:drop-shadow(0 0 10px rgba(255,215,0,.6));}
+  50%{background-position:200% 50%;filter:drop-shadow(0 0 4px rgba(255,215,0,.3));}
+  75%{background-position:100% 50%;filter:drop-shadow(0 0 10px rgba(255,215,0,.6));}
+  100%{background-position:0% 50%;filter:drop-shadow(0 0 4px rgba(255,215,0,.3));}
+}
 
 /* 업체알림 */
 .inf-alert{margin-top:auto;padding:5px 6px;border-radius:6px;
