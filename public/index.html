@@ -56,9 +56,9 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .row-bot{display:flex;gap:4px;padding:0 4px;margin-bottom:4px;}
 
 /* ===== DRUM (left/right + up/down) ===== */
-.drum{overflow:hidden;position:relative;perspective:800px;}
-.drum .rotor{width:100%;height:100%;position:relative;transform-style:preserve-3d;}
-.drum .face{position:absolute;top:0;left:0;width:100%;height:100%;backface-visibility:hidden;overflow:hidden;}
+.drum{overflow:hidden;position:relative;perspective:600px;}
+.drum .rotor{width:100%;height:100%;position:relative;transform-style:preserve-3d;will-change:transform;}
+.drum .face{position:absolute;top:0;left:0;width:100%;height:100%;backface-visibility:hidden;overflow:hidden;will-change:transform;}
 
 /* ===== GLOSSY BORDER (각 등급별 구분) ===== */
 .glossy-border{
@@ -403,15 +403,15 @@ function sortVal(s,key){
 }
 
 var D=[
-  {n:'겜블시티',ef:'GAMBLE CITY',en:'GAMBLE\nCITY',f:15,r:10,c:5,a:8,rl:3.5,rt:9.4,rv:328,u:4520,p:'gold',tag:'Diamond',img:'/img/겜블시티.jpg'},
-  {n:'벳콩',ef:'BETKONG',en:'BET\nKONG',f:12,r:8,c:4,a:5,rl:4.0,rt:9.1,rv:245,u:3800,p:'blue',tag:'Premium',img:'/img/bcgame.jpg'},
-  {n:'럭키비키',ef:'LUCKY VIKI',en:'LUCKY\nVIKI',f:13,r:9,c:6,a:7,rl:3.0,rt:8.8,rv:190,u:2900,p:'purple',tag:'Hot',img:'/img/럭키비키.jpg'},
-  {n:'99벳',ef:'99BET',en:'99\nBET',f:10,r:14,c:5,a:6,rl:3.8,rt:9.0,rv:210,u:3100,p:'cyan',tag:'Top Reload',img:'/img/99벳.jpg'},
-  {n:'Astart',ef:'ASTART',en:'A\nSTART',f:11,r:7,c:4,a:9,rl:2.5,rt:8.5,rv:167,u:2400,p:'gold',tag:'Fast',img:'/img/Astart.jpg'},
-  {n:'벳33',ef:'BET33',en:'BET\n33',f:8,r:9,c:3,a:5,rl:4.2,rt:7.8,rv:120,u:1600,p:'orange',tag:'Rising',img:'/img/벳33.jpg'},
-  {n:'벳38',ef:'BET38',en:'BET\n38',f:9,r:12,c:5,a:4,rl:3.3,rt:8.2,rv:155,u:2100,p:'',tag:'Trusted',img:'/img/벳38.jpg'},
-  {n:'올레벳',ef:'OLEBET',en:'OLE\nBET',f:14,r:10,c:3,a:6,rl:3.7,rt:7.2,rv:89,u:1200,p:'',tag:'New',img:'/img/올레벳.jpg'},
-  {n:'kslot',ef:'KSLOT',en:'K\nSLOT',f:7,r:13,c:5,a:3,rl:2.8,rt:8.7,rv:200,u:3000,p:'gold',tag:'Slots',img:'/img/kslot.jpg'},
+  {n:'겜블시티',ef:'GAMBLE CITY',en:'GAMBLE\nCITY',f:15,r:10,c:5,a:8,rl:3.5,rt:9.4,rv:328,u:4520,p:'gold',tag:'Diamond',img:'/img/겜블시티.webp'},
+  {n:'벳콩',ef:'BETKONG',en:'BET\nKONG',f:12,r:8,c:4,a:5,rl:4.0,rt:9.1,rv:245,u:3800,p:'blue',tag:'Premium',img:'/img/bcgame.webp'},
+  {n:'럭키비키',ef:'LUCKY VIKI',en:'LUCKY\nVIKI',f:13,r:9,c:6,a:7,rl:3.0,rt:8.8,rv:190,u:2900,p:'purple',tag:'Hot',img:'/img/럭키비키.webp'},
+  {n:'99벳',ef:'99BET',en:'99\nBET',f:10,r:14,c:5,a:6,rl:3.8,rt:9.0,rv:210,u:3100,p:'cyan',tag:'Top Reload',img:'/img/99벳.webp'},
+  {n:'Astart',ef:'ASTART',en:'A\nSTART',f:11,r:7,c:4,a:9,rl:2.5,rt:8.5,rv:167,u:2400,p:'gold',tag:'Fast',img:'/img/Astart.webp'},
+  {n:'벳33',ef:'BET33',en:'BET\n33',f:8,r:9,c:3,a:5,rl:4.2,rt:7.8,rv:120,u:1600,p:'orange',tag:'Rising',img:'/img/벳33.webp'},
+  {n:'벳38',ef:'BET38',en:'BET\n38',f:9,r:12,c:5,a:4,rl:3.3,rt:8.2,rv:155,u:2100,p:'',tag:'Trusted',img:'/img/벳38.webp'},
+  {n:'올레벳',ef:'OLEBET',en:'OLE\nBET',f:14,r:10,c:3,a:6,rl:3.7,rt:7.2,rv:89,u:1200,p:'',tag:'New',img:'/img/올레벳.webp'},
+  {n:'kslot',ef:'KSLOT',en:'K\nSLOT',f:7,r:13,c:5,a:3,rl:2.8,rt:8.7,rv:200,u:3000,p:'gold',tag:'Slots',img:'/img/kslot.webp'},
 ];
 
 var sorted = [];
