@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>업체등록 - OPTION</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0a0a0f; color:#e0e0e0; font-family:'Segoe UI',sans-serif; min-height:100vh; }
+
+/* 헤더 */
+.header { background:linear-gradient(135deg,#1a1a2e,#16213e); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #333; }
+.header h1 { font-size:20px; color:#ffd700; }
+.header .user-info { display:flex; align-items:center; gap:12px; }
+.header .user-info span { color:#aaa; font-size:14px; }
+.btn { padding:8px 16px; border:none; border-radius:6px; cursor:pointer; font-size:14px; font-weight:600; transition:all .2s; }
+.btn-gold { background:linear-gradient(135deg,#ffd700,#ffaa00); color:#000; }
+.btn-gold:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(255,215,0,.3); }
+.btn-outline { background:transparent; border:1px solid #555; color:#ccc; }
+.btn-outline:hover { border-color:#ffd700; color:#ffd700; }
+.btn-danger { background:#e74c3c; color:#fff; }
+
+/* 모달 */
+.modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.7); z-index:1000; align-items:center; justify-content:center; }
+.modal-overlay.active { display:flex; }
+.modal { background:#1a1a2e; border-radius:12px; padding:32px; width:90%; max-width:400px; border:1px solid #333; }
+.modal h2 { color:#ffd700; margin-bottom:20px; text-align:center; }
+.modal-tabs { display:flex; margin-bottom:20px; border-bottom:1px solid #333; }
+.modal-tabs button { flex:1; padding:10px; background:none; border:none; color:#888; cursor:pointer; font-size:15px; border-bottom:2px solid transparent; }
+.modal-tabs button.active { color:#ffd700; border-bottom-color:#ffd700; }
+.form-group { margin-bottom:16px; }
+.form-group label { display:block; margin-bottom:6px; color:#aaa; font-size:13px; }
+.form-group input { width:100%; padding:10px 12px; background:#0d0d1a; border:1px solid #333; border-radius:6px; color:#fff; font-size:14px; }
+.form-group input:focus { outline:none; border-color:#ffd700; }
+
+/* 등록 폼 */
+.register-wrap { max-width:800px; margin:30px auto; padding:0 20px; }
+.register-wrap h2 { color:#ffd700; font-size:22px; margin-bottom:24px; padding-bottom:12px; border-bottom:1px solid #333; }
+.section { background:#12121f; border:1px solid #222; border-radius:10px; padding:24px; margin-bottom:20px; }
+.section h3 { color:#ffd700; font-size:16px; margin-bottom:16px; }
+
+/* 보너스 행 */
+.bonus-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+.bonus-row label.check-label { display:flex; align-items:center; gap:8px; min-width:180px; cursor:pointer; color:#ccc; font-size:14px; }
+.bonus-row input[type="checkbox"] { width:18px; height:18px; accent-color:#ffd700; }
+.bonus-row input[type="number"] { width:80px; padding:8px; background:#0d0d1a; border:1px solid #333; border-radius:6px; color:#fff; text-align:center; }
+.bonus-row .unit { color:#888; font-size:13px; }
+
+/* 롤링 */
+.rolling-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.rolling-item { text-align:center; }
+.rolling-item label { display:block; color:#aaa; font-size:13px; margin-bottom:6px; }
+.rolling-item input { width:100%; padding:8px; background:#0d0d1a; border:1px solid #333; border-radius:6px; color:#fff; text-align:center; }
+
+/* 이미지 업로드 */
+.image-uploads { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.upload-box { border:2px dashed #333; border-radius:10px; padding:20px; text-align:center; cursor:pointer; transition:border-color .2s; position:relative; min-height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.upload-box:hover { border-color:#ffd700; }
+.upload-box input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.upload-box .icon { font-size:32px; margin-bottom:8px; }
+.upload-box .label { color:#888; font-size:13px; }
+.upload-box img.preview { max-width:100%; max-height:200px; border-radius:6px; object-fit:contain; }
+
+/* 상태 메시지 */
+.msg { padding:12px; border-radius:6px; margin-bottom:16px; text-align:center; display:none; }
+.msg.success { display:block; background:rgba(39,174,96,.15); color:#27ae60; border:1px solid rgba(39,174,96,.3); }
+.msg.error { display:block; background:rgba(231,76,60,.15); color:#e74c3c; border:1px solid rgba(231,76,60,.3); }
+
+@media (max-width:600px) {
+  .image-uploads { grid-template-columns:1fr; }
+  .rolling-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="header">
+  <h1>OPTION 업체등록</h1>
+  <div class="user-info" id="headerUser">
+    <button class="btn btn-gold" onclick="showAuth()">로그인</button>
+  </div>
+</div>
+
+<!-- 로그인/가입 모달 -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <h2>OPTION</h2>
+    <div class="modal-tabs">
+      <button class="active" onclick="switchTab('login')">로그인</button>
+      <button onclick="switchTab('signup')">회원가입</button>
+    </div>
+    <div id="loginForm">
+      <div class="form-group"><label>아이디</label><input id="loginId" placeholder="아이디"></div>
+      <div class="form-group"><label>비밀번호</label><input id="loginPw" type="password" placeholder="비밀번호"></div>
+      <div id="loginMsg" class="msg"></div>
+      <button class="btn btn-gold" style="width:100%;padding:12px" onclick="doLogin()">로그인</button>
+    </div>
+    <div id="signupForm" style="display:none">
+      <div class="form-group"><label>아이디</label><input id="regId" placeholder="아이디"></div>
+      <div class="form-group"><label>비밀번호</label><input id="regPw" type="password" placeholder="비밀번호"></div>
+      <div class="form-group"><label>이름(닉네임)</label><input id="regName" placeholder="이름"></div>
+      <div id="regMsg" class="msg"></div>
+      <button class="btn btn-gold" style="width:100%;padding:12px" onclick="doRegister()">가입하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 업체등록 폼 (로그인 후 표시) -->
+<div class="register-wrap" id="registerSection" style="display:none">
+  <h2>업체 등록하기</h2>
+  <div id="formMsg" class="msg"></div>
+
+  <form id="siteForm" enctype="multipart/form-data">
+    <!-- 기본정보 -->
+    <div class="section">
+      <h3>기본 정보</h3>
+      <div class="form-group"><label>업체명</label><input name="name" placeholder="업체명 입력" required></div>
+      <div class="form-group">
+        <label>카테고리</label>
+        <select name="category" style="width:100%;padding:10px;background:#0d0d1a;border:1px solid #333;border-radius:6px;color:#fff;">
+          <option value="casino">카지노</option>
+          <option value="sports">스포츠</option>
+          <option value="slot">슬롯</option>
+          <option value="all">종합</option>
+        </select>
+      </div>
+      <div class="form-group"><label>업체 소개</label><textarea name="description" rows="3" placeholder="업체 소개 (선택)" style="width:100%;padding:10px;background:#0d0d1a;border:1px solid #333;border-radius:6px;color:#fff;resize:vertical;"></textarea></div>
+      <div class="form-group"><label>사이트 링크</label><input name="link" placeholder="https://example.com"></div>
+    </div>
+
+    <!-- 보너스 설정 -->
+    <div class="section">
+      <h3>보너스 설정</h3>
+      <div class="bonus-row">
+        <label class="check-label"><input type="checkbox" name="firstBonusOn" value="true"> 첫충전 보너스</label>
+        <input type="number" name="firstBonus" placeholder="0" step="1" min="0" max="200"> <span class="unit">%</span>
+      </div>
+      <div class="bonus-row">
+        <label class="check-label"><input type="checkbox" name="reloadBonusOn" value="true"> 재충전 보너스</label>
+        <input type="number" name="reloadBonus" placeholder="0" step="1" min="0" max="200"> <span class="unit">%</span>
+      </div>
+      <div class="bonus-row">
+        <label class="check-label"><input type="checkbox" name="allinBonusOn" value="true"> 올인 보너스</label>
+        <input type="number" name="allinBonus" placeholder="0" step="1" min="0" max="200"> <span class="unit">%</span>
+      </div>
+      <div class="bonus-row">
+        <label class="check-label"><input type="checkbox" name="joinBonusOn" value="true"> 첫가입충전 보너스</label>
+        <input type="number" name="joinBonus" placeholder="0" step="1" min="0" max="200"> <span class="unit">%</span>
+      </div>
+      <div class="bonus-row">
+        <label class="check-label"><input type="checkbox" name="everyBonusOn" value="true"> 매충 보너스</label>
+        <input type="number" name="everyBonus" placeholder="0" step="1" min="0" max="200"> <span class="unit">%</span>
+      </div>
+      <div class="bonus-row">
+        <label class="check-label"><input type="checkbox" name="exchangeBonusOn" value="true"> 환전후충전 보너스</label>
+        <input type="number" name="exchangeBonus" placeholder="0" step="1" min="0" max="200"> <span class="unit">%</span>
+      </div>
+    </div>
+
+    <!-- 롤링요율 -->
+    <div class="section">
+      <h3>롤링요율</h3>
+      <div class="rolling-grid">
+        <div class="rolling-item">
+          <label>스포츠</label>
+          <input type="number" name="rollingSports" placeholder="0" step="0.1" min="0" max="100">
+          <span class="unit">%</span>
+        </div>
+        <div class="rolling-item">
+          <label>카지노</label>
+          <input type="number" name="rollingCasino" placeholder="0" step="0.1" min="0" max="100">
+          <span class="unit">%</span>
+        </div>
+        <div class="rolling-item">
+          <label>슬롯</label>
+          <input type="number" name="rollingSlot" placeholder="0" step="0.1" min="0" max="100">
+          <span class="unit">%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 이미지 등록 -->
+    <div class="section">
+      <h3>이미지 등록</h3>
+      <div class="image-uploads">
+        <div class="upload-box" id="mobileBox">
+          <div class="icon">📱</div>
+          <div class="label">모바일 버전 이미지</div>
+          <img class="preview" id="mobilePreview" style="display:none">
+          <input type="file" name="mobileImage" accept="image/*" onchange="previewImage(this,'mobilePreview','mobileBox')">
+        </div>
+        <div class="upload-box" id="methodBox">
+          <div class="icon">📋</div>
+          <div class="label">등록방식 이미지</div>
+          <img class="preview" id="methodPreview" style="display:none">
+          <input type="file" name="methodImage" accept="image/*" onchange="previewImage(this,'methodPreview','methodBox')">
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-gold" style="width:100%;padding:14px;font-size:16px;margin-top:8px">업체 등록하기</button>
+  </form>
+</div>
+
+<!-- 비로그인 안내 -->
+<div class="register-wrap" id="loginPrompt" style="text-align:center;padding-top:80px;">
+  <div style="font-size:48px;margin-bottom:20px">🔒</div>
+  <h2 style="color:#ffd700;margin-bottom:12px">로그인이 필요합니다</h2>
+  <p style="color:#888;margin-bottom:24px">업체를 등록하려면 먼저 로그인하세요.</p>
+  <button class="btn btn-gold" onclick="showAuth()" style="padding:14px 32px;font-size:16px">로그인 / 회원가입</button>
+</div>
+
+<script>
+let token = localStorage.getItem('opt_token');
+let currentUser = null;
+
+// 초기화
+(async function init() {
+  if (token) {
+    try {
+      const r = await fetch('/api/auth/me', { headers: { Authorization: 'Bearer ' + token } });
+      if (r.ok) {
+        const d = await r.json();
+        currentUser = d.user;
+        showLoggedIn();
+        return;
+      }
+    } catch {}
+    localStorage.removeItem('opt_token');
+    token = null;
+  }
+  showLoggedOut();
+})();
+
+function showLoggedIn() {
+  document.getElementById('headerUser').innerHTML =
+    `<span>${currentUser.name}님</span><button class="btn btn-outline" onclick="doLogout()">로그아웃</button>`;
+  document.getElementById('registerSection').style.display = 'block';
+  document.getElementById('loginPrompt').style.display = 'none';
+}
+function showLoggedOut() {
+  document.getElementById('headerUser').innerHTML =
+    `<button class="btn btn-gold" onclick="showAuth()">로그인</button>`;
+  document.getElementById('registerSection').style.display = 'none';
+  document.getElementById('loginPrompt').style.display = '';
+}
+function showAuth() { document.getElementById('authModal').classList.add('active'); }
+function hideAuth() { document.getElementById('authModal').classList.remove('active'); }
+
+// 모달 바깥 클릭 닫기
+document.getElementById('authModal').addEventListener('click', function(e) {
+  if (e.target === this) hideAuth();
+});
+
+function switchTab(tab) {
+  document.querySelectorAll('.modal-tabs button').forEach((b,i) => {
+    b.classList.toggle('active', (tab === 'login' ? i === 0 : i === 1));
+  });
+  document.getElementById('loginForm').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('signupForm').style.display = tab === 'signup' ? '' : 'none';
+}
+
+async function doLogin() {
+  const id = document.getElementById('loginId').value.trim();
+  const pw = document.getElementById('loginPw').value;
+  if (!id || !pw) return showMsg('loginMsg', '아이디/비밀번호를 입력하세요', 'error');
+  try {
+    const r = await fetch('/api/auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: id, password: pw })
+    });
+    const d = await r.json();
+    if (!r.ok) return showMsg('loginMsg', d.error || '로그인 실패', 'error');
+    token = d.token;
+    currentUser = d.user;
+    localStorage.setItem('opt_token', token);
+    hideAuth();
+    showLoggedIn();
+  } catch { showMsg('loginMsg', '서버 오류', 'error'); }
+}
+
+async function doRegister() {
+  const id = document.getElementById('regId').value.trim();
+  const pw = document.getElementById('regPw').value;
+  const name = document.getElementById('regName').value.trim();
+  if (!id || !pw) return showMsg('regMsg', '아이디/비밀번호를 입력하세요', 'error');
+  try {
+    const r = await fetch('/api/auth/register', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: id, password: pw, name })
+    });
+    const d = await r.json();
+    if (!r.ok) return showMsg('regMsg', d.error || '가입 실패', 'error');
+    token = d.token;
+    currentUser = d.user;
+    localStorage.setItem('opt_token', token);
+    hideAuth();
+    showLoggedIn();
+  } catch { showMsg('regMsg', '서버 오류', 'error'); }
+}
+
+function doLogout() {
+  localStorage.removeItem('opt_token');
+  token = null; currentUser = null;
+  showLoggedOut();
+}
+
+function showMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg ' + type;
+}
+
+// 이미지 미리보기
+function previewImage(input, previewId, boxId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = document.getElementById(previewId);
+    img.src = e.target.result;
+    img.style.display = 'block';
+    // 아이콘/라벨 숨기기
+    const box = document.getElementById(boxId);
+    const icon = box.querySelector('.icon');
+    const label = box.querySelector('.label');
+    if (icon) icon.style.display = 'none';
+    if (label) label.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// 폼 제출
+document.getElementById('siteForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!token) return showMsg('formMsg', '로그인이 필요합니다', 'error');
+
+  const fd = new FormData(this);
+
+  // 체크박스 처리: 체크 안 되면 'false' 전송
+  ['firstBonusOn','reloadBonusOn','allinBonusOn','joinBonusOn','everyBonusOn','exchangeBonusOn'].forEach(name => {
+    if (!fd.get(name)) fd.set(name, 'false');
+  });
+
+  try {
+    const r = await fetch('/api/sites', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token },
+      body: fd
+    });
+    const d = await r.json();
+    if (!r.ok) return showMsg('formMsg', d.error || '등록 실패', 'error');
+    showMsg('formMsg', '업체가 등록되었습니다! 관리자 승인 후 노출됩니다.', 'success');
+    this.reset();
+    // 미리보기 초기화
+    ['mobilePreview','methodPreview'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    ['mobileBox','methodBox'].forEach(id => {
+      const box = document.getElementById(id);
+      const icon = box.querySelector('.icon');
+      const label = box.querySelector('.label');
+      if (icon) icon.style.display = '';
+      if (label) label.style.display = '';
+    });
+  } catch { showMsg('formMsg', '서버 오류', 'error'); }
+});
+</script>
+</body>
+</html>
