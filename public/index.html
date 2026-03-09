@@ -200,7 +200,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .3s;}
 .bonus-overlay.show{opacity:1;pointer-events:auto;}
-.bonus-box{width:88%;max-width:360px;border-radius:18px;overflow:hidden;
+.bonus-box{width:92%;max-width:400px;border-radius:18px;overflow:hidden;
   background:linear-gradient(160deg,#1e1e38,#141430,#1a1a35);
   border:1px solid rgba(240,192,80,.12);
   box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 40px rgba(240,192,80,.04);
@@ -221,9 +221,9 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   box-shadow:0 4px 16px rgba(240,192,80,.25),inset 0 1px 0 rgba(255,255,255,.3);
   transition:all .2s;}
 .bonus-receive:active{transform:scale(.97);}
-.bonus-video{width:100%;display:none;padding:10px 0 16px;background:transparent;}
-.bonus-video.show{display:flex;align-items:center;justify-content:center;}
-.bonus-video video{width:70%;border-radius:12px;display:block;background:#000;}
+.bonus-video{width:100%;display:none;background:transparent;}
+.bonus-video.show{display:block;}
+.bonus-video video{width:100%;display:block;border-radius:0 0 16px 16px;background:transparent;}
 
 /* ===== BLACK PEARL BOTTOM NAV ===== */
 .bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
@@ -618,6 +618,7 @@ function openBonus(){
   $('bonusVideo').classList.remove('show');
   $('bonusContent').style.display='';
   $('bonusReceiveBtn').style.display='';
+  document.querySelector('.bonus-header').style.display='';
   var v=$('bonusVid'); v.pause(); v.currentTime=0;
 }
 function closeBonus(){
@@ -627,9 +628,11 @@ function closeBonus(){
 function playBonusVideo(){
   $('bonusContent').style.display='none';
   $('bonusReceiveBtn').style.display='none';
+  document.querySelector('.bonus-header').style.display='none';
   $('bonusVideo').classList.add('show');
   var v=$('bonusVid'); v.play();
 }
+
 
 // ===== CATEGORY POPUP =====
 var catState=0,selectedCat='';
