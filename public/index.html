@@ -270,11 +270,11 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   z-index:99;pointer-events:none;}
 .cat-menu{position:absolute;bottom:64px;left:12px;display:flex;flex-direction:column-reverse;gap:6px;pointer-events:auto;}
 .cat-item{
-  height:48px;border-radius:14px;padding:0 16px;
-  background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.03),rgba(255,255,255,.06));
-    border:1px solid rgba(255,255,255,.2);
-  box-shadow:0 4px 16px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(255,255,255,.05);
-  color:#fff;font-size:12px;font-weight:700;
+  height:42px;border-radius:12px;padding:0 14px;
+  background:linear-gradient(160deg,rgba(255,255,255,.15),rgba(255,255,255,.08),rgba(255,255,255,.12));
+  border:1px solid rgba(255,255,255,.28);
+  box-shadow:0 3px 12px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(255,255,255,.08);
+  color:#fff;font-size:13px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.3);
   display:flex;align-items:center;gap:6px;cursor:pointer;
   transform:translateY(20px);opacity:0;
   transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s;
@@ -283,12 +283,12 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .cat-item.show{transform:translateY(0);opacity:1;}
 .cat-item:active{transform:scale(.95);}
 .cat-item .ci-icon{font-size:14px;}
-.cat-item .ci-img{width:36px;height:36px;object-fit:contain;border-radius:5px;flex-shrink:0;}
+.cat-item .ci-img{width:32px;height:32px;object-fit:contain;border-radius:4px;flex-shrink:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3));}
 .cat-item.sub{
-  background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02),rgba(255,255,255,.04));
-  border:1px solid rgba(255,255,255,.15);
-  box-shadow:0 3px 12px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(255,255,255,.03);
-  font-size:11px;height:38px;
+  background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.06),rgba(255,255,255,.10));
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 3px 10px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(255,255,255,.06);
+  font-size:11px;font-weight:800;height:36px;text-shadow:0 1px 2px rgba(0,0,0,.3);
 }
 
 /* ===== MY INFO PANEL ===== */
