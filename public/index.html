@@ -51,10 +51,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .p-text{font-size:10px;font-weight:600;position:relative;z-index:1;color:var(--text2);}
 .p-pct{font-size:14px;font-weight:800;position:relative;z-index:1;color:var(--text3);margin-top:2px;}.p-pct.w{color:var(--gold);}
 
-.sec-t{font-size:13px;font-weight:800;letter-spacing:-.5px;padding:2px 8px 0;color:var(--text);}
-.sec-t span{font-size:10px;font-weight:500;color:var(--text3);}
-
-.row-hero{display:flex;gap:4px;padding:0 4px;margin-bottom:4px;}
+.row-hero{display:flex;gap:4px;padding:0 4px;margin-bottom:4px;margin-top:4px;}
 .row-sub{display:flex;gap:4px;padding:0 4px;margin-bottom:4px;}
 .row-bot{display:flex;gap:4px;padding:0 4px;margin-bottom:4px;}
 
@@ -75,8 +72,8 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   box-shadow:0 2px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);
 }
 
-/* Hero cards */
-.d-mob{width:calc(33.33% - 2px);flex-shrink:0;height:184px;}
+/* Hero cards (1.3x wider) */
+.d-mob{width:calc(43% - 2px);flex-shrink:0;height:184px;}
 .d-inf{flex:1;height:184px;}
 .d-sub{flex:1;min-width:0;height:158px;}
 .d-bot{flex:1;min-width:0;height:114px;}
@@ -104,10 +101,10 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .inf-name{font-size:15px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-top:4px;position:relative;z-index:2;color:#fff;}
 
 /* 순위 표시 (우측 상단) */
-.inf-rank{position:absolute;top:8px;right:8px;z-index:3;
-  font-size:20px;font-weight:900;color:rgba(240,192,80,.25);
+.inf-rank{position:absolute;top:6px;right:8px;z-index:3;
+  font-size:28px;font-weight:900;color:rgba(240,192,80,.35);
   line-height:1;letter-spacing:-1px;}
-.inf-rank span{font-size:10px;font-weight:700;color:rgba(240,192,80,.4);vertical-align:super;}
+.inf-rank span{font-size:11px;font-weight:700;color:rgba(240,192,80,.5);vertical-align:super;}
 
 /* 업체알림 */
 .inf-alert{margin-top:auto;padding:5px 6px;border-radius:6px;
@@ -186,21 +183,24 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   background:linear-gradient(180deg,transparent 0%,rgba(10,10,18,.95) 30%,rgba(10,10,18,.98) 100%);}
 .glass-btn{
   flex:1;height:46px;border-radius:14px;border:none;cursor:pointer;
-  background:linear-gradient(145deg,#2a2a3a,#1a1a28,#2e2e40);
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 4px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.3);
-  color:rgba(255,255,255,.7);font-size:11px;font-weight:700;letter-spacing:-.2px;
-  display:flex;align-items:center;justify-content:center;gap:4px;
+  background:linear-gradient(160deg,#2c2c42 0%,#1c1c30 35%,#3a3a55 55%,#1e1e34 75%,#2a2a40 100%);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 4px 16px rgba(0,0,0,.5),0 1px 3px rgba(255,255,255,.04),
+    inset 0 1px 0 rgba(255,255,255,.15),inset 0 -1px 0 rgba(0,0,0,.4);
+  color:rgba(255,255,255,.8);font-size:11px;font-weight:700;letter-spacing:.3px;
+  display:flex;align-items:center;justify-content:center;
   transition:all .2s;position:relative;
 }
-.glass-btn::before{content:'';position:absolute;top:1px;left:10%;right:10%;height:35%;
-  border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent);pointer-events:none;}
+.glass-btn::before{content:'';position:absolute;top:1px;left:8%;right:8%;height:40%;
+  border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.02),transparent);pointer-events:none;}
+.glass-btn::after{content:'';position:absolute;bottom:2px;left:15%;right:15%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);pointer-events:none;}
 .glass-btn:active{transform:scale(.95);}
-.glass-btn .g-icon{font-size:16px;}
 .glass-btn.active{
-  background:linear-gradient(145deg,#3a3a50,#282840,#3e3e58);
-  border-color:rgba(240,192,80,.2);color:var(--gold);
-  box-shadow:0 4px 16px rgba(240,192,80,.1),inset 0 1px 0 rgba(255,255,255,.12);
+  background:linear-gradient(160deg,#3a3a55 0%,#282842 35%,#4a4a65 55%,#2e2e48 75%,#3a3a52 100%);
+  border-color:rgba(240,192,80,.25);color:var(--gold);
+  box-shadow:0 4px 16px rgba(240,192,80,.1),0 1px 3px rgba(240,192,80,.05),
+    inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(0,0,0,.4);
 }
 
 /* ===== CATEGORY POPUP ===== */
@@ -266,8 +266,6 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   </div>
 </div>
 
-<div class="sec-t">추천 순위 <span id="cnt">10개</span></div>
-
 <div class="row-hero" id="rowH"></div>
 <div class="row-sub" id="rowS"></div>
 <div class="row-bot" id="rowB"></div>
@@ -286,10 +284,10 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 
 <!-- 내정보 패널 -->
 <div class="my-panel" id="myPanel">
-  <div class="my-grade">DIAMOND MEMBER</div>
+  <div class="my-grade">OPTION MEMBER</div>
   <div class="my-name">OPTION</div>
   <div class="my-stat">
-    <div class="my-stat-item"><span class="label">등급</span><span class="val">VIP</span></div>
+    <div class="my-stat-item"><span class="label">등급</span><span class="val">각설이3등급</span></div>
     <div class="my-stat-item"><span class="label">포인트</span><span class="val">12,500P</span></div>
   </div>
   <div class="my-first">
@@ -305,10 +303,10 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 
 <!-- 블랙펄 하단 버튼 -->
 <div class="bot-nav">
-  <button class="glass-btn" id="btnCat" onclick="toggleCategory()"><span class="g-icon">☰</span>분류</button>
-  <button class="glass-btn" onclick="location.href='/register.html'"><span class="g-icon">✏️</span>등록</button>
-  <button class="glass-btn"><span class="g-icon">📊</span>비교</button>
-  <button class="glass-btn" id="btnMyInfo" onclick="toggleMyPanel()"><span class="g-icon">👤</span>내정보</button>
+  <button class="glass-btn" id="btnCat" onclick="toggleCategory()">검색</button>
+  <button class="glass-btn" onclick="location.href='/register.html'">프로모션</button>
+  <button class="glass-btn">보너스</button>
+  <button class="glass-btn" id="btnMyInfo" onclick="toggleMyPanel()">프로필</button>
 </div>
 </div>
 
@@ -382,7 +380,7 @@ function infH(s,rank){
     '<div class="inf-tier">'+s.tag+'</div>'+
     '<div class="inf-name '+cc(s.p)+'">'+s.en.replace('\n','<br>')+'</div>'+
     '<div class="inf-alert"><div class="inf-alert-label">업체알림</div><div class="inf-alert-msg">재충전시 보너스 '+s.r+'%</div></div>'+
-    '<button class="inf-detail-btn" onclick="event.stopPropagation();openDetail()">상세보기</button>'+
+    '<button class="inf-detail-btn" onclick="event.stopPropagation();openDetail()">보너스 상세보기</button>'+
     '<div class="inf-bot"><span class="inf-stars">&#11088;&#11088;&#11088;&#11088;&#11088;</span><span class="inf-score">'+s.rt+'</span>'+
     '<span class="inf-meta">'+s.rv+'건 '+s.u+'명</span></div></div>';
 }
