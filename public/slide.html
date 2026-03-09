@@ -162,11 +162,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
     <div class="p-opt"><div class="p-bar b"></div><div class="p-text">사람색기 아니네</div><div class="p-pct w">69%</div></div>
   </div>
 </div>
-<div class="sort-bar">
-  <div class="sort-btn on">첫충 높은순</div><div class="sort-btn">매충 높은순</div>
-  <div class="sort-btn">캐시백 높은순</div><div class="sort-btn">올인 높은순</div>
-  <div class="sort-btn">가입 높은순</div><div class="sort-btn">이벤트</div>
-</div>
+
 <div class="sec-t">최고 조건 추천 <span id="cnt">10개</span></div>
 
 <div class="row-hero" id="rowH"></div>
@@ -175,8 +171,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 
 <div class="swipe-hint">↑ 올리면 다음 · ↓ 내리면 이전</div>
 <div class="list-sec" id="listSec"></div>
-<div class="live-t">라이브 조건 피드</div>
-<div id="liveFeed"></div>
+
 </div>
 <div class="bot-nav">
   <div class="nav-item">☰</div><div class="nav-item on">📊</div>
@@ -303,15 +298,6 @@ function fillList(b){
       '<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
   }
   $('listSec').innerHTML=lh;
-  var fh='';
-  for(var i=0;i<2;i++){
-    var s=S(i+1,b),bg2=s.p==='purple'?'#8B5CF6':s.p==='blue'?'#2660D4':s.p==='gold'?'#C47F17':'#777';
-    fh+='<div class="live-item"><div class="rn-logo" style="background:'+bg2+';width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:5px;font-weight:800;color:#fff;flex-shrink:0">'+s.ef.substring(0,4)+'</div>'+
-      '<div style="flex:1"><div style="font-size:11px;font-weight:700">'+s.n+'</div>'+
-      '<div style="font-size:8px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:1px"><span class="live-badge">LIVE</span>특별 보너스</div></div>'+
-      '<div class="rn-r"><div class="rn-p">'+s.f+'%</div><div class="rn-c">회원 '+s.u+'명</div></div></div>';
-  }
-  $('liveFeed').innerHTML=fh;
 }
 
 // ========== INTERLOCKING GEAR CASCADE ==========
