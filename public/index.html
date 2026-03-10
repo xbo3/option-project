@@ -338,10 +338,11 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .cat-menu{position:absolute;bottom:64px;left:12px;display:flex;flex-direction:column-reverse;gap:6px;pointer-events:auto;}
 .cat-item{
   height:42px;border-radius:12px;padding:0 14px;
-  background:linear-gradient(160deg,rgba(255,255,255,.15),rgba(255,255,255,.08),rgba(255,255,255,.12));
-  border:1px solid rgba(255,255,255,.28);
-  box-shadow:0 3px 12px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(255,255,255,.08);
-  color:#fff;font-size:13px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.3);
+  background:linear-gradient(160deg,rgba(20,20,40,.92),rgba(30,30,55,.88),rgba(25,25,45,.9));
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 4px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.15);
+  color:#fff;font-size:13px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.5);
   display:flex;align-items:center;gap:6px;cursor:pointer;
   transform:translateY(20px);opacity:0;
   transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s;
@@ -352,9 +353,10 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .cat-item .ci-icon{font-size:14px;}
 .cat-item .ci-img{width:32px;height:32px;object-fit:contain;border-radius:4px;flex-shrink:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3));}
 .cat-item.sub{
-  background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.06),rgba(255,255,255,.10));
-  border:1px solid rgba(255,255,255,.22);
-  box-shadow:0 3px 10px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(255,255,255,.06);
+  background:linear-gradient(160deg,rgba(25,25,50,.9),rgba(35,35,60,.85),rgba(30,30,50,.88));
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 3px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12);
   font-size:11px;font-weight:800;height:36px;text-shadow:0 1px 2px rgba(0,0,0,.3);
 }
 
@@ -648,13 +650,16 @@ function gearCascade(dir,axis){
 // ===== SMOOTH TOUCH (left/right=Y axis, up/down=X axis) =====
 (function(){
   var a=$('mainArea'),sx=0,sy=0,fired=false;
-  a.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;fired=false;},{passive:true});
+  var stime=0;
+  a.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;fired=false;stime=Date.now();},{passive:true});
   a.addEventListener('touchmove',function(e){
-    e.preventDefault();
     if(fired) return;
     var dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;
     var ax=Math.abs(dx),ay=Math.abs(dy);
-    if(ay>5||ax>5){
+    var dt=Date.now()-stime;
+    // 빠른 스와이프(300ms 이내, 20px 이상)만 슬롯 전환, 나머지는 스크롤 허용
+    if((ay>20||ax>20)&&dt<300){
+      e.preventDefault();
       fired=true;
       if(ay>ax){
         if(dy>0) gearCascade('next','X'); else gearCascade('prev','X');
