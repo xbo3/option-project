@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>OPTION · Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'NanumSquareNeo';
+  src: url('/fonts/NanumSquareNeo-Variable.woff2') format('woff2');
+  font-weight: 300 900;
+  font-style: normal;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Poppins', 'NanumSquareNeo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  background: #1a1a2e;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.4) 0%, rgba(118, 75, 162, 0.5) 100%);
+  z-index: 0;
+}
+
+.login-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 1;
+}
+
+.logo { text-align: center; margin-bottom: 32px; }
+.logo h1 { font-size: 42px; font-weight: 700; color: #2d3748; margin-bottom: 12px; letter-spacing: -0.5px; }
+.logo h1 span { color: #a855f7; }
+.subtitle { font-size: 15px; color: #64748b; margin-bottom: 8px; font-weight: 500; }
+
+.tab-btns { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 2px solid #e2e8f0; }
+.tab-btn {
+  flex: 1; padding: 12px; background: none; border: none; cursor: pointer;
+  font-size: 15px; font-weight: 600; color: #94a3b8;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: all .2s;
+  font-family: 'Poppins', 'NanumSquareNeo', sans-serif;
+}
+.tab-btn.active { color: #a855f7; border-bottom-color: #a855f7; }
+
+.form-group { margin-bottom: 20px; }
+label { display: block; font-size: 14px; font-weight: 600; color: #475569; margin-bottom: 8px; }
+input {
+  width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 12px;
+  font-size: 15px; color: #1e293b; background: #f8fafc;
+  transition: all 0.2s ease; outline: none;
+  font-family: 'Poppins', 'NanumSquareNeo', sans-serif;
+}
+input:focus { border-color: #a855f7; background: #fff; box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1); }
+input::placeholder { color: #cbd5e1; }
+
+.login-btn {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  color: white; border: none; border-radius: 12px;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+  margin-top: 8px; transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+  font-family: 'Poppins', 'NanumSquareNeo', sans-serif;
+}
+.login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5); }
+.login-btn:active { transform: translateY(0); }
+
+.signup-btn {
+  width: 100%; padding: 16px;
+  background: transparent;
+  color: #a855f7; border: 2px solid #a855f7; border-radius: 12px;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+  margin-top: 10px; transition: all 0.3s ease;
+  font-family: 'Poppins', 'NanumSquareNeo', sans-serif;
+}
+.signup-btn:hover { background: rgba(168, 85, 247, 0.08); }
+
+.msg {
+  margin-top: 16px; padding: 12px; border-radius: 8px; font-size: 13px; display: none;
+}
+.msg.error { display: block; background: #fee2e2; border: 1px solid #fecaca; color: #dc2626; }
+.msg.success { display: block; background: #dcfce7; border: 1px solid #bbf7d0; color: #16a34a; }
+
+.back-link {
+  display: block; text-align: center; margin-top: 24px;
+  color: #94a3b8; font-size: 13px; text-decoration: none;
+}
+.back-link:hover { color: #a855f7; }
+
+@media (max-width: 480px) {
+  .login-container { padding: 36px 28px; }
+  .logo h1 { font-size: 36px; }
+}
+</style>
+</head>
+<body>
+<div class="bg-overlay"></div>
+
+<div class="login-container">
+  <div class="logo">
+    <h1><span>OPTION</span></h1>
+    <p class="subtitle">Community Platform</p>
+  </div>
+
+  <div class="tab-btns">
+    <button class="tab-btn active" onclick="switchTab('login')">로그인</button>
+    <button class="tab-btn" onclick="switchTab('signup')">회원가입</button>
+  </div>
+
+  <!-- 로그인 폼 -->
+  <div id="loginForm">
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="loginId" placeholder="아이디" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
+    </div>
+    <div id="loginMsg" class="msg"></div>
+    <button class="login-btn" onclick="doLogin()">Login</button>
+    <button class="signup-btn" onclick="switchTab('signup')">Sign Up</button>
+  </div>
+
+  <!-- 가입 폼 -->
+  <div id="signupForm" style="display:none">
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="regId" placeholder="아이디" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="regPw" placeholder="비밀번호" autocomplete="new-password">
+    </div>
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text" id="regName" placeholder="이름(닉네임)">
+    </div>
+    <div id="regMsg" class="msg"></div>
+    <button class="login-btn" onclick="doRegister()">Sign Up</button>
+    <button class="signup-btn" onclick="switchTab('login')">Back to Login</button>
+  </div>
+
+  <a href="/" class="back-link">← Back to OPTION</a>
+</div>
+
+<script>
+let token = localStorage.getItem('opt_token');
+
+// 이미 로그인돼 있으면 register.html로
+(function() {
+  if (token) location.replace('/register.html');
+})();
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', tab === 'login' ? i === 0 : i === 1);
+  });
+  document.getElementById('loginForm').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('signupForm').style.display = tab === 'signup' ? '' : 'none';
+}
+
+function showMsg(id, text, type) {
+  var el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg ' + type;
+}
+
+async function doLogin() {
+  var id = document.getElementById('loginId').value.trim();
+  var pw = document.getElementById('loginPw').value;
+  if (!id || !pw) return showMsg('loginMsg', '아이디/비밀번호를 입력하세요', 'error');
+  try {
+    var r = await fetch('/api/auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: id, password: pw })
+    });
+    var d = await r.json();
+    if (!r.ok) return showMsg('loginMsg', d.error || '로그인 실패', 'error');
+    localStorage.setItem('opt_token', d.token);
+    location.replace('/register.html');
+  } catch(e) { showMsg('loginMsg', '서버 오류', 'error'); }
+}
+
+async function doRegister() {
+  var id = document.getElementById('regId').value.trim();
+  var pw = document.getElementById('regPw').value;
+  var name = document.getElementById('regName').value.trim();
+  if (!id || !pw) return showMsg('regMsg', '아이디/비밀번호를 입력하세요', 'error');
+  try {
+    var r = await fetch('/api/auth/register', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: id, password: pw, name: name })
+    });
+    var d = await r.json();
+    if (!r.ok) return showMsg('regMsg', d.error || '가입 실패', 'error');
+    localStorage.setItem('opt_token', d.token);
+    location.replace('/register.html');
+  } catch(e) { showMsg('regMsg', '서버 오류', 'error'); }
+}
+</script>
+</body>
+</html>
