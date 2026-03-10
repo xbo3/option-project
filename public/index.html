@@ -81,7 +81,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .d-mob{width:calc(33.33% - 3px);flex-shrink:0;height:184px;}
 .d-inf{flex:1;height:184px;}
 .d-sub{flex:1;min-width:0;height:158px;}
-.d-bot{flex:1;min-width:0;height:64px;}
+.d-bot{flex:1;min-width:0;height:110px;}
 .d-list{width:100%;height:48px;}
 .list-in{height:100%;display:flex;align-items:center;gap:8px;padding:0 10px;
   background:linear-gradient(160deg,#141428,#101020);border-radius:10px;}
@@ -201,7 +201,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 /* 5~8위 바텀 카드 */
 .bot-in{height:100%;display:flex;flex-direction:row;overflow:hidden;align-items:center;
   background:linear-gradient(160deg,#141428,#101020);border-radius:10px;}
-.bot-img{width:50px;height:50px;flex-shrink:0;position:relative;overflow:hidden;border-radius:8px;margin:6px;}
+.bot-img{width:80px;height:90px;flex-shrink:0;position:relative;overflow:hidden;border-radius:8px;margin:8px;}
 .bot-img img{width:100%;height:100%;object-fit:cover;}
 .bot-body{padding:4px 6px;display:flex;flex-direction:column;justify-content:center;flex:1;min-width:0;}
 .bot-nm{font-size:8px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;padding:0 2px;
@@ -511,13 +511,13 @@ function S(off,b){return sorted[((b!=null?b:ci)+off)%N];}
 function cc(p){return p?'c-'+p:'';}
 function $(id){return document.getElementById(id);}
 
-var gearDir=[1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var hts=[184,184,158,158,158,64,64,64,64,48,48,48,48,48];
-var delays=[0,0,100,200,300,380,440,500,560,620,670,720,770,820];
-var drumTypes=['d-mob','d-inf','d-sub','d-sub','d-sub','d-bot','d-bot','d-bot','d-bot','d-list','d-list','d-list','d-list','d-list'];
+var gearDir=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+var hts=[184,184,158,158,158,110,110,110,110,48,48,48,48,48,48];
+var delays=[0,0,100,200,300,380,440,500,560,620,670,720,770,820,870];
+var drumTypes=['d-mob','d-inf','d-sub','d-sub','d-sub','d-bot','d-bot','d-bot','d-bot','d-list','d-list','d-list','d-list','d-list','d-list'];
 
 function buildDrums(){
-  [{el:$('rowH'),slots:[0,1]},{el:$('rowS'),slots:[2,3,4]},{el:$('rowB'),slots:[5,6,7,8]},{el:$('rowL'),slots:[9,10,11,12,13]}].forEach(function(row){
+  [{el:$('rowH'),slots:[0,1]},{el:$('rowS'),slots:[2,3,4]},{el:$('rowB'),slots:[5,6,7,8]},{el:$('rowL'),slots:[9,10,11,12,13,14]}].forEach(function(row){
     var html='';
     row.slots.forEach(function(i){
       var tz=hts[i]/2;
@@ -584,7 +584,7 @@ function slotHTML(i,b){
 }
 
 function fillFronts(b){
-  for(var i=0;i<=13;i++) $('ff'+i).innerHTML=slotHTML(i,b);
+  for(var i=0;i<=14;i++) $('ff'+i).innerHTML=slotHTML(i,b);
 }
 function fillList(b){
   var lh='';
@@ -607,18 +607,19 @@ function gearCascade(dir,axis){
   var nextCi=dir==='next'?(ci+1)%N:(ci-1+N)%N;
   if(nextCi===ci){busy=false;return;}
   var baseAngle=dir==='next'?-180:180;
-  for(var i=0;i<=13;i++){
+  for(var i=0;i<=14;i++){
     $('fb'+i).innerHTML=slotHTML(i,nextCi);
     var tz=hts[i]/2;
     $('ff'+i).style.transform='rotate'+axis+'(0deg) translateZ('+tz+'px)';
     $('fb'+i).style.transform='rotate'+axis+'(180deg) translateZ('+tz+'px)';
   }
   var maxEnd=0;
-  for(var i=0;i<=13;i++){
+  for(var i=0;i<=14;i++){
     (function(idx){
       var angle=baseAngle*gearDir[idx];
+      if(idx>=9) angle=angle*2;
       var delay=delays[idx];
-      var dur=500;
+      var dur=idx>=9?700:500;
       var end=delay+dur;
       if(end>maxEnd) maxEnd=end;
       setTimeout(function(){
@@ -630,7 +631,7 @@ function gearCascade(dir,axis){
   }
   setTimeout(function(){
     ci=nextCi;
-    for(var i=0;i<=13;i++){
+    for(var i=0;i<=14;i++){
       var r=$('r'+i);
       var tz=hts[i]/2;
       r.style.transition='none';
