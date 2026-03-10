@@ -650,47 +650,44 @@ function gearCascade(dir,axis){
   },maxEnd+50);
 }
 
-// ===== SMOOTH TOUCH (left/right=Y axis, up/down=X axis) =====
+// ===== SWIPE: 좌우만 슬롯전환 (1~8위 카드영역만), 상하는 페이지스크롤 =====
 (function(){
-  var a=$('mainArea'),sx=0,sy=0,fired=false;
-  var stime=0;
-  a.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;fired=false;stime=Date.now();},{passive:true});
-  a.addEventListener('touchmove',function(e){
+  var cardArea=[$('rowH'),$('rowS'),$('rowB')];
+  var sx=0,sy=0,fired=false;
+  function isCardArea(el){
+    for(var i=0;i<cardArea.length;i++){if(cardArea[i]&&cardArea[i].contains(el))return true;}
+    return false;
+  }
+  document.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;fired=false;},{passive:true});
+  document.addEventListener('touchmove',function(e){
     if(fired) return;
     var dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;
     var ax=Math.abs(dx),ay=Math.abs(dy);
-    var dt=Date.now()-stime;
-    // 빠른 스와이프(300ms 이내, 20px 이상)만 슬롯 전환, 나머지는 스크롤 허용
-    if((ay>20||ax>20)&&dt<300){
+    // 좌우 스와이프 + 카드영역(1~8위) 안에서만 슬롯 전환
+    if(ax>20&&ax>ay&&isCardArea(e.target)){
       e.preventDefault();
       fired=true;
-      if(ay>ax){
-        if(dy>0) gearCascade('next','X'); else gearCascade('prev','X');
-      } else {
-        if(dx<0) gearCascade('next','Y'); else gearCascade('prev','Y');
-      }
+      if(dx<0) gearCascade('next','Y'); else gearCascade('prev','Y');
     }
   },{passive:false});
-  var md=false,msx=0,msy=0;
-  a.addEventListener('mousedown',function(e){md=true;msx=e.clientX;msy=e.clientY;});
-  a.addEventListener('mouseup',function(e){
+  // 마우스(PC)
+  var md=false,msx=0,msy=0,mTarget=null;
+  document.addEventListener('mousedown',function(e){md=true;msx=e.clientX;msy=e.clientY;mTarget=e.target;});
+  document.addEventListener('mouseup',function(e){
     if(!md)return;md=false;
     var dx=e.clientX-msx,dy=e.clientY-msy;
     var ax=Math.abs(dx),ay=Math.abs(dy);
-    if(ay>10||ax>10){
-      if(ay>ax){if(dy>0)gearCascade('next','X');else gearCascade('prev','X');}
-      else{if(dx<0)gearCascade('next','Y');else gearCascade('prev','Y');}
+    if(ax>15&&ax>ay&&isCardArea(mTarget)){
+      if(dx<0)gearCascade('next','Y');else gearCascade('prev','Y');
     }
   });
   document.addEventListener('keydown',function(e){
-    if(e.key==='ArrowUp')gearCascade('next','X');
-    if(e.key==='ArrowDown')gearCascade('prev','X');
     if(e.key==='ArrowRight')gearCascade('next','Y');
     if(e.key==='ArrowLeft')gearCascade('prev','Y');
   });
 })();
 
-var at=setInterval(function(){if(!document.hidden)gearCascade('next','X');},6000);
+var at=setInterval(function(){if(!document.hidden)gearCascade('next','Y');},6000);
 document.addEventListener('touchstart',function(){clearInterval(at);},{once:true});
 
 buildDrums();
