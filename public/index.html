@@ -80,7 +80,10 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .d-mob{width:calc(30% - 2px);flex-shrink:0;height:184px;}
 .d-inf{flex:1;height:184px;}
 .d-sub{flex:1;min-width:0;height:158px;}
-.d-bot{flex:1;min-width:0;height:114px;}
+.d-bot{flex:1;min-width:0;height:64px;}
+.row-bot{flex-wrap:wrap;}
+.row-bot .d-bot{flex:0 0 calc(50% - 2px);max-width:calc(50% - 2px);}
+.row-bot .d-bot:nth-child(5){flex:0 0 100%;max-width:100%;}
 
 /* ===== CARD INNER BACKGROUNDS ===== */
 .mob-in{height:100%;position:relative;overflow:hidden;border-radius:12px;background:#0D0D18;}
@@ -186,11 +189,11 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
 /* 5~8위 바텀 카드 */
-.bot-in{height:100%;display:flex;flex-direction:column;overflow:hidden;
+.bot-in{height:100%;display:flex;flex-direction:row;overflow:hidden;align-items:center;
   background:linear-gradient(160deg,#141428,#101020);border-radius:10px;}
-.bot-img{height:60%;position:relative;overflow:hidden;}
+.bot-img{width:50px;height:50px;flex-shrink:0;position:relative;overflow:hidden;border-radius:8px;margin:6px;}
 .bot-img img{width:100%;height:100%;object-fit:cover;}
-.bot-body{padding:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex:1;}
+.bot-body{padding:4px 6px;display:flex;flex-direction:column;justify-content:center;flex:1;min-width:0;}
 .bot-nm{font-size:8px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;padding:0 2px;
   background:linear-gradient(180deg,#fff 0%,#c0c0c0 40%,#fff 50%,#a0a0a0 60%,#d0d0d0 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -497,13 +500,13 @@ function S(off,b){return sorted[((b!=null?b:ci)+off)%N];}
 function cc(p){return p?'c-'+p:'';}
 function $(id){return document.getElementById(id);}
 
-var gearDir=[1,-1,1,-1,1,-1,1,-1,1];
-var hts=[184,184,158,158,158,114,114,114,114];
-var delays=[0,0,120,240,360,480,560,640,720];
-var drumTypes=['d-mob','d-inf','d-sub','d-sub','d-sub','d-bot','d-bot','d-bot','d-bot'];
+var gearDir=[1,1,1,1,1,1,1,1,1,1];
+var hts=[184,184,158,158,158,64,64,64,64,64];
+var delays=[0,0,120,240,360,440,510,580,650,720];
+var drumTypes=['d-mob','d-inf','d-sub','d-sub','d-sub','d-bot','d-bot','d-bot','d-bot','d-bot'];
 
 function buildDrums(){
-  [{el:$('rowH'),slots:[0,1]},{el:$('rowS'),slots:[2,3,4]},{el:$('rowB'),slots:[5,6,7,8]}].forEach(function(row){
+  [{el:$('rowH'),slots:[0,1]},{el:$('rowS'),slots:[2,3,4]},{el:$('rowB'),slots:[5,6,7,8,9]}].forEach(function(row){
     var html='';
     row.slots.forEach(function(i){
       var tz=hts[i]/2;
@@ -561,7 +564,7 @@ function slotHTML(i,b){
 }
 
 function fillFronts(b){
-  for(var i=0;i<=8;i++) $('ff'+i).innerHTML=slotHTML(i,b);
+  for(var i=0;i<=9;i++) $('ff'+i).innerHTML=slotHTML(i,b);
 }
 function fillList(b){
   var lh='';
@@ -584,14 +587,14 @@ function gearCascade(dir,axis){
   var nextCi=dir==='next'?(ci+1)%N:(ci-1+N)%N;
   if(nextCi===ci){busy=false;return;}
   var baseAngle=dir==='next'?-180:180;
-  for(var i=0;i<=8;i++){
+  for(var i=0;i<=9;i++){
     $('fb'+i).innerHTML=slotHTML(i,nextCi);
     var tz=hts[i]/2;
     $('ff'+i).style.transform='rotate'+axis+'(0deg) translateZ('+tz+'px)';
     $('fb'+i).style.transform='rotate'+axis+'(180deg) translateZ('+tz+'px)';
   }
   var maxEnd=0;
-  for(var i=0;i<=8;i++){
+  for(var i=0;i<=9;i++){
     (function(idx){
       var angle=baseAngle*gearDir[idx];
       var delay=delays[idx];
@@ -607,7 +610,7 @@ function gearCascade(dir,axis){
   }
   setTimeout(function(){
     ci=nextCi;
-    for(var i=0;i<=8;i++){
+    for(var i=0;i<=9;i++){
       var r=$('r'+i);
       var tz=hts[i]/2;
       r.style.transition='none';
