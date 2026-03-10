@@ -628,13 +628,11 @@ function gearCascade(dir,axis){
   a.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();},{passive:true});
   a.addEventListener('touchend',function(e){
     var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy,dt=Date.now()-st;
-    if(dt>500) return;
+    if(dt>800) return;
     var ax=Math.abs(dx),ay=Math.abs(dy);
-    if(ay>30&&ay>ax*0.8){
-      // vertical swipe → rotateX
+    if(ay>15&&ay>ax*0.6){
       if(dy<0) gearCascade('next','X'); else gearCascade('prev','X');
-    } else if(ax>30){
-      // horizontal swipe → rotateY
+    } else if(ax>15){
       if(dx<0) gearCascade('next','Y'); else gearCascade('prev','Y');
     }
   },{passive:true});
@@ -643,10 +641,10 @@ function gearCascade(dir,axis){
   a.addEventListener('mouseup',function(e){
     if(!md)return;md=false;
     var dx=e.clientX-sx,dy=e.clientY-sy,dt=Date.now()-st;
-    if(dt>500)return;
+    if(dt>800)return;
     var ax=Math.abs(dx),ay=Math.abs(dy);
-    if(ay>30&&ay>ax*0.8){if(dy<0)gearCascade('next','X');else gearCascade('prev','X');}
-    else if(ax>30){if(dx<0)gearCascade('next','Y');else gearCascade('prev','Y');}
+    if(ay>15&&ay>ax*0.6){if(dy<0)gearCascade('next','X');else gearCascade('prev','X');}
+    else if(ax>15){if(dx<0)gearCascade('next','Y');else gearCascade('prev','Y');}
   });
   document.addEventListener('keydown',function(e){
     if(e.key==='ArrowUp')gearCascade('next','X');
