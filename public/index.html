@@ -41,14 +41,16 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 @keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
 .poll-q{font-size:14px;font-weight:700;line-height:1.4;margin:6px 0;}
 .poll-sub{font-size:10px;color:var(--text2);margin-bottom:6px;}
-.poll-opts{display:flex;gap:6px;}
-.p-opt{flex:1;padding:10px 8px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
-  position:relative;overflow:hidden;text-align:center;cursor:pointer;transition:all .2s;}
-.p-opt:active{transform:scale(.97);}
-.p-bar{position:absolute;left:0;top:0;bottom:0;border-radius:10px;transition:width .6s ease;}
-.p-bar.a{background:rgba(68,136,255,.08);width:31%;}.p-bar.b{background:rgba(240,192,80,.1);width:69%;}
-.p-text{font-size:10px;font-weight:600;position:relative;z-index:1;color:var(--text2);}
-.p-pct{font-size:14px;font-weight:800;position:relative;z-index:1;color:var(--text3);margin-top:2px;}.p-pct.w{color:var(--gold);}
+.poll-opts{display:flex;flex-direction:column;gap:8px;}
+.p-opt{position:relative;height:28px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  overflow:hidden;cursor:pointer;transition:all .2s;display:flex;align-items:center;padding:0 12px;}
+.p-opt:active{transform:scale(.98);}
+.p-bar{position:absolute;left:0;top:0;bottom:0;border-radius:14px;transition:width .8s cubic-bezier(.25,.8,.25,1);}
+.p-bar.a{background:linear-gradient(90deg,rgba(68,136,255,.25),rgba(68,136,255,.15));width:31%;}
+.p-bar.b{background:linear-gradient(90deg,rgba(240,192,80,.3),rgba(240,192,80,.18));width:69%;}
+.p-text{font-size:11px;font-weight:600;position:relative;z-index:1;color:var(--text2);}
+.p-pct{font-size:12px;font-weight:800;position:relative;z-index:1;margin-left:auto;}.p-pct{color:var(--text3);}.p-pct.w{color:var(--gold);}
+.p-opt.voted{border-color:rgba(240,192,80,.3);}
 
 .row-hero{display:flex;gap:4px;padding:0 4px;margin-bottom:4px;margin-top:4px;}
 .row-sub{display:flex;gap:4px;padding:0 4px;margin-bottom:4px;}
@@ -393,9 +395,9 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   <div class="poll-row"><div class="poll-tag">100명에게 물어봐</div><div class="poll-live">73/100</div></div>
   <div class="poll-q">친구가 슬롯 잘하면 여자도 꼬실 수 있다는데?</div>
   <div class="poll-sub">매일 새로운 질문 업데이트</div>
-  <div class="poll-opts">
-    <div class="p-opt"><div class="p-bar a"></div><div class="p-text">친구 말이 맞다</div><div class="p-pct">31%</div></div>
-    <div class="p-opt"><div class="p-bar b"></div><div class="p-text">사람색기 아니네</div><div class="p-pct w">69%</div></div>
+  <div class="poll-opts" id="pollOpts">
+    <div class="p-opt" onclick="pollVote('a')"><div class="p-bar a" id="pollBarA"></div><div class="p-text">친구 말이 맞다</div><div class="p-pct" id="pollPctA">31%</div></div>
+    <div class="p-opt" onclick="pollVote('b')"><div class="p-bar b" id="pollBarB"></div><div class="p-text">사람색기 아니네</div><div class="p-pct w" id="pollPctB">69%</div></div>
   </div>
 </div>
 
@@ -478,6 +480,25 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 </div>
 
 <script>
+// ===== POLL VOTE =====
+var pollA = 31, pollB = 69, pollTotal = 73, pollVoted = false;
+function pollVote(choice) {
+  if (pollVoted) return;
+  pollVoted = true;
+  pollTotal++;
+  if (choice === 'a') pollA += 1; else pollB += 1;
+  var total = pollA + pollB;
+  var pctA = Math.round(pollA / total * 100);
+  var pctB = 100 - pctA;
+  document.getElementById('pollBarA').style.width = pctA + '%';
+  document.getElementById('pollBarB').style.width = pctB + '%';
+  document.getElementById('pollPctA').textContent = pctA + '%';
+  document.getElementById('pollPctB').textContent = pctB + '%';
+  document.querySelector('.poll-live').textContent = pollTotal + '/100';
+  var opt = choice === 'a' ? document.querySelectorAll('.p-opt')[0] : document.querySelectorAll('.p-opt')[1];
+  opt.classList.add('voted');
+}
+
 var currentSort = 'firstBonus';
 function sortLabel(key){
   return {firstBonus:'첫충',reloadBonus:'매충',cashback:'캐시백',allinBonus:'올인',rolling:'롤링',rating:'별점'}[key]||key;
