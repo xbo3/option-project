@@ -617,9 +617,8 @@ function gearCascade(dir,axis){
   for(var i=0;i<=14;i++){
     (function(idx){
       var angle=baseAngle*gearDir[idx];
-      if(idx>=9) angle=angle*2;
       var delay=delays[idx];
-      var dur=idx>=9?700:500;
+      var dur=500;
       var end=delay+dur;
       if(end>maxEnd) maxEnd=end;
       setTimeout(function(){
