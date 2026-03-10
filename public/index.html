@@ -265,6 +265,31 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
   box-shadow:0 4px 16px rgba(240,192,80,.25),inset 0 1px 0 rgba(255,255,255,.3);
   transition:all .2s;}
 .bonus-receive:active{transform:scale(.97);}
+/* 샤랄라 이펙트 */
+.bonus-fx{position:absolute;top:0;left:0;right:0;bottom:0;z-index:10;pointer-events:none;overflow:hidden;
+  animation:fxFlash 1.5s ease-out forwards;}
+.fx-burst{position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,215,0,.6),rgba(240,192,80,.3),transparent 70%);
+  animation:fxBurst 1.2s ease-out forwards;}
+.fx-sparkle{position:absolute;color:#FFD700;animation:fxSpark 1.4s ease-out forwards;opacity:0;}
+.fx-sparkle::after{content:'✦';}
+@keyframes fxBurst{
+  0%{width:0;height:0;opacity:.8;transform:translate(-50%,-50%);}
+  60%{width:300px;height:300px;opacity:.5;transform:translate(-50%,-50%);}
+  100%{width:500px;height:500px;opacity:0;transform:translate(-50%,-50%);}
+}
+@keyframes fxSpark{
+  0%{opacity:0;transform:scale(0) rotate(0deg);}
+  20%{opacity:1;transform:scale(1.2) rotate(90deg);}
+  60%{opacity:1;transform:scale(1) rotate(200deg) translateY(-30px);}
+  100%{opacity:0;transform:scale(0.3) rotate(360deg) translateY(-60px);}
+}
+@keyframes fxFlash{
+  0%{background:rgba(255,215,0,0);}
+  15%{background:rgba(255,215,0,.15);}
+  40%{background:rgba(255,215,0,.05);}
+  100%{background:rgba(255,215,0,0);}
+}
 .bonus-video{width:100%;display:none;}
 .bonus-video.show{display:block;}
 .bonus-video video{width:100%;display:block;border-radius:0 0 16px 16px;}
@@ -673,12 +698,27 @@ function closeBonus(){
   var v=$('bonusVid'); v.pause(); v.currentTime=0;
 }
 function playBonusVideo(){
-  $('bonusContent').style.display='none';
   $('bonusReceiveBtn').style.display='none';
-  document.querySelector('.bonus-header').style.display='none';
-  document.querySelector('.bonus-box').classList.add('playing');
-  $('bonusVideo').classList.add('show');
-  var v=$('bonusVid'); v.play();
+  // 샤랄라 이펙트
+  var box=document.querySelector('.bonus-box');
+  var fx=document.createElement('div');fx.className='bonus-fx';
+  fx.innerHTML='<div class="fx-burst"></div>';
+  for(var i=0;i<20;i++){
+    var s=document.createElement('div');s.className='fx-sparkle';
+    s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
+    s.style.animationDelay=(Math.random()*0.8)+'s';
+    s.style.fontSize=(12+Math.random()*16)+'px';
+    fx.appendChild(s);
+  }
+  box.appendChild(fx);
+  setTimeout(function(){
+    fx.remove();
+    $('bonusContent').style.display='none';
+    document.querySelector('.bonus-header').style.display='none';
+    box.classList.add('playing');
+    $('bonusVideo').classList.add('show');
+    var v=$('bonusVid'); v.play();
+  },1500);
 }
 
 
