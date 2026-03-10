@@ -659,7 +659,7 @@ function gearCascade(dir,axis){
       if(ay>ax){
         if(dy>0) gearCascade('next','X'); else gearCascade('prev','X');
       } else {
-        if(dx>0) gearCascade('next','Y'); else gearCascade('prev','Y');
+        if(dx<0) gearCascade('next','Y'); else gearCascade('prev','Y');
       }
     }
   },{passive:false});
@@ -671,7 +671,7 @@ function gearCascade(dir,axis){
     var ax=Math.abs(dx),ay=Math.abs(dy);
     if(ay>10||ax>10){
       if(ay>ax){if(dy>0)gearCascade('next','X');else gearCascade('prev','X');}
-      else{if(dx>0)gearCascade('next','Y');else gearCascade('prev','Y');}
+      else{if(dx<0)gearCascade('next','Y');else gearCascade('prev','Y');}
     }
   });
   document.addEventListener('keydown',function(e){
