@@ -53,6 +53,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .row-hero{display:flex;gap:4px;padding:0 4px;margin-bottom:4px;margin-top:4px;}
 .row-sub{display:flex;gap:4px;padding:0 4px;margin-bottom:4px;}
 .row-bot{display:flex;gap:4px;padding:0 4px;margin-bottom:4px;}
+.row-list{display:flex;flex-direction:column;gap:3px;padding:0 4px;margin-bottom:4px;}
 
 /* ===== DRUM (left/right + up/down) ===== */
 .drum{overflow:hidden;position:relative;perspective:600px;}
@@ -81,9 +82,18 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 .d-inf{flex:1;height:184px;}
 .d-sub{flex:1;min-width:0;height:158px;}
 .d-bot{flex:1;min-width:0;height:64px;}
-.row-bot{flex-wrap:wrap;}
-.row-bot .d-bot{flex:0 0 calc(50% - 2px);max-width:calc(50% - 2px);}
-.row-bot .d-bot:nth-child(5){flex:0 0 100%;max-width:100%;}
+.d-list{width:100%;height:48px;}
+.list-in{height:100%;display:flex;align-items:center;gap:8px;padding:0 10px;
+  background:linear-gradient(160deg,#141428,#101020);border-radius:10px;}
+.list-rank{font-size:14px;font-weight:900;color:var(--gold);width:20px;text-align:center;flex-shrink:0;}
+.list-img{width:34px;height:34px;border-radius:8px;overflow:hidden;flex-shrink:0;}
+.list-img img{width:100%;height:100%;object-fit:cover;}
+.list-body{flex:1;min-width:0;}
+.list-nm{font-size:11px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.list-kr{font-size:8px;color:var(--text3);}
+.list-val{font-size:13px;font-weight:800;flex-shrink:0;
+  background:linear-gradient(180deg,#FFE680,#F0C050,#C49530);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
 /* ===== CARD INNER BACKGROUNDS ===== */
 .mob-in{height:100%;position:relative;overflow:hidden;border-radius:12px;background:#0D0D18;}
@@ -388,6 +398,7 @@ body{font-family:'Sora',-apple-system,sans-serif;background:var(--bg);color:var(
 <div class="row-hero" id="rowH"></div>
 <div class="row-sub" id="rowS"></div>
 <div class="row-bot" id="rowB"></div>
+<div class="row-list" id="rowL"></div>
 <div class="swipe-hint">스와이프로 다음 순위</div>
 <div class="list-sec" id="listSec"></div>
 
@@ -500,13 +511,13 @@ function S(off,b){return sorted[((b!=null?b:ci)+off)%N];}
 function cc(p){return p?'c-'+p:'';}
 function $(id){return document.getElementById(id);}
 
-var gearDir=[1,1,1,1,1,1,1,1,1,1];
-var hts=[184,184,158,158,158,64,64,64,64,64];
-var delays=[0,0,120,240,360,440,510,580,650,720];
-var drumTypes=['d-mob','d-inf','d-sub','d-sub','d-sub','d-bot','d-bot','d-bot','d-bot','d-bot'];
+var gearDir=[1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+var hts=[184,184,158,158,158,64,64,64,64,48,48,48,48,48];
+var delays=[0,0,100,200,300,380,440,500,560,620,670,720,770,820];
+var drumTypes=['d-mob','d-inf','d-sub','d-sub','d-sub','d-bot','d-bot','d-bot','d-bot','d-list','d-list','d-list','d-list','d-list'];
 
 function buildDrums(){
-  [{el:$('rowH'),slots:[0,1]},{el:$('rowS'),slots:[2,3,4]},{el:$('rowB'),slots:[5,6,7,8,9]}].forEach(function(row){
+  [{el:$('rowH'),slots:[0,1]},{el:$('rowS'),slots:[2,3,4]},{el:$('rowB'),slots:[5,6,7,8]},{el:$('rowL'),slots:[9,10,11,12,13]}].forEach(function(row){
     var html='';
     row.slots.forEach(function(i){
       var tz=hts[i]/2;
@@ -553,18 +564,27 @@ function botH(s){
     '<div class="bot-body"><div class="bot-nm '+cc(s.p)+'">'+s.ef+'</div><div class="bot-kr">'+s.n+'</div>'+
     '<div class="bot-v">'+val+unit+'</div></div></div>';
 }
+function listH(s,rank){
+  var val=sortVal(s,currentSort);
+  var unit=currentSort==='rating'?'':'%';
+  return '<div class="list-in"><span class="list-rank">'+rank+'</span>'+
+    '<div class="list-img"><img src="'+s.img+'" alt="'+s.n+'" onerror="this.style.display=\'none\'"></div>'+
+    '<div class="list-body"><div class="list-nm">'+s.ef+'</div><div class="list-kr">'+s.n+'</div></div>'+
+    '<div class="list-val">'+val+unit+'</div></div>';
+}
 function slotHTML(i,b){
   var base=(b!=null?b:ci);
-  // 현재 보이는 첫번째 업체의 실제 순위 (1-based)
   var rankStart=base%N+1;
   if(i===0) return mobH(S(0,b));
   if(i===1) return infH(S(0,b),rankStart);
   if(i<=4) return subH(S(i-1,b));
-  return botH(S(i-1,b));
+  if(i<=8) return botH(S(i-1,b));
+  var listRank=(rankStart+i-1-1)%N+1;
+  return listH(S(i-1,b),rankStart+i-1);
 }
 
 function fillFronts(b){
-  for(var i=0;i<=9;i++) $('ff'+i).innerHTML=slotHTML(i,b);
+  for(var i=0;i<=13;i++) $('ff'+i).innerHTML=slotHTML(i,b);
 }
 function fillList(b){
   var lh='';
@@ -587,14 +607,14 @@ function gearCascade(dir,axis){
   var nextCi=dir==='next'?(ci+1)%N:(ci-1+N)%N;
   if(nextCi===ci){busy=false;return;}
   var baseAngle=dir==='next'?-180:180;
-  for(var i=0;i<=9;i++){
+  for(var i=0;i<=13;i++){
     $('fb'+i).innerHTML=slotHTML(i,nextCi);
     var tz=hts[i]/2;
     $('ff'+i).style.transform='rotate'+axis+'(0deg) translateZ('+tz+'px)';
     $('fb'+i).style.transform='rotate'+axis+'(180deg) translateZ('+tz+'px)';
   }
   var maxEnd=0;
-  for(var i=0;i<=9;i++){
+  for(var i=0;i<=13;i++){
     (function(idx){
       var angle=baseAngle*gearDir[idx];
       var delay=delays[idx];
@@ -610,7 +630,7 @@ function gearCascade(dir,axis){
   }
   setTimeout(function(){
     ci=nextCi;
-    for(var i=0;i<=9;i++){
+    for(var i=0;i<=13;i++){
       var r=$('r'+i);
       var tz=hts[i]/2;
       r.style.transition='none';
@@ -627,27 +647,31 @@ function gearCascade(dir,axis){
 
 // ===== SMOOTH TOUCH (left/right=Y axis, up/down=X axis) =====
 (function(){
-  var a=$('mainArea'),sx=0,sy=0,st=0;
-  a.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();},{passive:true});
-  a.addEventListener('touchend',function(e){
-    var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy,dt=Date.now()-st;
-    if(dt>800) return;
+  var a=$('mainArea'),sx=0,sy=0,fired=false;
+  a.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;fired=false;},{passive:true});
+  a.addEventListener('touchmove',function(e){
+    if(fired) return;
+    var dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;
     var ax=Math.abs(dx),ay=Math.abs(dy);
-    if(ay>15&&ay>ax*0.6){
-      if(dy<0) gearCascade('next','X'); else gearCascade('prev','X');
-    } else if(ax>15){
-      if(dx<0) gearCascade('next','Y'); else gearCascade('prev','Y');
+    if(ay>10||ax>10){
+      fired=true;
+      if(ay>ax){
+        if(dy<0) gearCascade('next','X'); else gearCascade('prev','X');
+      } else {
+        if(dx<0) gearCascade('next','Y'); else gearCascade('prev','Y');
+      }
     }
   },{passive:true});
-  var md=false;
-  a.addEventListener('mousedown',function(e){md=true;sx=e.clientX;sy=e.clientY;st=Date.now();});
+  var md=false,msx=0,msy=0;
+  a.addEventListener('mousedown',function(e){md=true;msx=e.clientX;msy=e.clientY;});
   a.addEventListener('mouseup',function(e){
     if(!md)return;md=false;
-    var dx=e.clientX-sx,dy=e.clientY-sy,dt=Date.now()-st;
-    if(dt>800)return;
+    var dx=e.clientX-msx,dy=e.clientY-msy;
     var ax=Math.abs(dx),ay=Math.abs(dy);
-    if(ay>15&&ay>ax*0.6){if(dy<0)gearCascade('next','X');else gearCascade('prev','X');}
-    else if(ax>15){if(dx<0)gearCascade('next','Y');else gearCascade('prev','Y');}
+    if(ay>10||ax>10){
+      if(ay>ax){if(dy<0)gearCascade('next','X');else gearCascade('prev','X');}
+      else{if(dx<0)gearCascade('next','Y');else gearCascade('prev','Y');}
+    }
   });
   document.addEventListener('keydown',function(e){
     if(e.key==='ArrowUp')gearCascade('next','X');
